@@ -2,7 +2,6 @@ package basic
 
 import (
 	"fmt"
-	"github.com/irisnet/sdk-go/util/constant"
 	"github.com/parnurzeal/gorequest"
 	"net/http"
 	"time"
@@ -27,7 +26,7 @@ type client struct {
 }
 
 func NewClient(baseUrl string) HttpClient {
-	return &client{baseUrl: baseUrl, apiUrl: fmt.Sprintf("%s://%s", constant.DefaultApiSchema, baseUrl)}
+	return &client{baseUrl: baseUrl, apiUrl: fmt.Sprintf("%s", baseUrl)}
 }
 
 func (c *client) Get(path string, params map[string]string) (*http.Response, []byte, error) {

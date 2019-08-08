@@ -1,8 +1,6 @@
 package constant
 
 const (
-	DefaultApiSchema = "https"
-
 	TxBroadcastTypeSync   = "sync"
 	TxBroadcastTypeAsync  = "async"
 	TxBroadcastTypeCommit = "commit"

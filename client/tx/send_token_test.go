@@ -22,11 +22,11 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		panic(err)
 	}
-	basicClient := basic.NewClient("v2.irisnet-lcd.qa.rainbow.one")
+	basicClient := basic.NewClient("http://v2.irisnet-lcd.dev.rainbow.one")
 	lite := lcd.NewClient(basicClient)
-	rpcClient := rpc.NewClient("tcp://35.236.146.181:30657")
+	rpcClient := rpc.NewClient("tcp://192.168.150.31:26657")
 
-	c, err = NewClient("rainbow-qa", commontypes.Testnet, km, lite, rpcClient)
+	c, err = NewClient("rainbow-dev", commontypes.Testnet, km, lite, rpcClient)
 	if err != nil {
 		panic(err)
 	}

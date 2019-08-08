@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	baseUrl     = "v2.irisnet-lcd.qa.rainbow.one"
+	baseUrl     = "http://v2.irisnet-lcd.dev.rainbow.one"
 	nodeUrl     = "tcp://35.236.146.181:30657"
 	networkType = types.Testnet
 	km          keys.KeyManager
