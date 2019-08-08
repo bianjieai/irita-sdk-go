@@ -12,7 +12,7 @@ import (
 )
 
 type TxClient interface {
-	SendToken(receiver string, coins []types.Coin, memo string) (types.BroadcastTxResult, error)
+	SendToken(receiver string, coins []types.Coin, memo string, commit bool) (types.BroadcastTxResult, error)
 }
 
 type client struct {
