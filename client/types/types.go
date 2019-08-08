@@ -1,6 +1,7 @@
 package types
 
 import (
+	"github.com/irisnet/irishub/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
 )
@@ -30,3 +31,7 @@ type (
 		Height    int64                  `json:"height"`
 	}
 )
+
+func AccAddrFromBech32(addr string) (types.AccAddress, error) {
+	return types.AccAddressFromBech32(addr)
+}

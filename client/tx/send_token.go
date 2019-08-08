@@ -17,7 +17,7 @@ func (c *client) SendToken(receiver string, coins []types.Coin, memo string) (ty
 	)
 	from := c.keyManager.GetAddr()
 
-	to, err := sdk.AccAddressFromBech32(receiver)
+	to, err := types.AccAddrFromBech32(receiver)
 	if err != nil {
 		return result, err
 	}
