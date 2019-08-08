@@ -1,4 +1,4 @@
-module github.com/kaifei-bianjie/sdk-go
+module github.com/irisnet/sdk-go
 
         require (
         github.com/binance-chain/go-sdk v1.0.9 // indirect
