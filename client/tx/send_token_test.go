@@ -43,7 +43,7 @@ func TestClient_SendToken(t *testing.T) {
 		},
 	}
 	memo := "send from irisnet/sdk-go"
-	if res, err := c.SendToken(receiver, coins, memo); err != nil {
+	if res, err := c.SendToken(receiver, coins, memo, false); err != nil {
 		t.Fatal(err)
 	} else {
 		t.Log(util.ToJsonIgnoreErr(res))

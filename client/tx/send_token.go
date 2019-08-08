@@ -11,7 +11,7 @@ import (
 	"github.com/irisnet/sdk-go/util/constant"
 )
 
-func (c *client) SendToken(receiver string, coins []types.Coin, memo string) (types.BroadcastTxResult, error) {
+func (c *client) SendToken(receiver string, coins []types.Coin, memo string, commit bool) (types.BroadcastTxResult, error) {
 	var (
 		result types.BroadcastTxResult
 	)
@@ -61,7 +61,14 @@ func (c *client) SendToken(receiver string, coins []types.Coin, memo string) (ty
 		return result, err
 	}
 
-	return c.rpcClient.BroadcastTx(constant.TxBroadcastTypeCommit, txBytes)
+	var txBroadcastType string
+	if commit {
+		txBroadcastType = constant.TxBroadcastTypeCommit
+	} else {
+		txBroadcastType = constant.TxBroadcastTypeSync
+	}
+
+	return c.rpcClient.BroadcastTx(txBroadcastType, txBytes)
 }
 
 func buildCoins(icoins []types.Coin) (sdk.Coins, error) {
