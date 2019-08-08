@@ -1,6 +1,8 @@
 package types
 
-import "github.com/irisnet/irishub/app/v1/bank"
+import (
+	"github.com/irisnet/irishub/app/v1/bank"
+)
 
 type NetworkType int
 
@@ -11,5 +13,7 @@ const (
 )
 
 type (
-	MsgBankSend bank.MsgSend
+	MsgBankSend = bank.MsgSend
 )
+
+
