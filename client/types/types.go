@@ -35,3 +35,21 @@ type (
 func AccAddrFromBech32(addr string) (types.AccAddress, error) {
 	return types.AccAddressFromBech32(addr)
 }
+
+func BuildCoins(txCoins types.Coins) []Coin {
+	var (
+		coins []Coin
+	)
+	if len(txCoins) == 0 {
+		return coins
+	}
+
+	for _, v := range txCoins {
+		coins = append(coins, Coin{
+			Denom:  v.Denom,
+			Amount: v.Amount.String(),
+		})
+	}
+
+	return coins
+}
