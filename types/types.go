@@ -1,6 +1,7 @@
 package types
 
 import (
+	"github.com/irisnet/irishub/app/v1/auth"
 	"github.com/irisnet/irishub/app/v1/bank"
 )
 
@@ -14,6 +15,5 @@ const (
 
 type (
 	MsgBankSend = bank.MsgSend
+	StdFee      = auth.StdFee
 )
-
-
