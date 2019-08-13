@@ -33,7 +33,19 @@ func (c *client) SendToken(receiver string, coins []types.Coin, memo string, com
 		return result, err
 	}
 
-	// TODO: check balance is enough
+	//  check balance is enough
+	amount := getCoin(account.Value.Coins, constant.TxDefaultFeeDenom)
+
+	totalfee := sdk.NewInt(constant.TxDefaultFeeAmount)
+	for _, val := range sdkCoins {
+		if val.Denom == constant.TxDefaultFeeDenom {
+			totalfee = totalfee.Add(val.Amount)
+		}
+	}
+
+	if amount.Amount.LTE(totalfee) {
+		return result, fmt.Errorf("account balance is not enough")
+	}
 
 	fee := sdk.Coins{
 		{
@@ -91,6 +103,22 @@ func buildCoins(icoins []types.Coin) (sdk.Coins, error) {
 	}
 
 	return coins, nil
+}
+
+func getCoin(icoins []types.Coin, denom string) sdk.Coin {
+	for _, vcoin := range icoins {
+		if vcoin.Denom == denom {
+			amount, ok := sdk.NewIntFromString(vcoin.Amount)
+			if ok {
+				return sdk.Coin{
+					Denom:  vcoin.Denom,
+					Amount: amount,
+				}
+			}
+
+		}
+	}
+	return sdk.Coin{}
 }
 
 // buildBankSendMsg builds the sending coins msg
