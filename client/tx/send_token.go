@@ -43,7 +43,7 @@ func (c *client) SendToken(receiver string, coins []types.Coin, memo string, com
 		}
 	}
 
-	if amount.Amount.LTE(totalfee) {
+	if amount.Amount.LT(totalfee) {
 		return result, fmt.Errorf("account balance is not enough")
 	}
 
