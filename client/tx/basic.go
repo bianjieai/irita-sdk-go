@@ -13,6 +13,8 @@ import (
 
 type TxClient interface {
 	SendToken(receiver string, coins []types.Coin, memo string, commit bool) (types.BroadcastTxResult, error)
+	PostServiceRequest(request ServiceRequest, memo string, commit bool) (types.BroadcastTxResult, error)
+	PostServiceResponse(response ServiceResponse, memo string, commit bool) (types.BroadcastTxResult, error)
 }
 
 type client struct {

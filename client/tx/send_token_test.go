@@ -13,27 +13,25 @@ import (
 	"testing"
 )
 
-var (
-	c TxClient
-)
-
-func TestMain(m *testing.M) {
+func initSendTokenKM() TxClient {
 	km, err := keys.NewKeyStoreKeyManager("./ks_1234567890.json", "1234567890")
 	if err != nil {
 		panic(err)
 	}
-	basicClient := basic.NewClient("http://v2.irisnet-lcd.dev.rainbow.one")
+	basicClient := basic.NewClient("http://irisnet-lcd.dev.rainbow.one")
 	lite := lcd.NewClient(basicClient)
 	rpcClient := rpc.NewClient("tcp://192.168.150.31:26657")
 
-	c, err = NewClient("rainbow-dev", commontypes.Testnet, km, lite, rpcClient)
+	c, err := NewClient("rainbow-dev", commontypes.Testnet, km, lite, rpcClient)
 	if err != nil {
 		panic(err)
 	}
-	m.Run()
+	return c
 }
 
 func TestClient_SendToken(t *testing.T) {
+	c := initSendTokenKM()
+
 	receiver := "faa1j3ufmgwe2cuumj7423jt4creqlcskltn6ht5w9"
 	amount := fmt.Sprintf("%.0f", 0.12*math.Pow10(18))
 	coins := []types.Coin{

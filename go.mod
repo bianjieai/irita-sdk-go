@@ -1,7 +1,6 @@
 module github.com/irisnet/sdk-go
 
 require (
-	github.com/binance-chain/go-sdk v1.0.9 // indirect
 	github.com/irisnet/irishub v0.15.0
 	github.com/moul/http2curl v1.0.0 // indirect
 	github.com/parnurzeal/gorequest v0.2.15

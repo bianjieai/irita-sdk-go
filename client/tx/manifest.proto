@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package example.manifest;
+
+import "google/protobuf/timestamp.proto";
+
+// The manifest service definition.
+service Manifest {
+    //@Attribute description: Manifest
+    //@Attribute output_privacy: NoPrivacy
+    //@Attribute output_cached: NoCached
+    rpc CheckManifest (ManifestRequest) returns (ManifestResponse) {}
+}
+
+message ManifestRequest {
+    string manifestCode = 1;	// 货单号
+    string senderID = 2;		// 发货方id
+    google.protobuf.Timestamp recvDate = 3;		// 收货日期
+}
+
+message ManifestResponse {
+    bool   result = 1;		// 确认状态
+    string link = 2;		// 货单凭证链接
+}
