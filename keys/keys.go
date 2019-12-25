@@ -3,11 +3,11 @@ package keys
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/types"
-	"gitlab.bianjie.ai/irita/irita-sdk-go/types/tx"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
+	"gitlab.bianjie.ai/irita/irita-sdk-go/types/tx"
 	"io/ioutil"
 )
 

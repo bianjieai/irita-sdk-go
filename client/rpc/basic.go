@@ -1,10 +1,10 @@
 package rpc
 
 import (
-	itypes "gitlab.bianjie.ai/irita/irita-sdk-go/client/types"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	"github.com/tendermint/tendermint/types"
+	itypes "gitlab.bianjie.ai/irita/irita-sdk-go/client/types"
 )
 
 type RPCClient interface {

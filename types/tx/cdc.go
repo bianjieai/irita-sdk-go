@@ -2,11 +2,11 @@ package tx
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/tendermint/go-amino"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/tendermint/go-amino"
 	"gitlab.bianjie.ai/irita/irita/modules/service"
 )
 

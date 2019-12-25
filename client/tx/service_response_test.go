@@ -7,8 +7,8 @@ import (
 	"gitlab.bianjie.ai/irita/irita-sdk-go/client/rpc"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/keys"
 	commontypes "gitlab.bianjie.ai/irita/irita-sdk-go/types"
-	"testing"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/util"
+	"testing"
 )
 
 func initSvcResponseKM() TxClient {

@@ -2,9 +2,9 @@ package tx
 
 import (
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/client/types"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/types/tx"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/util"

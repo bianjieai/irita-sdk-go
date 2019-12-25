@@ -1,10 +1,10 @@
 package rpc
 
 import (
-	itypes "gitlab.bianjie.ai/irita/irita-sdk-go/client/types"
-	"gitlab.bianjie.ai/irita/irita-sdk-go/util/constant"
 	"github.com/pkg/errors"
 	"github.com/tendermint/tendermint/types"
+	itypes "gitlab.bianjie.ai/irita/irita-sdk-go/client/types"
+	"gitlab.bianjie.ai/irita/irita-sdk-go/util/constant"
 )
 
 func (c *client) BroadcastTx(broadcastType string, tx types.Tx) (itypes.BroadcastTxResult, error) {

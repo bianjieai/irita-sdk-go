@@ -2,13 +2,13 @@ package tx
 
 import (
 	"fmt"
-	iritaConfig "gitlab.bianjie.ai/irita/irita/config"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/client/lcd"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/client/rpc"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/client/types"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/keys"
 	commontypes "gitlab.bianjie.ai/irita/irita-sdk-go/types"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/util/constant"
+	iritaConfig "gitlab.bianjie.ai/irita/irita/config"
 )
 
 type TxClient interface {

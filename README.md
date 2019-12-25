@@ -18,7 +18,7 @@ Go version above 1.13
 
 Add "gitlab.bianjie.ai/irita/irita-sdk-go" dependency into your go.mod file.
 
-```go
+```
 require (
 	gitlab.bianjie.ai/irita/irita-sdk-go latest
 )
@@ -32,7 +32,7 @@ Before start using API, you should construct a Key Manager to help sign the tran
 
 Wo provide follow construct functions to generate Key Mange(other keyManager will coming soon):
 
-```go
+```
 NewKeyStoreKeyManager(file string, auth string) (KeyManager, error)
 ```
 
@@ -40,7 +40,7 @@ Examples:
 
 for keyStore:
 
-```go
+```
 func TestNewKeyStoreKeyManager(t *testing.T) {
 	file := "./ks_1234567890.json"
 	if km, err := NewKeyStoreKeyManager(file, "1234567890"); err != nil {
@@ -61,7 +61,7 @@ func TestNewKeyStoreKeyManager(t *testing.T) {
 
 ## Init Client
 
-```go
+```
 import (
 	"gitlab.bianjie.ai/irita/irita-sdk-go/client"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/types"
@@ -84,5 +84,3 @@ after you init irisnetClient, it include follow clients which you can use:
 - `liteClient`: lcd client for IRITA
 - `rpcClient`: query IRITA info by rpc
 - `txClient`: send transaction on IRITA
-
->>>>>>> kf-develop
