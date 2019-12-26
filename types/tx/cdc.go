@@ -23,7 +23,6 @@ func init() {
 	var cdc = codec.New()
 	moduleBasics.RegisterCodec(cdc)
 	sdk.RegisterCodec(cdc)
-	moduleBasics.RegisterCodec(cdc)
 	codec.RegisterCrypto(cdc)
 
 	Cdc = cdc

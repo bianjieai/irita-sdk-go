@@ -1,22 +1,25 @@
 package keys
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestNewKeyStoreKeyManager(t *testing.T) {
-	file := "./ks_1234567890.json"
-	if km, err := NewKeyStoreKeyManager(file, "1234567890"); err != nil {
+func TestRecoverFromMnemonic(t *testing.T) {
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount("faa", "fap")
+	config.Seal()
+
+	km := keyManager{}
+
+	mnemonic := "situate wink injury solar orange ugly behave elite roast ketchup sand elephant monitor inherit canal menu demand hockey dose clap illness hurdle elbow high"
+	password := ""
+	fullPath := "44'/118'/0'/0/0"
+
+	if err := km.recoverFromMnemonic(mnemonic, password, fullPath); err != nil {
 		t.Fatal(err)
 	} else {
-		msg := []byte("hello world")
-		signature, err := km.GetPrivKey().Sign(msg)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Log(km.GetAddr().String())
-
-		assert.Equal(t, km.GetPrivKey().PubKey().VerifyBytes(msg, signature), true)
+		assert.Equal(t, "faa1s4p3m36dcw5dga5z8hteeznvd8827ulhmm857j", km.addr.String())
 	}
 }

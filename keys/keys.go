@@ -1,14 +1,13 @@
 package keys
 
 import (
-	"encoding/json"
-	"fmt"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/hd"
 	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/go-bip39"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/types/tx"
-	"io/ioutil"
 )
 
 type KeyManager interface {
@@ -60,37 +59,25 @@ func (k *keyManager) makeSignature(msg tx.StdSignMsg) (sig auth.StdSignature, er
 	}, nil
 }
 
-func (k *keyManager) recoveryFromKeyStore(keystoreFile string, auth string) error {
-	if auth == "" {
-		return fmt.Errorf("Password is missing ")
-	}
-	keyJson, err := ioutil.ReadFile(keystoreFile)
+func (k *keyManager) recoverFromMnemonic(mnemonic, password, fullPath string) error {
+	seed, err := bip39.NewSeedWithErrorChecking(mnemonic, password)
 	if err != nil {
 		return err
 	}
-	var encryptedKey EncryptedKeyJSON
-	err = json.Unmarshal(keyJson, &encryptedKey)
+
+	masterPriv, chainCode := hd.ComputeMastersFromSeed(seed)
+	privateKey, err := hd.DerivePrivateKeyForPath(masterPriv, chainCode, fullPath)
+
 	if err != nil {
 		return err
 	}
-	keyBytes, err := decryptKey(&encryptedKey, auth)
-	if err != nil {
-		return err
-	}
-	if len(keyBytes) != 32 {
-		return fmt.Errorf("Len of Keybytes is not equal to 32 ")
-	}
-	var keyBytesArray [32]byte
-	copy(keyBytesArray[:], keyBytes[:32])
-	privKey := secp256k1.PrivKeySecp256k1(keyBytesArray)
-	addr := types.AccAddress(privKey.PubKey().Address())
-	k.addr = addr
-	k.privKey = privKey
+
+	k.privKey = secp256k1.PrivKeySecp256k1(privateKey)
+	k.addr = types.AccAddress(k.privKey.PubKey().Address())
 	return nil
 }
 
-func NewKeyStoreKeyManager(file string, auth string) (KeyManager, error) {
-	k := keyManager{}
-	err := k.recoveryFromKeyStore(file, auth)
-	return &k, err
+func NewKeyManagerFromMnemonic(mnemonic, password, fullPath string) (KeyManager, error) {
+	km := keyManager{}
+	return &km, km.recoverFromMnemonic(mnemonic, password, fullPath)
 }
