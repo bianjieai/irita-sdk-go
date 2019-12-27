@@ -6,7 +6,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/client/types"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/types/tx"
-	"gitlab.bianjie.ai/irita/irita-sdk-go/util"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/util/constant"
 	"gitlab.bianjie.ai/irita/irita/modules/service"
 )
@@ -63,20 +62,20 @@ func (c *client) PostServiceRequest(request ServiceRequest, memo string, commit 
 	} else {
 		input = bytes
 	}
-	serviceFee := []sdk.Coin{
-		{
-			Denom:  constant.TxDefaultFeeDenom,
-			Amount: sdk.NewInt(1000000000000000000),
-		},
+
+	serviceFee, err := types.ParseCoins(r.ServiceFee)
+	if err != nil {
+		return result, err
 	}
+
 	msg := buildServiceRequestMsg(r.DefChainId, r.ServiceName, r.BindChainId, c.chainId,
 		consumer, provider, r.MethodId, input, serviceFee, r.Profiling)
 
 	// validate and sign stdMsg
 	stdSignMsg := tx.StdSignMsg{
 		ChainID:       c.chainId,
-		AccountNumber: uint64(util.StrToInt64IgnoreErr(account.Value.AccountNumber)),
-		Sequence:      uint64(util.StrToInt64IgnoreErr(account.Value.Sequence)),
+		AccountNumber: account.Value.AccountNumber,
+		Sequence:      account.Value.Sequence,
 		Fee:           auth.NewStdFee(constant.TxDefaultGas, fee),
 		Msgs:          []sdk.Msg{msg},
 		Memo:          memo,

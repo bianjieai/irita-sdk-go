@@ -12,19 +12,21 @@ import (
 )
 
 func initSvcRequestKM() TxClient {
-	km, err := keys.NewKeyStoreKeyManager("./ks_1234567890.json", "1234567890")
+	mnemonic := "situate wink injury solar orange ugly behave elite roast ketchup sand elephant monitor inherit canal menu demand hockey dose clap illness hurdle elbow high"
+	password := ""
+	fullPath := "44'/118'/0'/0/0"
+	km, err := keys.NewKeyManagerFromMnemonic(mnemonic, password, fullPath)
 	if err != nil {
 		panic(err)
 	}
-	basicClient := basic.NewClient("http://irisnet-lcd.dev.rainbow.one")
+	basicClient := basic.NewClient("http://localhost:1317")
 	lite := lcd.NewClient(basicClient)
-	rpcClient := rpc.NewClient("tcp://192.168.150.31:26657")
+	rpcClient := rpc.NewClient("tcp://localhost:26657")
 
-	c, err := NewClient("rainbow-dev", commontypes.Testnet, km, lite, rpcClient)
+	c, err := NewClient("irita-l1", commontypes.Testnet, km, lite, rpcClient)
 	if err != nil {
 		panic(err)
 	}
-
 	return c
 }
 
@@ -35,12 +37,12 @@ func TestClient_PostServiceRequest(t *testing.T) {
 	requestData := hex.EncodeToString([]byte(data))
 	request := ServiceRequest{
 		ServiceName: "Material_Accept_Confirmation",
-		BindChainId: "rainbow-dev",
-		DefChainId:  "rainbow-dev",
+		BindChainId: "irita-l1",
+		DefChainId:  "irita-l1",
 		MethodId:    1,
-		Provider:    "faa1mqvszlr9jfjw7dm5h9y8hf9yda2fg62uu4gxuk",
-		Consumer:    "faa1t7jpg8pue93nzuxa6cr30ax0n0hu99p43mk6am",
-		ServiceFee:  "1iris",
+		Provider:    "faa1q2mevumtwk9vw2ejq6drm2f098ehaapwkye38a",
+		Consumer:    "faa1s4p3m36dcw5dga5z8hteeznvd8827ulhmm857j",
+		ServiceFee:  "1irita",
 		Data:        requestData,
 		Profiling:   false,
 	}

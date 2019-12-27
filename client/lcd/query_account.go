@@ -7,32 +7,37 @@ import (
 )
 
 type (
+	AccQueryResult struct {
+		Height string      `json:"height"`
+		Result AccountInfo `json:"result"`
+	}
 	AccountInfo struct {
 		Type  string           `json:"type"`
 		Value AccountInfoValue `json:"value"`
 	}
 
 	AccountInfoValue struct {
-		AccountNumber string       `json:"account_number"`
+		AccountNumber uint64       `json:"account_number"`
 		Address       string       `json:"address"`
-		Sequence      string       `json:"sequence"`
+		Sequence      uint64       `json:"sequence"`
 		Coins         []types.Coin `json:"coins"`
 	}
 )
 
 func (c *client) QueryAccount(address string) (AccountInfo, error) {
 	var (
-		accountInfo AccountInfo
+		accQueryResult AccQueryResult
+		accountInfo    AccountInfo
 	)
 	path := fmt.Sprintf(UriQueryAccount, address)
 
 	if _, body, err := c.httpClient.Get(path, nil); err != nil {
 		return accountInfo, err
 	} else {
-		if err := json.Unmarshal(body, &accountInfo); err != nil {
+		if err := json.Unmarshal(body, &accQueryResult); err != nil {
 			return accountInfo, err
 		} else {
-			return accountInfo, nil
+			return accQueryResult.Result, nil
 		}
 	}
 }

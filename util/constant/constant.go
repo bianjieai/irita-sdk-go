@@ -5,9 +5,10 @@ const (
 	TxBroadcastTypeAsync  = "async"
 	TxBroadcastTypeCommit = "commit"
 
-	TxDefaultGas       = 100000
-	TxDefaultFeeAmount = 600000000000000000
-	TxDefaultFeeDenom  = "iris-atto"
+	TxDefaultGas = 200000
+
+	TxDefaultFeeDenom  = ""
+	TxDefaultFeeAmount = 0
 
 	NetworkTypeMainnet = "mainnet"
 	NetworkTypeTestnet = "testnet"

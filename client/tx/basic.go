@@ -2,6 +2,7 @@ package tx
 
 import (
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/client/lcd"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/client/rpc"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/client/types"
@@ -38,6 +39,13 @@ func NewClient(chainId string, networkType commontypes.NetworkType, keyManager k
 		return &client{}, fmt.Errorf("invalid networktype, %d", networkType)
 	}
 	iritaConfig.SetNetworkType(network)
+
+	config := sdk.GetConfig()
+	iritaConf := iritaConfig.GetConfig()
+	config.SetBech32PrefixForAccount(iritaConf.GetBech32AccountAddrPrefix(), iritaConf.GetBech32AccountPubPrefix())
+	config.SetBech32PrefixForValidator(iritaConf.GetBech32ValidatorAddrPrefix(), iritaConf.GetBech32ValidatorPubPrefix())
+	config.SetBech32PrefixForConsensusNode(iritaConf.GetBech32ConsensusAddrPrefix(), iritaConf.GetBech32ConsensusPubPrefix())
+	config.Seal()
 
 	return &client{
 		chainId:    chainId,

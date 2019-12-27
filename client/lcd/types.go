@@ -1,5 +1,5 @@
 package lcd
 
 const (
-	UriQueryAccount = "/bank/accounts/%s"
+	UriQueryAccount = "/auth/accounts/%s"
 )

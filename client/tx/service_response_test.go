@@ -12,27 +12,29 @@ import (
 )
 
 func initSvcResponseKM() TxClient {
-	km, err := keys.NewKeyStoreKeyManager("./ks_manifest_1234567890.json", "1234567890")
+	mnemonic := "situate wink injury solar orange ugly behave elite roast ketchup sand elephant monitor inherit canal menu demand hockey dose clap illness hurdle elbow high"
+	password := ""
+	fullPath := "44'/118'/0'/0/0"
+	km, err := keys.NewKeyManagerFromMnemonic(mnemonic, password, fullPath)
 	if err != nil {
 		panic(err)
 	}
-	basicClient := basic.NewClient("http://irisnet-lcd.dev.rainbow.one")
+	basicClient := basic.NewClient("http://localhost:1317")
 	lite := lcd.NewClient(basicClient)
-	rpcClient := rpc.NewClient("tcp://192.168.150.31:26657")
+	rpcClient := rpc.NewClient("tcp://localhost:26657")
 
-	c, err := NewClient("rainbow-dev", commontypes.Testnet, km, lite, rpcClient)
+	c, err := NewClient("irita-l1", commontypes.Testnet, km, lite, rpcClient)
 	if err != nil {
 		panic(err)
 	}
-
 	return c
 }
 
 func TestClient_PostServiceResponse(t *testing.T) {
 	c := initSvcResponseKM()
 	response := ServiceResponse{
-		ReqChainId: "rainbow-dev",
-		RequestId:  "1194337-1194237-0",
+		ReqChainId: "irita-l1",
+		RequestId:  "6527-6427-0",
 		Provider:   "faa1mqvszlr9jfjw7dm5h9y8hf9yda2fg62uu4gxuk",
 		Data:       hex.EncodeToString([]byte("service call response")),
 		ErrorMsg:   "",

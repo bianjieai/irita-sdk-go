@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/client/types"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/types/tx"
-	"gitlab.bianjie.ai/irita/irita-sdk-go/util"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/util/constant"
 )
 
@@ -26,37 +25,23 @@ func (c *client) SendToken(receiver string, coins []types.Coin, memo string, com
 	if err != nil {
 		return result, err
 	}
-	msg := buildBankSendMsg(from, to, sdkCoins)
+	msg := buildBankMultiSendMsg(from, to, sdkCoins)
 
 	account, err := c.liteClient.QueryAccount(from.String())
 	if err != nil {
 		return result, err
 	}
 
-	//  check balance is enough
-	amount := getCoin(account.Value.Coins, constant.TxDefaultFeeDenom)
-
-	totalfee := sdk.NewInt(constant.TxDefaultFeeAmount)
-	for _, val := range sdkCoins {
-		if val.Denom == constant.TxDefaultFeeDenom {
-			totalfee = totalfee.Add(val.Amount)
-		}
-	}
-
-	if amount.Amount.LT(totalfee) {
-		return result, fmt.Errorf("account balance is not enough")
-	}
-
 	fee := sdk.Coins{
 		{
-			Denom:  constant.TxDefaultFeeDenom,
-			Amount: sdk.NewInt(constant.TxDefaultFeeAmount),
+			Denom:  "",
+			Amount: sdk.NewInt(0),
 		},
 	}
 	stdSignMsg := tx.StdSignMsg{
 		ChainID:       c.chainId,
-		AccountNumber: uint64(util.StrToInt64IgnoreErr(account.Value.AccountNumber)),
-		Sequence:      uint64(util.StrToInt64IgnoreErr(account.Value.Sequence)),
+		AccountNumber: account.Value.AccountNumber,
+		Sequence:      account.Value.Sequence,
 		Fee:           auth.NewStdFee(constant.TxDefaultGas, fee),
 		Msgs:          []sdk.Msg{msg},
 		Memo:          memo,
@@ -105,26 +90,8 @@ func buildCoins(icoins []types.Coin) (sdk.Coins, error) {
 	return coins, nil
 }
 
-func getCoin(icoins []types.Coin, denom string) sdk.Coin {
-	for _, vcoin := range icoins {
-		if vcoin.Denom == denom {
-			amount, ok := sdk.NewIntFromString(vcoin.Amount)
-			if ok {
-				return sdk.Coin{
-					Denom:  vcoin.Denom,
-					Amount: amount,
-				}
-			}
-
-		}
-	}
-	return sdk.Coin{}
-}
-
-// buildBankSendMsg builds the sending coins msg
-func buildBankSendMsg(from sdk.AccAddress, to sdk.AccAddress, coins sdk.Coins) bank.MsgMultiSend {
-	input := bank.NewInput(from, coins)
-	output := bank.NewOutput(to, coins)
-	msg := bank.NewMsgMultiSend([]bank.Input{input}, []bank.Output{output})
+// buildBankMultiSendMsg builds the sending coins msg
+func buildBankMultiSendMsg(from sdk.AccAddress, to sdk.AccAddress, coins sdk.Coins) bank.MsgSend {
+	msg := bank.NewMsgSend(from, to, coins)
 	return msg
 }
