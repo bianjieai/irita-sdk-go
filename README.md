@@ -38,23 +38,25 @@ NewKeyStoreKeyManager(file string, auth string) (KeyManager, error)
 
 Examples:
 
-for keyStore:
+for mnemonic:
 
 ```
-func TestNewKeyStoreKeyManager(t *testing.T) {
-	file := "./ks_1234567890.json"
-	if km, err := NewKeyStoreKeyManager(file, "1234567890"); err != nil {
+func TestRecoverFromMnemonic(t *testing.T) {
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount("faa", "fap")
+	config.Seal()
+
+	km := keyManager{}
+
+	mnemonic := "situate wink injury solar orange ugly behave elite roast ketchup sand elephant monitor inherit canal menu demand hockey dose clap illness hurdle elbow high"
+	password := ""
+	fullPath := "44'/118'/0'/0/0"
+
+	if err := km.recoverFromMnemonic(mnemonic, password, fullPath); err != nil {
 		t.Fatal(err)
 	} else {
-		msg := []byte("hello world")
-		signature, err := km.GetPrivKey().Sign(msg)
-		if err != nil {
-			t.Fatal(err)
-		}
+		//assert.Equal(t, "faa1s4p3m36dcw5dga5z8hteeznvd8827ulhmm857j", km.addr.String())
 		t.Log(km.GetAddr().String())
-
-
-		assert.Equal(t, km.GetPrivKey().PubKey().VerifyBytes(msg, signature), true)
 	}
 }
 ```
@@ -70,8 +72,8 @@ var (
 	baseUrl, nodeUrl string
 	networkType = types.Testnet
 )
-km, _ := keys.NewKeyStoreKeyManager("../keys/ks_1234567890.json", "1234567890")
-c, _ := client.NewIRISnetClient(baseUrl, nodeUrl, networkType, km)
+km, _ := keys.NewKeyManagerFromMnemonic(mnemonic, password, fullPath)
+c, _ := client.NewIRITAClient(baseUrl, nodeUrl, networkType, km)
 ```
 
 Note:
@@ -83,4 +85,4 @@ after you init irisnetClient, it include follow clients which you can use:
 
 - `liteClient`: lcd client for IRITA
 - `rpcClient`: query IRITA info by rpc
-- `txClient`: send transaction on IRITA
+- `txClient`: send transaction to IRITA
