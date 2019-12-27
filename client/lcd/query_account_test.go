@@ -17,7 +17,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestClient_QueryAccount(t *testing.T) {
-	address := "faa1gq9ccwgx92lzxzukmx8lkm8xlpangwtqec5u2x"
+	address := "faa16y5ylrlnd9s3jc6xvg8y4k3mt3t84h5zgqcdn2"
 	if res, err := c.QueryAccount(address); err != nil {
 		t.Fatal(err)
 	} else {

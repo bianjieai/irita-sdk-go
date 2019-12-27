@@ -16,6 +16,9 @@ type TxClient interface {
 	SendToken(receiver string, coins []types.Coin, memo string, commit bool) (types.BroadcastTxResult, error)
 	PostServiceRequest(request ServiceRequest, memo string, commit bool) (types.BroadcastTxResult, error)
 	PostServiceResponse(response ServiceResponse, memo string, commit bool) (types.BroadcastTxResult, error)
+	MintNFT(req NFTMintReq, memo string, commit bool) (types.BroadcastTxResult, error)
+	EditNFT(req NFTEditReq, memo string, commit bool) (types.BroadcastTxResult, error)
+	TransferNFT(req NFTTransferReq, memo string, commit bool) (types.BroadcastTxResult, error)
 }
 
 type client struct {

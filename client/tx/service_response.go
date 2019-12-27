@@ -3,10 +3,7 @@ package tx
 import (
 	"encoding/hex"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
 	"gitlab.bianjie.ai/irita/irita-sdk-go/client/types"
-	"gitlab.bianjie.ai/irita/irita-sdk-go/types/tx"
-	"gitlab.bianjie.ai/irita/irita-sdk-go/util/constant"
 	"gitlab.bianjie.ai/irita/irita/modules/service"
 )
 
@@ -31,14 +28,6 @@ func (c *client) PostServiceResponse(response ServiceResponse, memo string, comm
 		return result, err
 	}
 
-	// set tx fee
-	fee := sdk.Coins{
-		{
-			Denom:  constant.TxDefaultFeeDenom,
-			Amount: sdk.NewInt(constant.TxDefaultFeeAmount),
-		},
-	}
-
 	// build stdMsg
 	r := response
 	if providerAcc, err := sdk.AccAddressFromBech32(r.Provider); err != nil {
@@ -55,36 +44,9 @@ func (c *client) PostServiceResponse(response ServiceResponse, memo string, comm
 		return result, err
 	}
 	msg := buildServiceResponseMsg(r.ReqChainId, r.RequestId, provider, output, errMsg)
+	stdSignMsg := buildStdSignMsg(c.chainId, memo, account, msg)
 
-	// validate and sign stdMsg
-	stdSignMsg := tx.StdSignMsg{
-		ChainID:       c.chainId,
-		AccountNumber: account.Value.AccountNumber,
-		Sequence:      account.Value.Sequence,
-		Fee:           auth.NewStdFee(constant.TxDefaultGas, fee),
-		Msgs:          []sdk.Msg{msg},
-		Memo:          memo,
-	}
-
-	for _, m := range stdSignMsg.Msgs {
-		if err := m.ValidateBasic(); err != nil {
-			return result, err
-		}
-	}
-
-	txBytes, err := c.keyManager.Sign(stdSignMsg)
-	if err != nil {
-		return result, err
-	}
-
-	var txBroadcastType string
-	if commit {
-		txBroadcastType = constant.TxBroadcastTypeCommit
-	} else {
-		txBroadcastType = constant.TxBroadcastTypeSync
-	}
-
-	return c.rpcClient.BroadcastTx(txBroadcastType, txBytes)
+	return signAndBroadcastTx(c, stdSignMsg, commit)
 }
 
 func buildServiceResponseMsg(reqChainID string, requestId string,

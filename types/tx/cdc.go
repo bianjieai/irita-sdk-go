@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/irisnet/modules/incubator/nft"
 	"github.com/tendermint/go-amino"
 	"gitlab.bianjie.ai/irita/irita/modules/service"
 )
@@ -16,6 +17,7 @@ var (
 		auth.AppModuleBasic{},
 		bank.AppModuleBasic{},
 		service.AppModuleBasic{},
+		nft.AppModuleBasic{},
 	)
 )
 

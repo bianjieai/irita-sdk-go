@@ -1,21 +1,21 @@
 package types
 
 import (
-	"fmt"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
-	"regexp"
+	"gitlab.bianjie.ai/irita/irita-sdk-go/util/constant"
 )
 
 var (
-	reDnmString = `[a-z][a-z0-9]{2,15}`
-	reAmt       = `[[:digit:]]+`
-	reDecAmt    = `[[:digit:]]*\.[[:digit:]]+`
-	reSpc       = `[[:space:]]*`
-	reDnm       = regexp.MustCompile(fmt.Sprintf(`^%s$`, reDnmString))
-	reCoin      = regexp.MustCompile(fmt.Sprintf(`^(%s)%s(%s)$`, reAmt, reSpc, reDnmString))
-	reDecCoin   = regexp.MustCompile(fmt.Sprintf(`^(%s)%s(%s)$`, reDecAmt, reSpc, reDnmString))
+	DefaultTxFee = auth.NewStdFee(constant.TxDefaultGas,
+		[]sdkTypes.Coin{
+			{
+				Denom:  constant.TxDefaultFeeDenom,
+				Amount: sdkTypes.NewInt(constant.TxDefaultFeeAmount),
+			},
+		})
 )
 
 type (
