@@ -11,7 +11,7 @@ type (
 		Denom     string `json:"denom"`
 		ID        string `json:"id"`
 		Recipient string `json:"recipient"`
-		TokenURI  string `json:"tokenURI"`
+		TokenURI  string `json:"tokenURI"` // use "[do-not-modify]" will not change tokenURI when transfer nft
 	}
 )
 

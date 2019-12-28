@@ -11,9 +11,9 @@ import (
 )
 
 func initNFTKM() TxClient {
-	mnemonic := "situate wink injury solar orange ugly behave elite roast ketchup sand elephant monitor inherit canal menu demand hockey dose clap illness hurdle elbow high"
+	mnemonic := "crop ecology obey stone paper find eye accuse rely text sweet present sort prosper reform drop grow wave exchange garment draft amateur away law"
 	password := ""
-	fullPath := "44'/118'/0'/0/0"
+	fullPath := "44'/118'/0'/0/1"
 	km, err := keys.NewKeyManagerFromMnemonic(mnemonic, password, fullPath)
 	if err != nil {
 		panic(err)
