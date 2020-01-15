@@ -1,9 +1,9 @@
 package tx
 
 import (
+	"github.com/bianjieai/irita-sdk-go/client/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/irisnet/modules/incubator/nft"
-	"github.com/bianjieai/irita-sdk-go/client/types"
 )
 
 type (

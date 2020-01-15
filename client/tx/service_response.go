@@ -2,8 +2,8 @@ package tx
 
 import (
 	"encoding/hex"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/bianjieai/irita-sdk-go/client/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"gitlab.bianjie.ai/irita/irita/modules/service"
 )
 

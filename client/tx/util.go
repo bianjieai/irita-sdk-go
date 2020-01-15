@@ -1,11 +1,11 @@
 package tx
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/bianjieai/irita-sdk-go/client/lcd"
 	"github.com/bianjieai/irita-sdk-go/client/types"
 	"github.com/bianjieai/irita-sdk-go/types/tx"
 	"github.com/bianjieai/irita-sdk-go/util/constant"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func buildStdSignMsg(chainId, memo string, accInfo lcd.AccountInfo, msg sdk.Msg) tx.StdSignMsg {

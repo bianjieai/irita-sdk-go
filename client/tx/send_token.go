@@ -2,9 +2,9 @@ package tx
 
 import (
 	"fmt"
+	"github.com/bianjieai/irita-sdk-go/client/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/bianjieai/irita-sdk-go/client/types"
 )
 
 func (c *client) SendToken(receiver string, coins []types.Coin, memo string, commit bool) (types.BroadcastTxResult, error) {

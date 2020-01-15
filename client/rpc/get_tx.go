@@ -2,10 +2,10 @@ package rpc
 
 import (
 	"encoding/hex"
+	"github.com/bianjieai/irita-sdk-go/types/tx"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/types"
-	"github.com/bianjieai/irita-sdk-go/types/tx"
 )
 
 type ResultTx struct {

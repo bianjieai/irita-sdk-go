@@ -1,11 +1,11 @@
 package types
 
 import (
+	"github.com/bianjieai/irita-sdk-go/util/constant"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
-	"github.com/bianjieai/irita-sdk-go/util/constant"
 )
 
 var (

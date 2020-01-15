@@ -1,8 +1,8 @@
 package tx
 
 import (
-	"github.com/irisnet/modules/incubator/nft"
 	"github.com/bianjieai/irita-sdk-go/client/types"
+	"github.com/irisnet/modules/incubator/nft"
 )
 
 type (

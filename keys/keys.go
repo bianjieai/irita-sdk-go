@@ -1,13 +1,13 @@
 package keys
 
 import (
+	"github.com/bianjieai/irita-sdk-go/types/tx"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/hd"
 	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/go-bip39"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
-	"github.com/bianjieai/irita-sdk-go/types/tx"
 )
 
 type KeyManager interface {
