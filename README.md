@@ -16,11 +16,11 @@ Go version above 1.13
 
 ## Use go mod(recommend)
 
-Add "gitlab.bianjie.ai/irita/irita-sdk-go" dependency into your go.mod file.
+Add "github.com/bianjieai/irita-sdk-go" dependency into your go.mod file.
 
 ```
 require (
-	gitlab.bianjie.ai/irita/irita-sdk-go latest
+	github.com/bianjieai/irita-sdk-go latest
 )
 ```
 
@@ -65,8 +65,8 @@ func TestRecoverFromMnemonic(t *testing.T) {
 
 ```
 import (
-	"gitlab.bianjie.ai/irita/irita-sdk-go/client"
-	"gitlab.bianjie.ai/irita/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/client"
+	"github.com/bianjieai/irita-sdk-go/types"
 )
 var (
 	baseUrl, nodeUrl string
