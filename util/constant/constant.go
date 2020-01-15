@@ -5,7 +5,7 @@ const (
 	TxBroadcastTypeAsync  = "async"
 	TxBroadcastTypeCommit = "commit"
 
-	TxDefaultGas = 200000
+	TxDefaultGas = 20000000
 
 	TxDefaultFeeDenom  = ""
 	TxDefaultFeeAmount = 0
