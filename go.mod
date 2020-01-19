@@ -11,7 +11,7 @@ module github.com/bianjieai/irita-sdk-go
         github.com/pkg/errors v0.8.1
         github.com/tendermint/go-amino v0.15.1
         github.com/tendermint/tendermint v0.32.7
-        gitlab.bianjie.ai/irita/irita v0.0.0-20191223113456-91809dfedb8b
+        github.com/irita/irita v0.0.0-20191223113456-91809dfedb8b
         gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
         )
 
