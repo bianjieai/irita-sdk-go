@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/irisnet/modules/incubator/nft"
 	"github.com/tendermint/go-amino"
-	"gitlab.bianjie.ai/irita/irita/modules/service"
+	"github.com/bianjieai/irita/modules/service"
 )
 
 var (
