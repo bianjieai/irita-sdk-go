@@ -9,7 +9,7 @@ import (
 	commontypes "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/util/constant"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	iritaConfig "gitlab.bianjie.ai/irita/irita/config"
+	iritaConfig "github.com/bianjieai/irita/config"
 )
 
 type TxClient interface {

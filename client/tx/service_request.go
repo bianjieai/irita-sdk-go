@@ -4,7 +4,7 @@ import (
 	"encoding/hex"
 	"github.com/bianjieai/irita-sdk-go/client/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"gitlab.bianjie.ai/irita/irita/modules/service"
+	"github.com/bianjieai/irita/modules/service"
 )
 
 type ServiceRequest struct {
