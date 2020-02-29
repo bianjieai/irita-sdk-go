@@ -15,11 +15,11 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	if k, err := keys.NewKeyStoreKeyManager("../keys/ks_1234567890.json", "1234567890"); err != nil {
-		panic(err)
-	} else {
-		km = k
-	}
+	//if k, err := keys.NewKeyStoreKeyManager("../keys/ks_1234567890.json", "1234567890"); err != nil {
+	//	panic(err)
+	//} else {
+	//	km = k
+	//}
 	m.Run()
 }
 

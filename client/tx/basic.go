@@ -8,8 +8,8 @@ import (
 	"github.com/bianjieai/irita-sdk-go/keys"
 	commontypes "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/util/constant"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	iritaConfig "github.com/bianjieai/irita/config"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type TxClient interface {
@@ -19,6 +19,7 @@ type TxClient interface {
 	MintNFT(req NFTMintReq, memo string, commit bool) (types.BroadcastTxResult, error)
 	EditNFT(req NFTEditReq, memo string, commit bool) (types.BroadcastTxResult, error)
 	TransferNFT(req NFTTransferReq, memo string, commit bool) (types.BroadcastTxResult, error)
+	CreateRecord(req RecordCreateReq, memo string, commit bool) (types.BroadcastTxResult, error)
 }
 
 type client struct {

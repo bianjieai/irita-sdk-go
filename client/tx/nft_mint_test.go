@@ -20,7 +20,10 @@ func initNFTKM() TxClient {
 	}
 	basicClient := basic.NewClient("http://localhost:1317")
 	lite := lcd.NewClient(basicClient)
-	rpcClient := rpc.NewClient("tcp://localhost:26657")
+	rpcClient, err := rpc.NewClient("tcp://localhost:26657")
+	if err != nil {
+		panic(err)
+	}
 
 	c, err := NewClient("irita-l1", types.Testnet, km, lite, rpcClient)
 	if err != nil {

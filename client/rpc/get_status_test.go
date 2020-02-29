@@ -10,7 +10,12 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	c = NewClient("tcp://35.236.146.181:30657")
+	c1, err := NewClient("tcp://localhost:26657")
+	if err != nil {
+		panic(err)
+	} else {
+		c = c1
+	}
 	m.Run()
 }
 
