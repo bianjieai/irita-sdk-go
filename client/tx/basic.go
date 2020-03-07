@@ -7,8 +7,8 @@ import (
 	"github.com/bianjieai/irita-sdk-go/client/types"
 	"github.com/bianjieai/irita-sdk-go/keys"
 	commontypes "github.com/bianjieai/irita-sdk-go/types"
+	iConfig "github.com/bianjieai/irita-sdk-go/types/config"
 	"github.com/bianjieai/irita-sdk-go/util/constant"
-	iritaConfig "github.com/bianjieai/irita/config"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -42,13 +42,12 @@ func NewClient(chainId string, networkType commontypes.NetworkType, keyManager k
 	default:
 		return &client{}, fmt.Errorf("invalid networktype, %d", networkType)
 	}
-	iritaConfig.SetNetworkType(network)
 
 	config := sdk.GetConfig()
-	iritaConf := iritaConfig.GetConfig()
-	config.SetBech32PrefixForAccount(iritaConf.GetBech32AccountAddrPrefix(), iritaConf.GetBech32AccountPubPrefix())
-	config.SetBech32PrefixForValidator(iritaConf.GetBech32ValidatorAddrPrefix(), iritaConf.GetBech32ValidatorPubPrefix())
-	config.SetBech32PrefixForConsensusNode(iritaConf.GetBech32ConsensusAddrPrefix(), iritaConf.GetBech32ConsensusPubPrefix())
+	addrConf := iConfig.GetIritaAddrPrefixConfig(network)
+	config.SetBech32PrefixForAccount(addrConf.Conf.GetBech32AccountAddrPrefix(), addrConf.Conf.GetBech32AccountPubPrefix())
+	config.SetBech32PrefixForValidator(addrConf.Conf.GetBech32ValidatorAddrPrefix(), addrConf.GetBech32ValidatorPubPrefix())
+	config.SetBech32PrefixForConsensusNode(addrConf.Conf.GetBech32ConsensusAddrPrefix(), addrConf.Conf.GetBech32ConsensusPubPrefix())
 	config.Seal()
 
 	return &client{
