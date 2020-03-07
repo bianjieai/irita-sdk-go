@@ -19,8 +19,8 @@ func GetIritaAddrPrefixConfig(network string) IritaAddrPrefixConfig {
 }
 
 // GetBech32AccountAddrPrefix returns the Bech32 prefix for account address
-func (c IritaAddrPrefixConfig) GetBech32AccountAddrPrefix2() string {
-	return c.Conf.GetBech32AccountPubPrefix()
+func (c IritaAddrPrefixConfig) GetBech32AccountAddrPrefix() string {
+	return c.Conf.GetBech32AccountAddrPrefix()
 }
 
 // GetBech32ValidatorAddrPrefix returns the Bech32 prefix for validator address

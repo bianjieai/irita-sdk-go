@@ -45,9 +45,9 @@ func NewClient(chainId string, networkType commontypes.NetworkType, keyManager k
 
 	config := sdk.GetConfig()
 	addrConf := iConfig.GetIritaAddrPrefixConfig(network)
-	config.SetBech32PrefixForAccount(addrConf.Conf.GetBech32AccountAddrPrefix(), addrConf.Conf.GetBech32AccountPubPrefix())
-	config.SetBech32PrefixForValidator(addrConf.Conf.GetBech32ValidatorAddrPrefix(), addrConf.GetBech32ValidatorPubPrefix())
-	config.SetBech32PrefixForConsensusNode(addrConf.Conf.GetBech32ConsensusAddrPrefix(), addrConf.Conf.GetBech32ConsensusPubPrefix())
+	config.SetBech32PrefixForAccount(addrConf.GetBech32AccountAddrPrefix(), addrConf.GetBech32AccountPubPrefix())
+	config.SetBech32PrefixForValidator(addrConf.GetBech32ValidatorAddrPrefix(), addrConf.GetBech32ValidatorPubPrefix())
+	config.SetBech32PrefixForConsensusNode(addrConf.GetBech32ConsensusAddrPrefix(), addrConf.GetBech32ConsensusPubPrefix())
 	config.Seal()
 
 	return &client{
