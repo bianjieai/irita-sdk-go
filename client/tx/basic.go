@@ -7,9 +7,9 @@ import (
 	"github.com/bianjieai/irita-sdk-go/client/types"
 	"github.com/bianjieai/irita-sdk-go/keys"
 	commontypes "github.com/bianjieai/irita-sdk-go/types"
+	iConfig "github.com/bianjieai/irita-sdk-go/types/config"
 	"github.com/bianjieai/irita-sdk-go/util/constant"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	iritaConfig "github.com/bianjieai/irita/config"
 )
 
 type TxClient interface {
@@ -19,6 +19,7 @@ type TxClient interface {
 	MintNFT(req NFTMintReq, memo string, commit bool) (types.BroadcastTxResult, error)
 	EditNFT(req NFTEditReq, memo string, commit bool) (types.BroadcastTxResult, error)
 	TransferNFT(req NFTTransferReq, memo string, commit bool) (types.BroadcastTxResult, error)
+	CreateRecord(req RecordCreateReq, memo string, commit bool) (types.BroadcastTxResult, error)
 }
 
 type client struct {
@@ -41,13 +42,12 @@ func NewClient(chainId string, networkType commontypes.NetworkType, keyManager k
 	default:
 		return &client{}, fmt.Errorf("invalid networktype, %d", networkType)
 	}
-	iritaConfig.SetNetworkType(network)
 
 	config := sdk.GetConfig()
-	iritaConf := iritaConfig.GetConfig()
-	config.SetBech32PrefixForAccount(iritaConf.GetBech32AccountAddrPrefix(), iritaConf.GetBech32AccountPubPrefix())
-	config.SetBech32PrefixForValidator(iritaConf.GetBech32ValidatorAddrPrefix(), iritaConf.GetBech32ValidatorPubPrefix())
-	config.SetBech32PrefixForConsensusNode(iritaConf.GetBech32ConsensusAddrPrefix(), iritaConf.GetBech32ConsensusPubPrefix())
+	addrConf := iConfig.GetIritaAddrPrefixConfig(network)
+	config.SetBech32PrefixForAccount(addrConf.GetBech32AccountAddrPrefix(), addrConf.GetBech32AccountPubPrefix())
+	config.SetBech32PrefixForValidator(addrConf.GetBech32ValidatorAddrPrefix(), addrConf.GetBech32ValidatorPubPrefix())
+	config.SetBech32PrefixForConsensusNode(addrConf.GetBech32ConsensusAddrPrefix(), addrConf.GetBech32ConsensusPubPrefix())
 	config.Seal()
 
 	return &client{

@@ -18,9 +18,9 @@ type client struct {
 	rpc *rpcclient.HTTP
 }
 
-func NewClient(nodeUrl string) RPCClient {
-	rpc := rpcclient.NewHTTP(nodeUrl, "/websocket")
-	return &client{rpc: rpc}
+func NewClient(nodeUrl string) (RPCClient, error) {
+	rpc, err := rpcclient.NewHTTP(nodeUrl, "/websocket")
+	return &client{rpc: rpc}, err
 }
 
 func (c *client) Block(height int64) (*ctypes.ResultBlock, error) {

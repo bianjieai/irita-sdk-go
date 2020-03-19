@@ -6,7 +6,7 @@ import (
 )
 
 func TestClient_GetTx(t *testing.T) {
-	hash := "7854CD857E686550B679A9BF3118BDA7281A8B9979C215E0AEABACDA8C76B10B"
+	hash := "95FBE21354D2FF9A8827D8103C974968684384B7EEED44BBEA71D90B2C56FA09"
 	if res, err := c.GetTx(hash); err != nil {
 		t.Fatal(err)
 	} else {

@@ -29,7 +29,10 @@ func NewIRITAClient(baseUrl, nodeUrl string, networkType types.NetworkType, km k
 	)
 	basicClient := basic.NewClient(baseUrl)
 	liteClient := lcd.NewClient(basicClient)
-	rpcClient := rpc.NewClient(nodeUrl)
+	rpcClient, err := rpc.NewClient(nodeUrl)
+	if err != nil {
+		return ic, err
+	}
 	status, err := rpcClient.GetStatus()
 	if err != nil {
 		return ic, err
