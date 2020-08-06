@@ -20,6 +20,10 @@ func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) ValidatorI {
 	}
 }
 
+func (v validatorClient) Name() string {
+	return ModuleName
+}
+
 func (v validatorClient) RegisterCodec(cdc *codec.Codec) {
 	registerCodec(cdc)
 }

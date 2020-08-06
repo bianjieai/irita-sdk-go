@@ -21,6 +21,10 @@ func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) NFTI {
 	}
 }
 
+func (nc nftClient) Name() string {
+	return ModuleName
+}
+
 func (nc nftClient) RegisterCodec(cdc *codec.Codec) {
 	registerCodec(cdc)
 }
