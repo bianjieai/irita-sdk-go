@@ -1,88 +1,103 @@
-# IRITA Network Go SDK
+# IRITA Go SDK
 
-IRITA Network Go SDK provide a within warapper around the IRITA LCD API, in addition to creating and submitting different transaction.
-It includes the following core components:
+IRITA GO SDK makes a simple package of API provided by IRITA Chain, which provides great convenience for users to quickly develop applications based on IRITA.
 
-- **client**: provide httpClient, LiteClient, RpcClient and TxClient for query or send transaction on IRITA
-- **keys**: implement KeyManage to manage private key and accounts
-- **types**: common types
-- **util**: define constant and common functions
+## install
 
-# Install
+### Requirement
 
-## Requirement
+ - Go version above 1.14.0
+ - Environment variables `export GOPRIVATE=gitlab.bianjie.ai`
 
-Go version above 1.13
+### Use Go Mod
 
-## Use go mod(recommend)
-
-Add "github.com/bianjieai/irita-sdk-go" dependency into your go.mod file.
-
-```
+```text
 require (
-	github.com/bianjieai/irita-sdk-go latest
+    github.com/bianjieai/irita-sdk-go latest
 )
 ```
 
-# Usage
+## Usage
 
-## Key Manager
+### Init Client
 
-Before start using API, you should construct a Key Manager to help sign the transaction msg or verify signature. Key Manager is an Identity Manger to define who you are in the IRITA
+The initialization SDK code is as follows:
 
-Wo provide follow construct functions to generate Key Mange(other keyManager will coming soon):
-
+```go
+options := []types.Option{
+    types.KeyDAOOption(store.NewMemory(nil)),
+    types.TimeoutOption(10),
+}
+cfg, err := types.NewClientConfig(nodeURI, chainID, options...)
+if err != nil {
+    panic(err)
+}
+client := sdk.NewIRITAClient(cfg)
 ```
-NewKeyStoreKeyManager(file string, auth string) (KeyManager, error)
+
+The `ClientConfig` component mainly contains the parameters used in the SDK, the specific meaning is shown in the table below
+
+| Iterm      | Type          | Description                                                                                           |
+| ---------- | ------------- | ----------------------------------------------------------------------------------------------------- |
+| NodeURI    | string        | The RPC address of the irita node connected to the SDK, for example: localhost: 26657                 |
+| ChainID    | string        | ChainID of irita, for example: `irita`                                                                |
+| Gas        | uint64        | The maximum gas to be paid for the transaction, for example: `20000`                                  |
+| Fee        | DecCoins      | Transaction fees to be paid for transactions                                                          |
+| KeyDAO     | KeyDAO        | Private key management interface, If the user does not provide it, the default `LevelDB` will be used |
+| Mode       | enum          | Transaction broadcast mode, value: `Sync`,`Async`, `Commit`                                           |
+| Algo       | enum          | Private key generation algorithm(`sm2`,`secp256k1`)                                                   |
+| Timeout    | time.Duration | Transaction timeout, for example: `5s`                                                                |
+| Level      | string        | Log output level, for example: `info`                                                                 |
+| MaxTxBytes | uint64        | The maximum number of transaction bytes supported by the connected node, default: `1073741824`(5M)    |
+
+If you want to use `SDK` to send a transfer transaction, the example is as follows:
+
+```go
+coins, err := types.ParseDecCoins("100point")
+to := "caa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4em9njf5"
+baseTx := types.BaseTx{
+    From:     "username",
+    Gas:      20000,
+    Memo:     "test",
+    Mode:     types.Commit,
+    Password: "password",
+}
+
+result, err := client.Bank.Send(to, coins, baseTx)
 ```
 
-Examples:
+**Note**: If you use the relevant API for sending transactions, you should implement the `KeyDAO` interface. 
 
-for mnemonic:
+### KeyDAO
 
-```
-func TestRecoverFromMnemonic(t *testing.T) {
-	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount("faa", "fap")
-	config.Seal()
+ The interface definition is as follows:
 
-	km := keyManager{}
+```go
+// KeyInfo saves the basic information of the key
+type KeyInfo struct {
+	Name         string `json:"name"`
+	PubKey       []byte `json:"pubkey"`
+	PrivKeyArmor string `json:"priv_key_armor"`
+	Algo         string `json:"algo"`
+}
 
-	mnemonic := "situate wink injury solar orange ugly behave elite roast ketchup sand elephant monitor inherit canal menu demand hockey dose clap illness hurdle elbow high"
-	password := ""
-	fullPath := "44'/118'/0'/0/0"
+type KeyDAO interface {
+	// Write will use user password to encrypt data and save to file, the file name is user name
+	Write(name, password string, store KeyInfo) error
 
-	if err := km.recoverFromMnemonic(mnemonic, password, fullPath); err != nil {
-		t.Fatal(err)
-	} else {
-		//assert.Equal(t, "faa1s4p3m36dcw5dga5z8hteeznvd8827ulhmm857j", km.addr.String())
-		t.Log(km.GetAddr().String())
-	}
+	// Read will read encrypted data from file and decrypt with user password
+	Read(name, password string) (KeyInfo, error)
+
+	// Delete will delete user data and use user password to verify permissions
+	Delete(name, password string) error
+
+	// Has returns whether the specified user name exists
+	Has(name string) bool
 }
 ```
-
-## Init Client
-
-```
-import (
-	"github.com/bianjieai/irita-sdk-go/client"
-	"github.com/bianjieai/irita-sdk-go/types"
-)
-var (
-	baseUrl, nodeUrl string
-	networkType = types.Testnet
-)
-km, _ := keys.NewKeyManagerFromMnemonic(mnemonic, password, fullPath)
-c, _ := client.NewIRITAClient(baseUrl, nodeUrl, networkType, km)
-```
-
-Note:
-- `baseUrl`: should be lcd endpoint if you want to use liteClient
-- `nodeUrl`: should be irisnet node endpoint, format is `tcp://host:port`
-- `networkType`: `testnet` or `mainnet`
-
-after you init irisnetClient, it include follow clients which you can use:
-
-- `liteClient`: lcd client for IRITA
-- `rpcClient`: query IRITA info by rpc
-- `txClient`: send transaction to IRITA
+There are three different ways to implement the keyDAO interface in the SDK:
+ - Based on levelDB(`LevelDBDAO`)
+ - Based on local file system(`FileDAO`)
+ - Based on memory(`MemoryDAO`)
+ 
+ Located under package `types/store`

@@ -1,0 +1,1 @@
+docker run -d -it --rm -p 26657:26657 --name sdk-test irita-sdk-go
