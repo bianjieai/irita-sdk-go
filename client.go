@@ -1,6 +1,7 @@
 package sdk
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
@@ -22,11 +23,13 @@ import (
 )
 
 type IRITAClient struct {
-	logger *log.Logger
+	logger            *log.Logger
+	cdc               *codec.Codec
+	appCodec          *std.Codec
+	interfaceRegistry cdctypes.InterfaceRegistry
+	moduleManager     map[string]types.Module
 
-	types.WSClient
-	types.TxManager
-	types.TokenConvert
+	types.BaseClient
 
 	Token     token.TokenI
 	Record    record.RecordI
@@ -61,10 +64,11 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 	identityClient := identity.NewClient(baseClient, appCodec)
 
 	client := &IRITAClient{
-		logger:       baseClient.Logger(),
-		WSClient:     baseClient,
-		TxManager:    baseClient,
-		TokenConvert: baseClient,
+		logger:            baseClient.Logger(),
+		cdc:               cdc,
+		appCodec:          appCodec,
+		interfaceRegistry: interfaceRegistry,
+		BaseClient:        baseClient,
 
 		Bank:      bankClient,
 		Token:     tokenClient,
@@ -78,7 +82,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 		Identity:  identityClient,
 	}
 
-	client.RegisterModule(cdc, interfaceRegistry,
+	client.RegisterModule(
 		bankClient,
 		tokenClient,
 		recordClient,
@@ -96,10 +100,31 @@ func (s *IRITAClient) SetOutput(w io.Writer) {
 	s.logger.SetOutput(w)
 }
 
-func (s *IRITAClient) RegisterModule(cdc *codec.Codec, interfaceRegistry cdctypes.InterfaceRegistry, ms ...types.Module) {
+func (s *IRITAClient) Codec() *codec.Codec {
+	return s.cdc
+}
+
+func (s *IRITAClient) AppCodec() *std.Codec {
+	return s.appCodec
+}
+
+func (s *IRITAClient) Manager() types.BaseClient {
+	return s.BaseClient
+}
+
+func (s *IRITAClient) RegisterModule(ms ...types.Module) {
 	for _, m := range ms {
-		m.RegisterCodec(cdc)
-		m.RegisterInterfaceTypes(interfaceRegistry)
+		_, ok := s.moduleManager[m.Name()]
+		if ok {
+			panic(fmt.Sprintf("%s has register", m.Name()))
+		}
+
+		m.RegisterCodec(s.cdc)
+		m.RegisterInterfaceTypes(s.interfaceRegistry)
+		s.moduleManager[m.Name()] = m
 	}
-	cdc.Seal()
+}
+
+func (s *IRITAClient) Module(name string) types.Module {
+	return s.moduleManager[name]
 }

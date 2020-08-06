@@ -18,6 +18,10 @@ func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) IdentityI {
 	}
 }
 
+func (i identityClient) Name() string {
+	return ModuleName
+}
+
 func (i identityClient) RegisterCodec(cdc *codec.Codec) {
 	registerCodec(cdc)
 }
