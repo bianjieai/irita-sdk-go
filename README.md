@@ -7,7 +7,6 @@ IRITA GO SDK makes a simple package of API provided by IRITA Chain, which provid
 ### Requirement
 
  - Go version above 1.14.0
- - Environment variables `export GOPRIVATE=gitlab.bianjie.ai`
 
 ### Use Go Mod
 
