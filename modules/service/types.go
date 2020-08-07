@@ -660,8 +660,8 @@ type serviceBindings []ServiceBinding
 
 func (bs serviceBindings) Convert() interface{} {
 	bindings := make([]QueryServiceBindingResponse, len(bs))
-	for _, binding := range bs {
-		bindings = append(bindings, binding.Convert().(QueryServiceBindingResponse))
+	for i, binding := range bs {
+		bindings[i] = binding.Convert().(QueryServiceBindingResponse)
 	}
 	return bindings
 }
@@ -690,8 +690,8 @@ type requests []Request
 
 func (rs requests) Convert() interface{} {
 	requests := make([]QueryServiceRequestResponse, len(rs))
-	for _, request := range rs {
-		requests = append(requests, request.Convert().(QueryServiceRequestResponse))
+	for i, request := range rs {
+		requests[i] = request.Convert().(QueryServiceRequestResponse)
 	}
 	return requests
 }
@@ -715,8 +715,8 @@ type responses []Response
 
 func (rs responses) Convert() interface{} {
 	responses := make([]QueryServiceResponseResponse, len(rs))
-	for _, response := range rs {
-		responses = append(responses, response.Convert().(QueryServiceResponseResponse))
+	for i, response := range rs {
+		responses[i] = response.Convert().(QueryServiceResponseResponse)
 	}
 	return responses
 }
