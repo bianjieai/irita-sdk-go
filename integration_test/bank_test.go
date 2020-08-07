@@ -65,7 +65,7 @@ func send(s IntegrationTestSuite) {
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), result.Hash)
 
-	resp, err := s.TxManager.QueryTx(result.Hash)
+	resp, err := s.QueryTx(result.Hash)
 	require.NoError(s.T(), err)
 	require.Equal(s.T(), resp.Result.Code, uint32(0))
 	require.Equal(s.T(), resp.Height, result.Height)
