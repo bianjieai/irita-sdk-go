@@ -48,6 +48,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 	cdc := types.NewCodec()
 	interfaceRegistry := cdctypes.NewInterfaceRegistry()
 	appCodec := std.NewAppCodec(cdc, interfaceRegistry)
+	moduleManager := make(map[string]types.Module)
 
 	//create a instance of baseClient
 	baseClient := modules.NewBaseClient(cfg, appCodec)
@@ -68,6 +69,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 		cdc:               cdc,
 		appCodec:          appCodec,
 		interfaceRegistry: interfaceRegistry,
+		moduleManager:     moduleManager,
 		BaseClient:        baseClient,
 
 		Bank:      bankClient,
@@ -93,6 +95,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 		validatorClient,
 		identityClient,
 	)
+
 	return *client
 }
 
