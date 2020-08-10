@@ -1,0 +1,86 @@
+syntax = "proto3";
+package irita.modules.nft;
+
+import "third_party/proto/gogoproto/gogo.proto";
+
+option go_package = "github.com/bianjieai/irita-sdk-go/modules/nft";
+option (gogoproto.goproto_getters_all)  = false;
+
+
+// MsgIssueDenom defines an SDK message for creating a new denom.
+message MsgIssueDenom {
+    option (gogoproto.equal) = true;
+
+    string id = 1 [(gogoproto.moretags) = "yaml:\"id\"", (gogoproto.customname) = "ID"];
+    string name = 2 [(gogoproto.moretags) = "yaml:\"name\""];
+    string schema = 3 [(gogoproto.moretags) = "yaml:\"schema\""];
+    bytes sender = 4 [(gogoproto.casttype) = "github.com/bianjieai/irita-sdk-go/types.AccAddress"];
+}
+
+// MsgTransferNFT defines an SDK message for transfer a NFT to recipient.
+message MsgTransferNFT {
+    option (gogoproto.equal) = true;
+
+    string id = 1 [(gogoproto.moretags) = "yaml:\"id\"", (gogoproto.customname) = "ID"];
+    string denom = 2 [(gogoproto.moretags) = "yaml:\"denom\""];
+    string name = 3 [(gogoproto.moretags) = "yaml:\"name\""];
+    string uri = 4 [(gogoproto.moretags) = "yaml:\"uri\"", (gogoproto.customname) = "URI"];
+    string data = 5 [(gogoproto.moretags) = "yaml:\"data\""];
+    bytes sender = 6 [(gogoproto.casttype) = "github.com/bianjieai/irita-sdk-go/types.AccAddress"];
+    bytes recipient = 7 [(gogoproto.casttype) = "github.com/bianjieai/irita-sdk-go/types.AccAddress"];
+}
+
+// MsgEditNFT defines an SDK message for editing a nft.
+message MsgEditNFT {
+    option (gogoproto.equal) = true;
+
+    string id = 1 [(gogoproto.moretags) = "yaml:\"id\"", (gogoproto.customname) = "ID"];
+    string denom = 2 [(gogoproto.moretags) = "yaml:\"denom\""];
+    string name = 3 [(gogoproto.moretags) = "yaml:\"name\""];
+    string uri = 4 [(gogoproto.moretags) = "yaml:\"uri\"", (gogoproto.customname) = "URI"];
+    string data = 5 [(gogoproto.moretags) = "yaml:\"data\""];
+    bytes sender = 6 [(gogoproto.casttype) = "github.com/bianjieai/irita-sdk-go/types.AccAddress"];
+}
+
+// MsgMintNFT defines an SDK message for creating a new NFT.
+message MsgMintNFT {
+    option (gogoproto.equal) = true;
+
+    string id = 1 [(gogoproto.moretags) = "yaml:\"id\"", (gogoproto.customname) = "ID"];
+    string denom = 2 [(gogoproto.moretags) = "yaml:\"denom\""];
+    string name = 3 [(gogoproto.moretags) = "yaml:\"name\""];
+    string uri = 4 [(gogoproto.moretags) = "yaml:\"uri\"", (gogoproto.customname) = "URI"];
+    string data = 5 [(gogoproto.moretags) = "yaml:\"data\""];
+    bytes sender = 6 [(gogoproto.casttype) = "github.com/bianjieai/irita-sdk-go/types.AccAddress"];
+    bytes recipient = 7 [(gogoproto.casttype) = "github.com/bianjieai/irita-sdk-go/types.AccAddress"];
+}
+
+// MsgBurnNFT defines an SDK message for burn a NFT.
+message MsgBurnNFT {
+    option (gogoproto.equal) = true;
+
+    string id = 1 [(gogoproto.moretags) = "yaml:\"id\"", (gogoproto.customname) = "ID"];
+    string denom = 2 [(gogoproto.moretags) = "yaml:\"denom\""];
+    bytes sender = 3 [(gogoproto.casttype) = "github.com/bianjieai/irita-sdk-go/types.AccAddress"];
+}
+
+// BaseNFT defines a non fungible token.
+message BaseNFT {
+    option (gogoproto.equal) = true;
+
+    string id = 1 [(gogoproto.moretags) = "yaml:\"id\"", (gogoproto.customname) = "ID"];
+    string name = 2 [(gogoproto.moretags) = "yaml:\"name\""];
+    string uri = 3 [(gogoproto.moretags) = "yaml:\"uri\"", (gogoproto.customname) = "URI"];
+    string data = 4 [(gogoproto.moretags) = "yaml:\"data\""];
+    bytes owner = 5 [(gogoproto.casttype) = "github.com/bianjieai/irita-sdk-go/types.AccAddress"];
+}
+
+// Denom defines a type of NFT.
+message Denom {
+    option (gogoproto.equal) = true;
+
+    string id = 1 [(gogoproto.moretags) = "yaml:\"id\"", (gogoproto.customname) = "ID"];
+    string name = 2 [(gogoproto.moretags) = "yaml:\"name\""];
+    string schema = 3 [(gogoproto.moretags) = "yaml:\"schema\""];
+    bytes creator = 4 [(gogoproto.casttype) = "github.com/bianjieai/irita-sdk-go/types.AccAddress"];
+}

@@ -1,0 +1,180 @@
+{
+  "genesis_time": "2020-06-16T08:56:18.031163Z",
+  "chain_id": "test",
+  "consensus_params": {
+    "block": {
+      "max_bytes": "22020096",
+      "max_gas": "-1",
+      "time_iota_ms": "1000"
+    },
+    "evidence": {
+      "max_age_num_blocks": "100000",
+      "max_age_duration": "172800000000000"
+    },
+    "validator": {
+      "pub_key_types": [
+        "sm2"
+      ]
+    }
+  },
+  "app_hash": "",
+  "app_state": {
+    "service": {
+      "params": {
+        "max_request_timeout": "100",
+        "min_deposit_multiple": "200",
+        "min_deposit": [
+          {
+            "denom": "point",
+            "amount": "6000"
+          }
+        ],
+        "service_fee_tax": "0.100000000000000000",
+        "slash_fraction": "0.001000000000000000",
+        "complaint_retrospect": "1296000000000000",
+        "arbitration_time_limit": "432000000000000",
+        "tx_size_limit": "4000",
+        "base_denom": "point"
+      },
+      "definitions": null,
+      "bindings": null,
+      "withdraw_addresses": {},
+      "request_contexts": {}
+    },
+    "token": {
+      "params": {
+        "token_tax_rate": "0.400000000000000000",
+        "issue_token_base_fee": {
+          "denom": "point",
+          "amount": "60000"
+        },
+        "mint_token_fee_ratio": "0.100000000000000000"
+      },
+      "tokens": [
+        {
+          "symbol": "point",
+          "name": "Network staking token ",
+          "min_unit": "point",
+          "initial_supply": "2000000000",
+          "max_supply": "10000000000",
+          "mintable": true,
+          "owner": "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz"
+        }
+      ]
+    },
+    "evidence": {
+      "evidence": []
+    },
+    "slashing": {
+      "params": {
+        "signed_blocks_window": "2",
+        "min_signed_per_window": "0.500000000000000000",
+        "downtime_jail_duration": "1",
+        "slash_fraction_double_sign": "0.050000000000000000",
+        "slash_fraction_downtime": "0.010000000000000000"
+      },
+      "signing_infos": {},
+      "missed_blocks": {}
+    },
+    "auth": {
+      "params": {
+        "max_memo_characters": "256",
+        "tx_sig_limit": "7",
+        "tx_size_cost_per_byte": "10",
+        "sig_verify_cost_ed25519": "590",
+        "sig_verify_cost_secp256k1": "1000",
+        "sig_verify_cost_sm2": "7850"
+      },
+      "accounts": [
+        {
+          "type": "cosmos-sdk/Account",
+          "value": {
+            "address": "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz",
+            "account_number": "1"
+          }
+        }
+      ]
+    },
+    "record": {
+      "records": null
+    },
+    "crisis": {
+      "constant_fee": {
+        "denom": "point",
+        "amount": "1000"
+      }
+    },
+    "validator": {
+      "root_cert": "-----BEGIN CERTIFICATE-----\nMIICcTCCAhegAwIBAgIIIBkDGQAAAEEwCgYIKoEcz1UBg3UwgacxNjA0BgNVBAMM\nLeaxn+iLj+aZuuaFp+aVsOWtl+iupOivgeaciemZkOWFrOWPuFRFU1RfUk9PVDEu\nMCwGA1UECwwl5rGf6IuP5pm65oWn5pWw5a2X6K6k6K+B5pyJ6ZmQ5YWs5Y+4IDEN\nMAsGA1UECgwEdGVzdDEPMA0GA1UEBwwG5Y2X5LqsMRAwDgYDVQQIDAfmsZ/oi48g\nMQswCQYDVQQGEwJDTjAeFw0xOTAzMTkwODE1MDZaFw0zOTAzMTkwODE1MDZaMHYx\nHDAaBgNVBAMME1NtYXJ0Q0FfVGVzdF9TTTJfQ0ExFTATBgNVBAsMDFNtYXJ0Q0Ff\nVGVzdDEQMA4GA1UECgwHU21hcnRDQTEPMA0GA1UEBwwG5Y2X5LqsMQ8wDQYDVQQI\nDAbmsZ/oi48xCzAJBgNVBAYTAkNOMFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAE\nidlqvJzwsCJ/AYP0vRPvhCdIOZwZFoZYm5z5YaO/PMT5wJbEmb9gqEbsQ4CZTZLL\nZR66HAlKBIb7hSW2tjBcQKNdMFswDAYDVR0TBAUwAwEB/zALBgNVHQ8EBAMCAQYw\nHwYDVR0jBBgwFoAUw5LeBwc/a+n3a0Gh6imEZOcPIcIwHQYDVR0OBBYEFFzzuiWM\nwmUM7Gfvvt2Na6der+OsMAoGCCqBHM9VAYN1A0gAMEUCIQCm2eElovfaR+yxCjjZ\nFBiyiEMmoi21nAUfd9SHd9+x5wIgXrRrxp/9gRYvPk3Txd/w07Q/7QFpIpyfK4jq\nXGhv3NA=\n-----END CERTIFICATE-----\n",
+      "params": {
+        "historical_entries": 100
+      },
+      "validators": [
+        {
+          "name": "node0",
+          "pubkey": "icp1ulx45dfpqdnyust0a8ezcdhjjn3cekla9wx9lnpqmer9httzvstx64mns5njq2qe5yg",
+          "certificate": "-----BEGIN CERTIFICATE-----\nMIICkjCCAjegAwIBAgIIICAGFgACiXAwCgYIKoEcz1UBg3UwdjEcMBoGA1UEAwwT\nU21hcnRDQV9UZXN0X1NNMl9DQTEVMBMGA1UECwwMU21hcnRDQV9UZXN0MRAwDgYD\nVQQKDAdTbWFydENBMQ8wDQYDVQQHDAbljZfkuqwxDzANBgNVBAgMBuaxn+iLjzEL\nMAkGA1UEBhMCQ04wHhcNMjAwNjE2MDg1OTMxWhcNMjEwNjE2MDg1OTMzWjCBpTFR\nME8GA1UELQxIYXBpX2NhX1RFU1RfVE9fUEhfUkFfMl9VU0wxM1NTMV9hcGlfY2Ff\nODYwZmM1MTRjNGJjNDkxZGE0NWE3MWUxNWY1Njk0NTQxMQswCQYDVQQGEwJDTjEL\nMAkGA1UECAwCU0gxCzAJBgNVBAcMAlNIMQswCQYDVQQKDAJCSjELMAkGA1UECwwC\nQkoxDzANBgNVBAMMBnp6cUA0MDBZMBMGByqGSM49AgEGCCqBHM9VAYItA0IABGZO\nQW/p8iw28pTjjNv9K4xfzCDeRlutYmQWbVdzhScgI8t+C1byVafj/HLtRgs1BuBd\nxGwpk1JzPbbxMjoMSAujfzB9MAsGA1UdDwQEAwIGwDAMBgNVHRMEBTADAQH/MB0G\nA1UdDgQWBBSlP+hYMOGNI4AKNFlmuV98S1gfETAfBgNVHSMEGDAWgBRc87oljMJl\nDOxn777djWunXq/jrDAgBggqgRzQFAQBAwQUExIzMjAxMjUyMDE4MDkwOTM0MTgw\nCgYIKoEcz1UBg3UDSQAwRgIhAP4oW+uLC1X2X73ZdHlspiolTCIab2tSVJ7G2p39\nBV5XAiEAxnGmfzfeKU/z2ssrvJtsx9roVPe0rWkJ7YY37L+tFaA=\n-----END CERTIFICATE-----\n",
+          "power": "100",
+          "operator": "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz"
+        }
+      ]
+    },
+    "params": null,
+    "capability": {
+      "index": "1",
+      "owners": []
+    },
+    "admin": {
+      "role_accounts": [
+        {
+          "address": "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz",
+          "roles": [
+            "RootAdmin","PermAdmin","NodeAdmin","BlacklistAdmin","ParamAdmin","PowerUser"
+          ]
+        }
+      ],
+      "black_list": null
+    },
+    "ibc": {
+      "client_genesis": {
+        "clients": [],
+        "clients_consensus": []
+      },
+      "connection_genesis": {
+        "connections": [],
+        "client_connection_paths": []
+      },
+      "channel_genesis": {
+        "channels": [],
+        "acknowledgements": [],
+        "commitments": [],
+        "send_sequences": [],
+        "recv_sequences": []
+      }
+    },
+    "genutil": {
+      "gentxs": []
+    },
+    "nft": {
+      "collections": []
+    },
+    "bank": {
+      "send_enabled": true,
+      "balances": [
+        {
+          "address": "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz",
+          "coins": [
+            {
+              "denom": "point",
+              "amount": "500000000"
+            }
+          ]
+        }
+      ],
+      "supply": []
+    },
+    "transfer": {
+      "portid": "transfer"
+    }
+  }
+}

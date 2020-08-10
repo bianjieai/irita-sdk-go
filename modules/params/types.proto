@@ -1,0 +1,24 @@
+syntax = "proto3";
+package irita.modules.params;
+
+import "third_party/proto/gogoproto/gogo.proto";
+
+option go_package = "github.com/bianjieai/irita-sdk-go/modules/params";
+option (gogoproto.goproto_getters_all) = false;
+
+// MsgUpdateParams defines an SDK message for updating params.
+message MsgUpdateParams {
+  option (gogoproto.equal) = true;
+
+  repeated ParamChange changes = 1 [(gogoproto.nullable) = false];
+  bytes operator               = 2 [(gogoproto.casttype) = "github.com/bianjieai/irita-sdk-go/types.AccAddress"];
+}
+
+// ParamChange defines a parameter change.
+message ParamChange {
+  option (gogoproto.equal) = true;
+
+  string subspace = 1;
+  string key      = 2;
+  string value    = 3;
+}
