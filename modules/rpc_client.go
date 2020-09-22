@@ -4,25 +4,25 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/tendermint/tendermint/libs/log"
 	rpc "github.com/tendermint/tendermint/rpc/client"
 	rpchttp "github.com/tendermint/tendermint/rpc/client/http"
 	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
-	"github.com/bianjieai/irita-sdk-go/utils/log"
 	"github.com/bianjieai/irita-sdk-go/utils/uuid"
 )
 
 type rpcClient struct {
 	rpc.Client
-	*log.Logger
-	cdc *codec.Codec
+	log.Logger
+	cdc    *codec.Codec
 }
 
 func NewRPCClient(remote string,
 	cdc *codec.Codec,
-	log *log.Logger,
+	logger log.Logger,
 	timeout uint) sdk.TmClient {
 	client, err := rpchttp.NewWithTimeout(remote, "/websocket", timeout)
 	if err != nil {
@@ -30,10 +30,9 @@ func NewRPCClient(remote string,
 	}
 
 	_ = client.Start()
-
 	return rpcClient{
 		Client: client,
-		Logger: log,
+		Logger: logger,
 		cdc:    cdc,
 	}
 }
@@ -85,15 +84,10 @@ func (r rpcClient) Resubscribe(subscription sdk.Subscription, handler sdk.EventH
 }
 
 func (r rpcClient) Unsubscribe(subscription sdk.Subscription) sdk.Error {
-	r.Info().
-		Str("query", subscription.Query).
-		Str("subscriber", subscription.ID).
-		Msg("end to subscribe event")
-	if err := r.Client.Unsubscribe(subscription.Ctx, subscription.ID, subscription.Query); err != nil {
-		r.Err(err).
-			Str("query", subscription.Query).
-			Str("subscriber", subscription.ID).
-			Msg("unsubscribe failed")
+	r.Info("end to subscribe event","query", subscription.Query,"subscriber", subscription.ID)
+	err := r.Client.Unsubscribe(subscription.Ctx, subscription.ID, subscription.Query)
+	if err != nil {
+		r.Error("unsubscribe failed","query", subscription.Query,"subscriber", subscription.ID,"errMsg",err.Error())
 		return sdk.Wrap(err)
 	}
 	return nil
@@ -107,10 +101,7 @@ func (r rpcClient) SubscribeAny(query string, handler sdk.EventHandler) (subscri
 		return subscription, sdk.Wrap(e)
 	}
 
-	r.Info().
-		Str("query", query).
-		Str("subscriber", subscriber).
-		Msg("subscribe event")
+	r.Info("subscribe event","query", subscription.Query,"subscriber", subscription.ID)
 
 	subscription = sdk.Subscription{
 		Ctx:   ctx,
@@ -123,10 +114,7 @@ func (r rpcClient) SubscribeAny(query string, handler sdk.EventHandler) (subscri
 			data := <-ch
 			go func() {
 				defer sdk.CatchPanic(func(errMsg string) {
-					r.Error().
-						Str("query", query).
-						Str("subscriber", subscriber).
-						Msgf("subscribe event failed:%s", errMsg)
+					r.Error("unsubscribe failed","query", subscription.Query,"subscriber", subscription.ID,"errMsg",err.Error())
 				})
 
 				switch data := data.Data.(type) {
@@ -148,7 +136,6 @@ func (r rpcClient) SubscribeAny(query string, handler sdk.EventHandler) (subscri
 			}()
 		}
 	}()
-
 	return
 }
 
@@ -166,7 +153,6 @@ func (r rpcClient) parseTx(data sdk.EventData) sdk.EventDataTx {
 		GasUsed:   tx.Result.GasUsed,
 		Events:    sdk.ParseEvents(tx.Result.Events),
 	}
-
 	return sdk.EventDataTx{
 		Hash:   hash,
 		Height: tx.Height,
@@ -212,7 +198,7 @@ func (r rpcClient) parseValidatorSetUpdates(data sdk.EventData) sdk.EventDataVal
 }
 
 func getSubscriber() string {
-	subscriber := "irita-sdk-go"
+	subscriber := "cschain-sdk-go"
 	id, err := uuid.NewV1()
 	if err == nil {
 		subscriber = fmt.Sprintf("%s-%s", subscriber, id.String())

@@ -1,2 +1,2 @@
 docker stop sdk-test
-docker rmi irita-sdk-go
+docker rmi cschain-sdk-go

@@ -4,8 +4,9 @@ import (
 	"encoding"
 	"encoding/json"
 	"fmt"
-	"math/big"
 	"testing"
+
+	"math/big"
 )
 
 const maxBitLen = 255

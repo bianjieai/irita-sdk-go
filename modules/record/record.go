@@ -60,23 +60,32 @@ func (r recordClient) CreateRecord(request CreateRecordRequest, baseTx sdk.BaseT
 	return recordID, nil
 }
 
-func (r recordClient) QueryRecord(recordID string) (QueryRecordResponse, sdk.Error) {
-	rID, err := hex.DecodeString(recordID)
+func (r recordClient) QueryRecord(request QueryRecordRequest) (QueryRecordResponse, sdk.Error) {
+	rID, err := hex.DecodeString(request.RecordID)
 	if err != nil {
-		return QueryRecordResponse{}, sdk.Wrapf("invalid record id, must be hex encoded string,but got %s", recordID)
+		return QueryRecordResponse{}, sdk.Wrapf("invalid record id, must be hex encoded string,but got %s", request.RecordID)
 	}
 
-	param := struct {
-		RecordID []byte `json:"record_id"`
-	}{
-		RecordID: rID,
-	}
+	recordKey := GetRecordKey(rID)
 
-	var record Record
-
-	if err := r.QueryWithResponse("custom/record/record", param, &record); err != nil {
+	res, err := r.QueryStore(recordKey, ModuleName, request.Height, request.Prove)
+	if err != nil {
 		return QueryRecordResponse{}, sdk.Wrap(err)
 	}
 
-	return record.Convert().(QueryRecordResponse), nil
+	var record Record
+	if err := r.Marshaler.UnmarshalBinaryBare(res.Value, &record); err != nil {
+		return QueryRecordResponse{}, sdk.Wrap(err)
+	}
+
+	result := record.Convert().(QueryRecordResponse)
+
+	merkleProof := sdk.MerkleProof{Proof: res.Proof}
+	result.Proof = sdk.ProofValue{
+		Proof: r.MustMarshalJSON(merkleProof),
+		Path:  []string{ModuleName, string(recordKey)},
+		Value: res.Value,
+	}
+	result.Height = res.Height
+	return result, nil
 }

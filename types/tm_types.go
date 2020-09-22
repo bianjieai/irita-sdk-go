@@ -13,11 +13,13 @@ import (
 )
 
 type (
-	HexBytes   = tmbytes.HexBytes
-	ABCIClient = tmclient.ABCIClient
-	SignClient = tmclient.SignClient
-	Header     = tmtypes.Header
-	Pair       = kv.Pair
+	HexBytes      = tmbytes.HexBytes
+	ABCIClient    = tmclient.ABCIClient
+	SignClient    = tmclient.SignClient
+	StatusClient  = tmclient.StatusClient
+	NetworkClient = tmclient.NetworkClient
+	Header        = tmtypes.Header
+	Pair          = kv.Pair
 
 	TmPubKey = crypto.PubKey
 )

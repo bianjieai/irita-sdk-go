@@ -59,7 +59,7 @@ func (aa AccAddress) Equals(aa2 AccAddress) bool {
 		return true
 	}
 
-	return bytes.Equal(aa.Bytes(), aa2.Bytes())
+	return bytes.Compare(aa.Bytes(), aa2.Bytes()) == 0
 }
 
 // Returns boolean for whether an AccAddress is empty
@@ -67,9 +67,9 @@ func (aa AccAddress) Empty() bool {
 	if aa == nil {
 		return true
 	}
-	aa2 := AccAddress{}
 
-	return bytes.Equal(aa.Bytes(), aa2.Bytes())
+	aa2 := AccAddress{}
+	return bytes.Compare(aa.Bytes(), aa2.Bytes()) == 0
 }
 
 // Marshal returns the raw address bytes. It is needed for protobuf
@@ -137,7 +137,7 @@ func (va ValAddress) Equals(va2 ValAddress) bool {
 		return true
 	}
 
-	return bytes.Equal(va.Bytes(), va2.Bytes())
+	return bytes.Compare(va.Bytes(), va2.Bytes()) == 0
 }
 
 // Returns boolean for whether an AccAddress is empty
@@ -147,7 +147,7 @@ func (va ValAddress) Empty() bool {
 	}
 
 	va2 := ValAddress{}
-	return bytes.Equal(va.Bytes(), va2.Bytes())
+	return bytes.Compare(va.Bytes(), va2.Bytes()) == 0
 }
 
 // Marshal returns the raw address bytes. It is needed for protobuf
@@ -172,7 +172,8 @@ func (va ValAddress) MarshalJSON() ([]byte, error) {
 func (va *ValAddress) UnmarshalJSON(data []byte) error {
 	var s string
 
-	if err := json.Unmarshal(data, &s); err != nil {
+	err := json.Unmarshal(data, &s)
+	if err != nil {
 		return nil
 	}
 
@@ -206,7 +207,7 @@ func (va ValAddress) String() string {
 func (va ValAddress) Format(s fmt.State, verb rune) {
 	switch verb {
 	case 's':
-		_, _ = s.Write([]byte(va.String()))
+		_, _ = s.Write([]byte(fmt.Sprintf("%s", va.String())))
 	case 'p':
 		_, _ = s.Write([]byte(fmt.Sprintf("%p", va)))
 	default:

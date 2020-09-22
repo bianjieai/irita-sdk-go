@@ -1,11 +1,12 @@
 package types
 
 import (
-	"github.com/bianjieai/irita-sdk-go/utils/log"
+	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/libs/log"
 )
 
 type TxManager interface {
-	TxQuery
+	TmQuery
 	BuildAndSend(msg []Msg, baseTx BaseTx) (ResultTx, Error)
 	SendBatch(msgs Msgs, baseTx BaseTx) ([]ResultTx, Error)
 }
@@ -13,7 +14,7 @@ type TxManager interface {
 type Queries interface {
 	StoreQuery
 	AccountQuery
-	TxQuery
+	TmQuery
 	ParamQuery
 }
 
@@ -24,7 +25,7 @@ type ParamQuery interface {
 type StoreQuery interface {
 	QueryWithResponse(path string, data interface{}, result Response) error
 	Query(path string, data interface{}) ([]byte, error)
-	QueryStore(key HexBytes, storeName string) (res []byte, err error)
+	QueryStore(key HexBytes, storeName string, height int64, prove bool) (abci.ResponseQuery, error)
 }
 
 type AccountQuery interface {
@@ -32,9 +33,10 @@ type AccountQuery interface {
 	QueryAddress(name, password string) (AccAddress, Error)
 }
 
-type TxQuery interface {
+type TmQuery interface {
 	QueryTx(hash string) (ResultQueryTx, error)
 	QueryTxs(builder *EventQueryBuilder, page, size int) (ResultSearchTxs, error)
+	QueryBlock(height int64) (BlockDetail, error)
 }
 
 type TokenManager interface {
@@ -48,7 +50,8 @@ type TokenConvert interface {
 }
 
 type Logger interface {
-	Logger() *log.Logger
+	Logger() log.Logger
+	SetLogger(log.Logger)
 }
 
 type BaseClient interface {

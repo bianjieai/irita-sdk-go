@@ -45,30 +45,31 @@ func (i identityClient) CreateIdentity(request CreateIdentityRequest, baseTx sdk
 		return sdk.ResultTx{}, sdk.Wrap(e)
 	}
 
-	var pukKeyInfo PubKeyInfo
+	var pukKeyInfo *PubKeyInfo
 	if request.PubkeyInfo != nil {
 		if len(request.PubkeyInfo.PubKey) > 0 {
 			pubkey, e := sdk.HexBytesFrom(request.PubkeyInfo.PubKey)
 			if e != nil {
 				return sdk.ResultTx{}, sdk.Wrap(e)
 			}
-			pukKeyInfo.PubKey = pubkey
-			pukKeyInfo.Algorithm = request.PubkeyInfo.PubKeyAlgo
+			pukKeyInfo = &PubKeyInfo{
+				PubKey:    pubkey,
+				Algorithm: request.PubkeyInfo.PubKeyAlgo,
+			}
 		}
 	}
 
-	credentials := doNotModifyDesc
+	credentials := ""
 	if request.Credentials != nil {
 		credentials = *request.Credentials
 	}
 	msg := MsgCreateIdentity{
 		ID:          id,
-		PubKey:      &pukKeyInfo,
+		PubKey:      pukKeyInfo,
 		Certificate: request.Certificate,
 		Credentials: credentials,
 		Owner:       sender,
 	}
-
 	return i.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
@@ -107,7 +108,6 @@ func (i identityClient) UpdateIdentity(request UpdateIdentityRequest, baseTx sdk
 		Credentials: credentials,
 		Owner:       sender,
 	}
-
 	return i.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
@@ -117,12 +117,15 @@ func (i identityClient) QueryIdentity(id string) (QueryIdentityResponse, sdk.Err
 		return QueryIdentityResponse{}, sdk.Wrap(err)
 	}
 
-	param := struct{ ID sdk.HexBytes }{ID: identityId}
+	param := struct {
+		ID sdk.HexBytes
+	}{
+		ID: identityId,
+	}
 
 	var identity Identity
 	if err := i.QueryWithResponse("custom/identity/identity", param, &identity); err != nil {
 		return QueryIdentityResponse{}, sdk.Wrap(err)
 	}
-
 	return identity.Convert().(QueryIdentityResponse), nil
 }

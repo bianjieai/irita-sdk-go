@@ -71,7 +71,6 @@ func (a adminClient) RemoveRoles(address string, roles []Role, baseTx sdk.BaseTx
 		Roles:    roles,
 		Operator: sender,
 	}
-
 	return a.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
@@ -90,7 +89,6 @@ func (a adminClient) BlockAccount(address string, baseTx sdk.BaseTx) (sdk.Result
 		Address:  acc,
 		Operator: sender,
 	}
-
 	return a.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
@@ -109,7 +107,6 @@ func (a adminClient) UnblockAccount(address string, baseTx sdk.BaseTx) (sdk.Resu
 		Address:  acc,
 		Operator: sender,
 	}
-
 	return a.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
@@ -119,7 +116,11 @@ func (a adminClient) QueryRoles(address string) (roles []Role, err sdk.Error) {
 		return roles, sdk.Wrap(err)
 	}
 
-	param := struct{ Address sdk.AccAddress }{Address: acc}
+	param := struct {
+		Address sdk.AccAddress
+	}{
+		Address: acc,
+	}
 
 	bz, e := a.Query("custom/admin/roles", param)
 	if e != nil {
@@ -129,7 +130,6 @@ func (a adminClient) QueryRoles(address string) (roles []Role, err sdk.Error) {
 	if err := a.UnmarshalJSON(bz, &roles); err != nil {
 		return roles, sdk.Wrap(err)
 	}
-
 	return roles, nil
 }
 
@@ -150,6 +150,5 @@ func (a adminClient) QueryBlacklist(page, limit int) (bl []string, err sdk.Error
 	if err := a.UnmarshalJSON(bz, &bl); err != nil {
 		return nil, sdk.Wrap(err)
 	}
-
 	return bl, nil
 }

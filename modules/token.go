@@ -4,15 +4,16 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/tendermint/tendermint/libs/log"
+
 	"github.com/bianjieai/irita-sdk-go/modules/token"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/utils/cache"
-	"github.com/bianjieai/irita-sdk-go/utils/log"
 )
 
 type tokenQuery struct {
 	q sdk.Queries
-	*log.Logger
+	log.Logger
 	cache.Cache
 }
 
@@ -35,7 +36,6 @@ func (l tokenQuery) QueryToken(denom string) (sdk.Token, error) {
 
 	token := t.Convert().(sdk.Token)
 	l.SaveTokens(token)
-
 	return token, nil
 }
 
@@ -44,9 +44,7 @@ func (l tokenQuery) SaveTokens(tokens ...sdk.Token) {
 		err1 := l.Set(l.prefixKey(t.Symbol), t)
 		err2 := l.Set(l.prefixKey(t.MinUnit), t)
 		if err1 != nil || err2 != nil {
-			l.Warn().
-				Str("symbol", t.Symbol).
-				Msg("cache token failed")
+			l.Debug("cache token failed","symbol", t.Symbol)
 		}
 	}
 }
@@ -64,7 +62,6 @@ func (l tokenQuery) ToMinCoin(coins ...sdk.DecCoin) (dstCoins sdk.Coins, err sdk
 		}
 		dstCoins = append(dstCoins, minCoin)
 	}
-
 	return dstCoins.Sort(), nil
 }
 
@@ -81,7 +78,6 @@ func (l tokenQuery) ToMainCoin(coins ...sdk.Coin) (dstCoins sdk.DecCoins, err sd
 		}
 		dstCoins = append(dstCoins, mainCoin)
 	}
-
 	return dstCoins.Sort(), nil
 }
 

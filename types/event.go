@@ -35,6 +35,8 @@ type TmClient interface {
 	ABCIClient
 	SignClient
 	WSClient
+	StatusClient
+	NetworkClient
 }
 
 type EventKey string
@@ -74,8 +76,8 @@ type TxResult struct {
 }
 
 type Attribute struct {
-	Key   string
-	Value string
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
 
 type Attributes []Attribute
@@ -107,8 +109,8 @@ func (a Attributes) String() string {
 }
 
 type Event struct {
-	Type       string
-	Attributes Attributes
+	Type       string     `json:"type"`
+	Attributes Attributes `json:"attributes"`
 }
 
 func ParseEvent(event tmtypes.Event) Event {

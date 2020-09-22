@@ -9,6 +9,7 @@ import (
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
+
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -67,14 +68,10 @@ func (msg MsgCreateIdentity) GetSigners() []sdk.AccAddress {
 }
 
 // Route implements Msg.
-func (msg MsgUpdateIdentity) Route() string {
-	return ModuleName
-}
+func (msg MsgUpdateIdentity) Route() string { return ModuleName }
 
 // Type implements Msg.
-func (msg MsgUpdateIdentity) Type() string {
-	return TypeMsgUpdateIdentity
-}
+func (msg MsgUpdateIdentity) Type() string { return TypeMsgUpdateIdentity }
 
 // GetSignBytes implements Msg.
 func (msg MsgUpdateIdentity) GetSignBytes() []byte {
@@ -124,13 +121,10 @@ func ValidateIdentityFields(
 func (m Identity) Convert() interface{} {
 	var pubKeyInfos []PubkeyInfo
 	for _, info := range m.PubKeys {
-		pubKeyInfos = append(
-			pubKeyInfos,
-			PubkeyInfo{
-				PubKey:     info.PubKey.String(),
-				PubKeyAlgo: info.Algorithm,
-			},
-		)
+		pubKeyInfos = append(pubKeyInfos, PubkeyInfo{
+			PubKey:     info.PubKey.String(),
+			PubKeyAlgo: info.Algorithm,
+		})
 	}
 
 	return QueryIdentityResponse{
@@ -160,6 +154,6 @@ func (p *PubKeyAlgorithm) UnmarshalJSON(data []byte) error {
 }
 
 func registerCodec(cdc *codec.Codec) {
-	cdc.RegisterConcrete(MsgCreateIdentity{}, "irita/MsgCreateIdentity", nil)
-	cdc.RegisterConcrete(MsgUpdateIdentity{}, "irita/MsgUpdateIdentity", nil)
+	cdc.RegisterConcrete(MsgCreateIdentity{}, "cschain/MsgCreateIdentity", nil)
+	cdc.RegisterConcrete(MsgUpdateIdentity{}, "cschain/MsgUpdateIdentity", nil)
 }

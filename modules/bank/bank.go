@@ -6,6 +6,7 @@ import (
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
+
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	utils "github.com/bianjieai/irita-sdk-go/utils"
 )
@@ -65,7 +66,6 @@ func (b bankClient) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
 		return sdk.BaseAccount{}, sdk.Wrap(er)
 	}
 	account.Coins = coin
-
 	return account, nil
 }
 
@@ -87,7 +87,6 @@ func (b bankClient) Send(to string, amount sdk.DecCoins, baseTx sdk.BaseTx) (sdk
 	}
 
 	msg := NewMsgSend(sender, outAddr, amt)
-
 	return b.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
@@ -125,15 +124,11 @@ func (b bankClient) MultiSend(request MultiSendRequest, baseTx sdk.BaseTx) (resT
 	}
 
 	resTxs = append(resTxs, res)
-
 	return
 }
 
-func (b bankClient) SendBatch(
-	sender sdk.AccAddress,
-	request MultiSendRequest,
-	baseTx sdk.BaseTx,
-) ([]sdk.ResultTx, sdk.Error) {
+func (b bankClient) SendBatch(sender sdk.AccAddress,
+	request MultiSendRequest, baseTx sdk.BaseTx) ([]sdk.ResultTx, sdk.Error) {
 	batchReceipts := utils.SubArray(maxMsgLen, request)
 
 	var msgs sdk.Msgs
@@ -157,7 +152,6 @@ func (b bankClient) SendBatch(
 		}
 		msgs = append(msgs, NewMsgMultiSend(inputs, outputs))
 	}
-
 	return b.BaseClient.SendBatch(msgs, baseTx)
 }
 
@@ -167,14 +161,8 @@ func (b bankClient) SubscribeSendTx(from, to string, callback EventMsgSendCallba
 
 	from = strings.TrimSpace(from)
 	if len(from) != 0 {
-		builder.AddCondition(
-			sdk.NewCond(
-				sdk.EventTypeMessage,
-				sdk.AttributeKeySender,
-			).EQ(
-				sdk.EventValue(from),
-			),
-		)
+		builder.AddCondition(sdk.NewCond(sdk.EventTypeMessage,
+			sdk.AttributeKeySender).EQ(sdk.EventValue(from)))
 	}
 
 	to = strings.TrimSpace(to)
@@ -195,6 +183,5 @@ func (b bankClient) SubscribeSendTx(from, to string, callback EventMsgSendCallba
 			}
 		}
 	})
-
 	return subscription
 }

@@ -4,9 +4,9 @@ import (
 	"encoding/binary"
 	"io"
 
-	"github.com/gogo/protobuf/proto"
-
 	"github.com/bianjieai/irita-sdk-go/codec/types"
+
+	"github.com/gogo/protobuf/proto"
 )
 
 type (

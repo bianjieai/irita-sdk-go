@@ -59,7 +59,8 @@ type Any struct {
 func NewAnyWithValue(value proto.Message) (*Any, error) {
 	any := &Any{}
 
-	if err := any.Pack(value); err != nil {
+	err := any.Pack(value)
+	if err != nil {
 		return nil, err
 	}
 

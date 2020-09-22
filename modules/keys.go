@@ -59,7 +59,6 @@ func (k keyManager) Insert(name, password string) (string, string, error) {
 	if err = k.keyDAO.Write(name, password, info); err != nil {
 		return "", "", err
 	}
-
 	return address, mnemonic, nil
 }
 
@@ -73,7 +72,7 @@ func (k keyManager) Recover(name, password, mnemonic string) (string, error) {
 		return "", err
 	}
 
-	_, priv := km.Generate()
+	mnemonic, priv := km.Generate()
 
 	pubKey := km.ExportPubKey()
 	address := types.AccAddress(pubKey.Address().Bytes()).String()
@@ -85,7 +84,8 @@ func (k keyManager) Recover(name, password, mnemonic string) (string, error) {
 		Algo:         k.algo,
 	}
 
-	if err = k.keyDAO.Write(name, password, info); err != nil {
+	err = k.keyDAO.Write(name, password, info)
+	if err != nil {
 		return "", err
 	}
 
@@ -114,10 +114,10 @@ func (k keyManager) Import(name, password, armor string) (string, error) {
 		Algo:         k.algo,
 	}
 
-	if err = k.keyDAO.Write(name, password, info); err != nil {
+	err = k.keyDAO.Write(name, password, info)
+	if err != nil {
 		return "", err
 	}
-
 	return address, nil
 }
 

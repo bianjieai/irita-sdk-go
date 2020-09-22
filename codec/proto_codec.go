@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gogo/protobuf/jsonpb"
-
 	"github.com/bianjieai/irita-sdk-go/codec/types"
+
+	"github.com/gogo/protobuf/jsonpb"
 )
 
 // ProtoCodec defines a codec that utilizes Protobuf for both binary and JSON
@@ -62,10 +62,15 @@ func (pc *ProtoCodec) MustMarshalBinaryLengthPrefixed(o ProtoMarshaler) []byte {
 }
 
 func (pc *ProtoCodec) UnmarshalBinaryBare(bz []byte, ptr ProtoMarshaler) error {
-	if err := ptr.Unmarshal(bz); err != nil {
+	err := ptr.Unmarshal(bz)
+	if err != nil {
 		return err
 	}
-	return types.UnpackInterfaces(ptr, pc.anyUnpacker)
+	err = types.UnpackInterfaces(ptr, pc.anyUnpacker)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (pc *ProtoCodec) MustUnmarshalBinaryBare(bz []byte, ptr ProtoMarshaler) {
@@ -101,6 +106,7 @@ func (pc *ProtoCodec) MarshalJSON(o interface{}) ([]byte, error) {
 	if !ok {
 		return nil, fmt.Errorf("cannot protobuf JSON encode unsupported type: %T", o)
 	}
+
 	return ProtoMarshalJSON(m)
 }
 
@@ -109,6 +115,7 @@ func (pc *ProtoCodec) MustMarshalJSON(o interface{}) []byte {
 	if err != nil {
 		panic(err)
 	}
+
 	return bz
 }
 

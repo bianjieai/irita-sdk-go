@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/tendermint/crypto/bcrypt"
+
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/armor"
 	cryptoAmino "github.com/tendermint/tendermint/crypto/encoding/amino"

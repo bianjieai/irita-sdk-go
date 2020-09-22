@@ -1,5 +1,5 @@
 syntax = "proto3";
-package irita.modules.token;
+package cschain.modules.token;
 
 import "third_party/proto/gogoproto/gogo.proto";
 import "types/types.proto";
@@ -67,7 +67,7 @@ message Params {
     (gogoproto.nullable)   = false
   ];
 
-  irita.Coin issue_token_base_fee = 2 [
+  cschain.Coin issue_token_base_fee = 2 [
     (gogoproto.moretags)   = "yaml:\"issue_token_base_fee\"",
     (gogoproto.nullable)   = false
   ];

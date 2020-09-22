@@ -4,11 +4,12 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/tendermint/tendermint/crypto/sm2"
+
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 	"github.com/tendermint/tendermint/crypto/multisig"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
-	"github.com/tendermint/tendermint/crypto/sm2"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
@@ -25,11 +26,11 @@ var (
 
 	amino = codec.New()
 
-	// ModuleCdc references the global bank module codec. Note, the codec should
+	// ModuleCdc references the global x/gov module codec. Note, the codec should
 	// ONLY be used in certain instances of tests and for JSON encoding as Amino is
 	// still used for that purpose.
 	//
-	// The actual codec used for serialization should be provided to bank and
+	// The actual codec used for serialization should be provided to x/gov and
 	// defined at the application level.
 	ModuleCdc = codec.NewHybridCodec(amino, types.NewInterfaceRegistry())
 )
@@ -40,11 +41,7 @@ func init() {
 
 // NewMsgSend - construct arbitrary multi-in, multi-out send msg.
 func NewMsgSend(fromAddr, toAddr sdk.AccAddress, amount sdk.Coins) MsgSend {
-	return MsgSend{
-		FromAddress: fromAddr,
-		ToAddress:   toAddr,
-		Amount:      amount,
-	}
+	return MsgSend{FromAddress: fromAddr, ToAddress: toAddr, Amount: amount}
 }
 
 func (msg MsgSend) Route() string {
@@ -88,14 +85,10 @@ func NewMsgMultiSend(in []Input, out []Output) MsgMultiSend {
 	return MsgMultiSend{Inputs: in, Outputs: out}
 }
 
-func (msg MsgMultiSend) Route() string {
-	return ModuleName
-}
+func (msg MsgMultiSend) Route() string { return ModuleName }
 
 // Implements Msg.
-func (msg MsgMultiSend) Type() string {
-	return "multisend"
-}
+func (msg MsgMultiSend) Type() string { return "multisend" }
 
 // Implements Msg.
 func (msg MsgMultiSend) ValidateBasic() error {
@@ -107,10 +100,8 @@ func (msg MsgMultiSend) ValidateBasic() error {
 	if len(msg.Outputs) == 0 {
 		return errors.New("invalid output coins")
 	}
-
 	// make sure all inputs and outputs are individually valid
-	var totalIn sdk.Coins
-	var totalOut sdk.Coins
+	var totalIn, totalOut sdk.Coins
 	for _, in := range msg.Inputs {
 		if err := in.ValidateBasic(); err != nil {
 			return err
@@ -123,12 +114,10 @@ func (msg MsgMultiSend) ValidateBasic() error {
 		}
 		totalOut = totalOut.Add(out.Coins...)
 	}
-
 	// make sure inputs and outputs match
 	if !totalIn.IsEqual(totalOut) {
 		return errors.New("inputs and outputs don't match")
 	}
-
 	return nil
 }
 
@@ -153,13 +142,13 @@ func (msg MsgMultiSend) GetSigners() []sdk.AccAddress {
 // ValidateBasic - validate transaction input
 func (in Input) ValidateBasic() error {
 	if len(in.Address) == 0 {
-		return fmt.Errorf("account %s is invalid", in.Address.String())
+		return errors.New(fmt.Sprintf(fmt.Sprintf("account %s is invalid", in.Address.String())))
 	}
 	if in.Coins.Empty() {
 		return errors.New("empty input coins")
 	}
 	if !in.Coins.IsValid() {
-		return fmt.Errorf("invalid input coins [%s]", in.Coins)
+		return errors.New(fmt.Sprintf("invalid input coins [%s]", in.Coins))
 	}
 	return nil
 }
@@ -176,13 +165,13 @@ func NewInput(addr sdk.AccAddress, coins sdk.Coins) Input {
 // ValidateBasic - validate transaction output
 func (out Output) ValidateBasic() error {
 	if len(out.Address) == 0 {
-		return fmt.Errorf("account %s is invalid", out.Address.String())
+		return errors.New(fmt.Sprintf(fmt.Sprintf("account %s is invalid", out.Address.String())))
 	}
 	if out.Coins.Empty() {
 		return errors.New("empty input coins")
 	}
 	if !out.Coins.IsValid() {
-		return fmt.Errorf("invalid input coins [%s]", out.Coins)
+		return errors.New(fmt.Sprintf("invalid input coins [%s]", out.Coins))
 	}
 	return nil
 }
@@ -199,15 +188,25 @@ func NewOutput(addr sdk.AccAddress, coins sdk.Coins) Output {
 func registerCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MsgSend{}, "cosmos-sdk/MsgSend", nil)
 	cdc.RegisterConcrete(MsgMultiSend{}, "cosmos-sdk/MsgMultiSend", nil)
+
 	cdc.RegisterInterface((*Account)(nil), nil)
 	cdc.RegisterConcrete(&BaseAccount{}, "cosmos-sdk/Account", nil)
 	cdc.RegisterInterface((*crypto.PubKey)(nil), nil)
-	cdc.RegisterConcrete(ed25519.PubKeyEd25519{}, ed25519.PubKeyAminoName, nil)
-	cdc.RegisterConcrete(secp256k1.PubKeySecp256k1{}, secp256k1.PubKeyAminoName, nil)
-	cdc.RegisterConcrete(sm2.PubKeySm2{}, sm2.PubKeyAminoName, nil)
-	cdc.RegisterConcrete(multisig.PubKeyMultisigThreshold{}, multisig.PubKeyMultisigThresholdAminoRoute, nil)
+	cdc.RegisterConcrete(ed25519.PubKeyEd25519{},
+		ed25519.PubKeyAminoName, nil)
+	cdc.RegisterConcrete(secp256k1.PubKeySecp256k1{},
+		secp256k1.PubKeyAminoName, nil)
+	cdc.RegisterConcrete(sm2.PubKeySm2{},
+		sm2.PubKeyAminoName, nil)
+	cdc.RegisterConcrete(multisig.PubKeyMultisigThreshold{},
+		multisig.PubKeyMultisigThresholdAminoRoute, nil)
+
 	cdc.RegisterInterface((*crypto.PrivKey)(nil), nil)
-	cdc.RegisterConcrete(ed25519.PrivKeyEd25519{}, ed25519.PrivKeyAminoName, nil)
-	cdc.RegisterConcrete(secp256k1.PrivKeySecp256k1{}, secp256k1.PrivKeyAminoName, nil)
-	cdc.RegisterConcrete(sm2.PrivKeySm2{}, sm2.PrivKeyAminoName, nil)
+	cdc.RegisterConcrete(ed25519.PrivKeyEd25519{},
+		ed25519.PrivKeyAminoName, nil)
+	cdc.RegisterConcrete(secp256k1.PrivKeySecp256k1{},
+		secp256k1.PrivKeyAminoName, nil)
+	cdc.RegisterConcrete(sm2.PrivKeySm2{},
+		sm2.PrivKeyAminoName, nil)
+
 }

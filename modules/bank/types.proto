@@ -1,5 +1,5 @@
 syntax = "proto3";
-package irita.modules.bank;
+package cschain.modules.bank;
 
 import "third_party/proto/gogoproto/gogo.proto";
 import "types/types.proto";
@@ -18,7 +18,7 @@ message MsgSend {
     (gogoproto.casttype) = "github.com/bianjieai/irita-sdk-go/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"to_address\""
   ];
-  repeated irita.Coin amount = 3
+  repeated cschain.Coin amount = 3
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/bianjieai/irita-sdk-go/types.Coins"];
 }
 
@@ -27,7 +27,7 @@ message Input {
   option (gogoproto.equal) = true;
 
   bytes    address                  = 1 [(gogoproto.casttype) = "github.com/bianjieai/irita-sdk-go/types.AccAddress"];
-  repeated irita.Coin coins = 2
+  repeated cschain.Coin coins = 2
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/bianjieai/irita-sdk-go/types.Coins"];
 }
 
@@ -36,7 +36,7 @@ message Output {
   option (gogoproto.equal) = true;
 
   bytes    address                  = 1 [(gogoproto.casttype) = "github.com/bianjieai/irita-sdk-go/types.AccAddress"];
-  repeated irita.Coin coins = 2
+  repeated cschain.Coin coins = 2
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/bianjieai/irita-sdk-go/types.Coins"];
 }
 
@@ -55,6 +55,6 @@ message Supply {
   option (gogoproto.goproto_getters)  = false;
   option (gogoproto.goproto_stringer) = true;
 
-  repeated irita.Coin total = 1
+  repeated cschain.Coin total = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/bianjieai/irita-sdk-go/types.Coins"];
 }

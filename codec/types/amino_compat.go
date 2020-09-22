@@ -58,15 +58,16 @@ func (a AminoUnpacker) UnpackAny(any *Any, iface interface{}) error {
 	if ac == nil {
 		return fmt.Errorf("can't amino unmarshal %T", iface)
 	}
-	if err := a.Cdc.UnmarshalBinaryBare(ac.bz, iface); err != nil {
+	err := a.Cdc.UnmarshalBinaryBare(ac.bz, iface)
+	if err != nil {
 		return err
 	}
 	val := reflect.ValueOf(iface).Elem().Interface()
-	if err := UnpackInterfaces(val, a); err != nil {
+	err = UnpackInterfaces(val, a)
+	if err != nil {
 		return err
 	}
 	any.cachedValue = val
-
 	return nil
 }
 
@@ -79,7 +80,8 @@ type AminoPacker struct {
 var _ AnyUnpacker = AminoPacker{}
 
 func (a AminoPacker) UnpackAny(any *Any, _ interface{}) error {
-	if err := UnpackInterfaces(any.cachedValue, a); err != nil {
+	err := UnpackInterfaces(any.cachedValue, a)
+	if err != nil {
 		return err
 	}
 	bz, err := a.Cdc.MarshalBinaryBare(any.cachedValue)
@@ -103,15 +105,16 @@ func (a AminoJSONUnpacker) UnpackAny(any *Any, iface interface{}) error {
 	if ac == nil {
 		return fmt.Errorf("can't amino unmarshal %T", iface)
 	}
-	if err := a.Cdc.UnmarshalJSON(ac.jsonBz, iface); err != nil {
+	err := a.Cdc.UnmarshalJSON(ac.jsonBz, iface)
+	if err != nil {
 		return err
 	}
 	val := reflect.ValueOf(iface).Elem().Interface()
-	if err := UnpackInterfaces(val, a); err != nil {
+	err = UnpackInterfaces(val, a)
+	if err != nil {
 		return err
 	}
 	any.cachedValue = val
-
 	return nil
 }
 
@@ -124,7 +127,8 @@ type AminoJSONPacker struct {
 var _ AnyUnpacker = AminoJSONPacker{}
 
 func (a AminoJSONPacker) UnpackAny(any *Any, _ interface{}) error {
-	if err := UnpackInterfaces(any.cachedValue, a); err != nil {
+	err := UnpackInterfaces(any.cachedValue, a)
+	if err != nil {
 		return err
 	}
 	bz, err := a.Cdc.MarshalJSON(any.cachedValue)

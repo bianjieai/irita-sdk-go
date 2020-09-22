@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"errors"
 	"time"
 
 	"github.com/bluele/gcache"
@@ -18,9 +19,10 @@ type LRU struct {
 	enabled bool
 }
 
-func NewCache(capacity int) Cache {
+func NewCache(capacity int,enable bool) Cache {
 	return &LRU{
 		cache: gcache.New(capacity).LRU().Build(),
+		enabled: enable,
 	}
 }
 
@@ -39,6 +41,9 @@ func (l *LRU) SetWithExpire(key, value interface{}, expiration time.Duration) er
 }
 
 func (l LRU) Get(key interface{}) (interface{}, error) {
+	if !l.enabled {
+		return nil,errors.New("cache not enabled")
+	}
 	return l.cache.Get(key)
 }
 
@@ -50,6 +55,9 @@ func (l *LRU) Remove(key interface{}) bool {
 }
 
 func (l *LRU) Expire(key interface{}) bool {
+	if !l.enabled {
+		return true
+	}
 	return l.Remove(key)
 }
 

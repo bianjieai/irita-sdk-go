@@ -64,8 +64,9 @@ func send(s IntegrationTestSuite) {
 	result, err := s.Bank.Send(to, coins, baseTx)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), result.Hash)
+	time.Sleep(1*time.Second)
 
-	resp, err := s.QueryTx(result.Hash)
+	resp, err := s.Manager().QueryTx(result.Hash)
 	require.NoError(s.T(), err)
 	require.Equal(s.T(), resp.Result.Code, uint32(0))
 	require.Equal(s.T(), resp.Height, result.Height)
@@ -128,7 +129,7 @@ func multiSend(s IntegrationTestSuite) {
 	}
 	wait.Wait()
 	end := time.Now()
-	fmt.Printf("total senconds:%s\n", end.Sub(begin).String())
+	fmt.Println(fmt.Sprintf("total senconds:%s", end.Sub(begin).String()))
 }
 
 func simulate(s IntegrationTestSuite) {

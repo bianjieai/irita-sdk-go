@@ -1,1 +1,1 @@
-docker build -t irita-sdk-go .
+docker build -t cschain-sdk-go .

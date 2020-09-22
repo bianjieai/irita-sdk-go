@@ -117,6 +117,5 @@ func (acc *BaseAccount) Convert() interface{} {
 	}
 
 	account.PubKey = pkStr
-
 	return account
 }

@@ -4,17 +4,18 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/tendermint/tendermint/libs/log"
+
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/modules/service"
 	"github.com/bianjieai/irita-sdk-go/modules/token"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/utils/cache"
-	"github.com/bianjieai/irita-sdk-go/utils/log"
 )
 
 type paramsQuery struct {
 	sdk.Queries
-	*log.Logger
+	log.Logger
 	cache.Cache
 	cdc        codec.Marshaler
 	expiration time.Duration
@@ -28,7 +29,8 @@ func (p paramsQuery) QueryParams(module string, res sdk.Response) sdk.Error {
 	param, err := p.Get(p.prefixKey(module))
 	if err == nil {
 		bz := param.([]byte)
-		if err = p.cdc.UnmarshalJSON(bz, res); err != nil {
+		err = p.cdc.UnmarshalJSON(bz, res)
+		if err != nil {
 			return sdk.Wrap(err)
 		}
 		return nil
@@ -53,15 +55,13 @@ func (p paramsQuery) QueryParams(module string, res sdk.Response) sdk.Error {
 		return sdk.Wrap(err)
 	}
 
-	if err = p.cdc.UnmarshalJSON(bz, res); err != nil {
+	err = p.cdc.UnmarshalJSON(bz, res)
+	if err != nil {
 		return sdk.Wrap(err)
 	}
 
 	if err := p.SetWithExpire(p.prefixKey(module), bz, p.expiration); err != nil {
-		p.Warn().
-			Str("module", module).
-			Msg("params cache failed")
+		p.Debug("params cache failed","module", module)
 	}
-
 	return nil
 }

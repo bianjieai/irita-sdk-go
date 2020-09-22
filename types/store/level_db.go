@@ -38,7 +38,6 @@ func NewLevelDB(rootDir string, crypto Crypto) (KeyDAO, error) {
 		db:     db,
 		Crypto: crypto,
 	}
-
 	return levelDB, nil
 }
 
@@ -59,7 +58,6 @@ func (k LevelDBDAO) Write(name, password string, info KeyInfo) error {
 	if err != nil {
 		return err
 	}
-
 	return k.db.SetSync(infoKey(name), bz)
 }
 
@@ -81,7 +79,6 @@ func (k LevelDBDAO) Read(name, password string) (store KeyInfo, err error) {
 		}
 		store.PrivKeyArmor = privStr
 	}
-
 	return
 }
 
@@ -95,7 +92,6 @@ func (k LevelDBDAO) ReadMetadata(name string) (store KeyInfo, err error) {
 	if err := json.Unmarshal(bz, &store); err != nil {
 		return store, err
 	}
-
 	return
 }
 

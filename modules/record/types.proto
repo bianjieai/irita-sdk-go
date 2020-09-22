@@ -1,5 +1,5 @@
 syntax = "proto3";
-package irita.modules.record;
+package cschain.modules.record;
 
 import "third_party/proto/gogoproto/gogo.proto";
 

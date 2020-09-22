@@ -8,7 +8,7 @@
 //  client := test.NewClient()
 //  amt := types.NewIntWithDecimal(1, 18)
 //  coins := types.NewCoins(types.NewCoin("point", amt))
-//  to := "caa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4em9njf5"
+//  to := "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz"
 //  baseTx := types.BaseTx{
 // 		From: "test1",
 // 		Gas:  20000,
@@ -41,7 +41,7 @@
 // Queries account information
 //
 //  client := test.NewClient()
-//  result,err := client.BankI.QueryAccount("caa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4em9njf5")
+//  result,err := client.BankI.QueryAccount("iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz")
 //  fmt.Println(result)
 //
 // Queries the token information

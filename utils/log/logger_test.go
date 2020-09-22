@@ -5,11 +5,13 @@ import (
 )
 
 func TestNewLogger(t *testing.T) {
-	log1 := NewLogger("info")
+	log1 := NewLogger(Config{
+		Format: "json",
+		Level:  "info",
+	})
 
-	log1.Info().Str("foo", "bar").Msg("Hello World")
-	log1.Info().Str("foo1", "bar").Msg("Hello World")
-	log1.Info().Str("foo2", "bar").Msg("Hello World")
-	log1.Info().Str("foo3", "bar").Msg("Hello World")
-
+	log1.Info("Hello World","foo", "bar")
+	log1.Info("Hello World","foo1", "bar")
+	log1.Info("Hello World","foo2", "bar")
+	log1.Info("Hello World","foo3", "bar")
 }

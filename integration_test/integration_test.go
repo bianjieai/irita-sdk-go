@@ -8,6 +8,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/bianjieai/irita-sdk-go/utils/log"
+
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/bianjieai/irita-sdk-go"
@@ -18,17 +20,17 @@ import (
 const (
 	nodeURI = "tcp://localhost:26657"
 	chainID = "test"
-	// mode    = types.Commit
-	// fee     = "4point"
-	// gas     = 200000
-	// algo    = "sm2"
-	// level   = "info"
+	mode    = types.Commit
+	fee     = "4point"
+	gas     = 200000
+	algo    = "sm2"
+	level   = "info"
 	charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	addr    = "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz"
 )
 
 var (
-	path = os.ExpandEnv("$HOME/.iritacli")
+	path = os.ExpandEnv("$HOME/.cschaincli")
 )
 
 type IntegrationTestSuite struct {
@@ -64,13 +66,17 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		panic(err)
 	}
 
-	s.IRITAClient = sdk.NewIRITAClient(cfg)
+	s.IRITAClient = sdk.NewCSChainClient(cfg)
 	s.r = rand.New(rand.NewSource(time.Now().UnixNano()))
 	s.rootAccount = MockAccount{
 		Name:     "v1",
 		Password: "YQVGsOjegu",
 		Address:  types.MustAccAddressFromBech32(addr),
 	}
+	s.SetLogger(log.NewLogger(log.Config{
+		Format: log.FormatJSON,
+		Level:  log.DebugLevel,
+	}))
 	s.initAccount()
 }
 

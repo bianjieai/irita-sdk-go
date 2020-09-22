@@ -5,6 +5,7 @@ import (
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
+
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -17,11 +18,11 @@ var (
 
 	amino = codec.New()
 
-	// ModuleCdc references the global params module codec. Note, the codec should
+	// ModuleCdc references the global modules/params module codec. Note, the codec should
 	// ONLY be used in certain instances of tests and for JSON encoding as Amino is
 	// still used for that purpose.
 	//
-	// The actual codec used for serialization should be provided to params and
+	// The actual codec used for serialization should be provided to x/gov and
 	// defined at the application level.
 	ModuleCdc = codec.NewHybridCodec(amino, types.NewInterfaceRegistry())
 )
@@ -55,7 +56,7 @@ func (m MsgUpdateParams) GetSigners() []sdk.AccAddress {
 }
 
 func registerCodec(cdc *codec.Codec) {
-	cdc.RegisterConcrete(MsgUpdateParams{}, "irita/modules/MsgUpdateParams", nil)
+	cdc.RegisterConcrete(MsgUpdateParams{}, "cschain/modules/MsgUpdateParams", nil)
 }
 
 // ValidateChanges performs basic validation checks over a set of ParamChange. It

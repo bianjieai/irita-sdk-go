@@ -1,5 +1,5 @@
 syntax = "proto3";
-package irita.modules.validator;
+package cschain.modules.validator;
 
 import "third_party/proto/gogoproto/gogo.proto";
 import "third_party/proto/tendermint/abci/types/types.proto";

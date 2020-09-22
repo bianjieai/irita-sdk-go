@@ -2,7 +2,6 @@ package types
 
 import (
 	jsonc "github.com/gibson042/canonicaljson-go"
-
 	"github.com/tendermint/go-amino"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
@@ -19,6 +18,7 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterInterface((*Msg)(nil), nil)
 	cdc.RegisterInterface((*Tx)(nil), nil)
 	cdc.RegisterConcrete(StdTx{}, "cosmos-sdk/StdTx", nil)
+	cdc.RegisterConcrete(MerkleProof{}, "ibc/commitment/MerkleProof", nil)
 }
 
 // CanonicalSignBytes returns a canonical JSON encoding of a Proto message that

@@ -1,1 +1,1 @@
-cp -r ./scripts/node/   ~/.irita
+cp -r ./scripts/node/   ~/.cschain

@@ -17,7 +17,8 @@ func MarshalAny(m Marshaler, x interface{}) ([]byte, error) {
 	}
 
 	any := &types.Any{}
-	if err := any.Pack(msg); err != nil {
+	err := any.Pack(msg)
+	if err != nil {
 		return nil, err
 	}
 
@@ -34,7 +35,8 @@ func MarshalAny(m Marshaler, x interface{}) ([]byte, error) {
 func UnmarshalAny(m Marshaler, iface interface{}, bz []byte) error {
 	any := &types.Any{}
 
-	if err := m.UnmarshalBinaryBare(bz, any); err != nil {
+	err := m.UnmarshalBinaryBare(bz, any)
+	if err != nil {
 		return err
 	}
 

@@ -38,5 +38,4 @@ type EventDataMsgSend struct {
 	To     string     `json:"to"`
 	Amount []sdk.Coin `json:"amount"`
 }
-
 type EventMsgSendCallback func(EventDataMsgSend)
