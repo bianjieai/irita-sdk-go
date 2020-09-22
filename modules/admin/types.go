@@ -23,11 +23,11 @@ var (
 
 	amino = codec.New()
 
-	// ModuleCdc references the global x/gov module codec. Note, the codec should
+	// ModuleCdc references the global admin module codec. Note, the codec should
 	// ONLY be used in certain instances of tests and for JSON encoding as Amino is
 	// still used for that purpose.
 	//
-	// The actual codec used for serialization should be provided to x/gov and
+	// The actual codec used for serialization should be provided to admin and
 	// defined at the application level.
 	ModuleCdc = codec.NewHybridCodec(amino, types.NewInterfaceRegistry())
 )
@@ -79,7 +79,7 @@ func (m MsgRemoveRoles) ValidateBasic() error {
 		return errors.New("address missing")
 	}
 	if m.Operator.Empty() {
-		errors.New("operator missing")
+		return errors.New("operator missing")
 	}
 	if len(m.Roles) == 0 {
 		return errors.New("roles missing")
@@ -247,8 +247,8 @@ func (r Role) string() string {
 }
 
 func registerCodec(cdc *codec.Codec) {
-	cdc.RegisterConcrete(MsgAddRoles{}, "cschain/modules/MsgAddRoles", nil)
-	cdc.RegisterConcrete(MsgRemoveRoles{}, "cschain/modules/MsgRemoveRoles", nil)
-	cdc.RegisterConcrete(MsgBlockAccount{}, "cschain/modules/MsgBlockAccount", nil)
-	cdc.RegisterConcrete(MsgUnblockAccount{}, "cschain/modules/MsgUnblockAccount", nil)
+	cdc.RegisterConcrete(MsgAddRoles{}, "irita/modules/MsgAddRoles", nil)
+	cdc.RegisterConcrete(MsgRemoveRoles{}, "irita/modules/MsgRemoveRoles", nil)
+	cdc.RegisterConcrete(MsgBlockAccount{}, "irita/modules/MsgBlockAccount", nil)
+	cdc.RegisterConcrete(MsgUnblockAccount{}, "irita/modules/MsgUnblockAccount", nil)
 }

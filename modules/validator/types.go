@@ -25,7 +25,7 @@ var (
 	// ONLY be used in certain instances of tests and for JSON encoding as Amino is
 	// still used for that purpose.
 	//
-	// The actual codec used for serialization should be provided to x/gov and
+	// The actual codec used for serialization should be provided to validator and
 	// defined at the application level.
 	ModuleCdc = codec.NewHybridCodec(amino, types.NewInterfaceRegistry())
 )
@@ -192,8 +192,8 @@ func (p Params) Convert() interface{} {
 }
 
 func registerCodec(cdc *codec.Codec) {
-	cdc.RegisterConcrete(MsgCreateValidator{}, "cschain/modules/MsgCreateValidator", nil)
-	cdc.RegisterConcrete(MsgUpdateValidator{}, "cschain/modules/MsgUpdateValidator", nil)
-	cdc.RegisterConcrete(MsgRemoveValidator{}, "cschain/modules/MsgRemoveValidator", nil)
-	cdc.RegisterConcrete(MsgUnjailValidator{}, "cschain/modules/MsgUnjailValidator", nil)
+	cdc.RegisterConcrete(MsgCreateValidator{}, "irita/modules/MsgCreateValidator", nil)
+	cdc.RegisterConcrete(MsgUpdateValidator{}, "irita/modules/MsgUpdateValidator", nil)
+	cdc.RegisterConcrete(MsgRemoveValidator{}, "irita/modules/MsgRemoveValidator", nil)
+	cdc.RegisterConcrete(MsgUnjailValidator{}, "irita/modules/MsgUnjailValidator", nil)
 }

@@ -22,11 +22,11 @@ var (
 
 	amino = codec.New()
 
-	// ModuleCdc references the global x/gov module codec. Note, the codec should
+	// ModuleCdc references the global nft module codec. Note, the codec should
 	// ONLY be used in certain instances of tests and for JSON encoding as Amino is
 	// still used for that purpose.
 	//
-	// The actual codec used for serialization should be provided to x/gov and
+	// The actual codec used for serialization should be provided to nft and
 	// defined at the application level.
 	ModuleCdc = codec.NewHybridCodec(amino, types.NewInterfaceRegistry())
 )

@@ -1,4 +1,4 @@
-// Package modules is to warpped the API provided by each module of CSRB
+// Package modules is to warpped the API provided by each module of IRITA
 //
 //
 package modules

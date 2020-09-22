@@ -22,7 +22,7 @@ var (
 	// ONLY be used in certain instances of tests and for JSON encoding as Amino is
 	// still used for that purpose.
 	//
-	// The actual codec used for serialization should be provided to x/gov and
+	// The actual codec used for serialization should be provided to param and
 	// defined at the application level.
 	ModuleCdc = codec.NewHybridCodec(amino, types.NewInterfaceRegistry())
 )
@@ -56,7 +56,7 @@ func (m MsgUpdateParams) GetSigners() []sdk.AccAddress {
 }
 
 func registerCodec(cdc *codec.Codec) {
-	cdc.RegisterConcrete(MsgUpdateParams{}, "cschain/modules/MsgUpdateParams", nil)
+	cdc.RegisterConcrete(MsgUpdateParams{}, "irita/modules/MsgUpdateParams", nil)
 }
 
 // ValidateChanges performs basic validation checks over a set of ParamChange. It

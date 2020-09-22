@@ -154,6 +154,6 @@ func (p *PubKeyAlgorithm) UnmarshalJSON(data []byte) error {
 }
 
 func registerCodec(cdc *codec.Codec) {
-	cdc.RegisterConcrete(MsgCreateIdentity{}, "cschain/MsgCreateIdentity", nil)
-	cdc.RegisterConcrete(MsgUpdateIdentity{}, "cschain/MsgUpdateIdentity", nil)
+	cdc.RegisterConcrete(MsgCreateIdentity{}, "irita/MsgCreateIdentity", nil)
+	cdc.RegisterConcrete(MsgUpdateIdentity{}, "irita/MsgUpdateIdentity", nil)
 }
