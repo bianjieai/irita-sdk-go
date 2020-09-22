@@ -1,4 +1,4 @@
-FROM bianjieai/irita:latest
+FROM bianjie/bsnhub:latest
 
 COPY . /scripts
 
