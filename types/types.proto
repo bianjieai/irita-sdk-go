@@ -1,5 +1,5 @@
 syntax = "proto3";
-package cschain;
+package irita;
 
 import "third_party/proto/gogoproto/gogo.proto";
 import "third_party/proto/tendermint/abci/types/types.proto";

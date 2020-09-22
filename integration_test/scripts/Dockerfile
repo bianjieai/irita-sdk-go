@@ -1,4 +1,4 @@
-FROM bianjieai/cschain:latest
+FROM bianjieai/irita:latest
 
 COPY . /scripts
 
@@ -6,4 +6,4 @@ RUN sh /scripts/setup.sh
 
 EXPOSE 26657
 
-CMD cschain start
+CMD irita start

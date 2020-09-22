@@ -31,7 +31,7 @@ var (
 )
 
 //Execute the local file system to realize the persistence of the key data, and the stored data is encrypted using `PBES2`.
-//Can directly read the data of `cschaincli` keys (--keyring-backend = file)
+//Can directly read the data of `iritacli` keys (--keyring-backend = file)
 type FileDAO struct {
 	dir string
 }

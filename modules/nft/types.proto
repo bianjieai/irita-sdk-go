@@ -1,5 +1,5 @@
 syntax = "proto3";
-package cschain.modules.nft;
+package irita.modules.nft;
 
 import "third_party/proto/gogoproto/gogo.proto";
 

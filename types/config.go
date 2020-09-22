@@ -15,7 +15,7 @@ const (
 	defaultMaxTxsBytes   = 1073741824
 	defaultAlgo          = "sm2"
 	defaultMode          = Sync
-	defaultPath          = "$HOME/cschain-sdk-go/leveldb"
+	defaultPath          = "$HOME/irita-sdk-go/leveldb"
 	defaultGasAdjustment = 1.0
 )
 

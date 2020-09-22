@@ -30,7 +30,7 @@ const (
 )
 
 var (
-	path = os.ExpandEnv("$HOME/.cschaincli")
+	path = os.ExpandEnv("$HOME/.iritacli")
 )
 
 type IntegrationTestSuite struct {
