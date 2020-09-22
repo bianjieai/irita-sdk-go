@@ -66,7 +66,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		panic(err)
 	}
 
-	s.IRITAClient = sdk.NewCSChainClient(cfg)
+	s.IRITAClient = sdk.NewIRITAClient(cfg)
 	s.r = rand.New(rand.NewSource(time.Now().UnixNano()))
 	s.rootAccount = MockAccount{
 		Name:     "v1",

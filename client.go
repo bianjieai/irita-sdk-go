@@ -10,7 +10,6 @@ import (
 	"github.com/bianjieai/irita-sdk-go/modules"
 	"github.com/bianjieai/irita-sdk-go/modules/admin"
 	"github.com/bianjieai/irita-sdk-go/modules/bank"
-	"github.com/bianjieai/irita-sdk-go/modules/ibc"
 	"github.com/bianjieai/irita-sdk-go/modules/identity"
 	"github.com/bianjieai/irita-sdk-go/modules/keys"
 	"github.com/bianjieai/irita-sdk-go/modules/nft"
@@ -43,7 +42,7 @@ type IRITAClient struct {
 	Key       keys.KeyI
 }
 
-func NewCSChainClient(cfg types.ClientConfig) IRITAClient {
+func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 	//create cdc for encoding and decoding
 	cdc := types.NewCodec()
 	interfaceRegistry := cdctypes.NewInterfaceRegistry()
@@ -62,7 +61,6 @@ func NewCSChainClient(cfg types.ClientConfig) IRITAClient {
 	paramsClient := params.NewClient(baseClient, appCodec)
 	validatorClient := validator.NewClient(baseClient, appCodec)
 	identityClient := identity.NewClient(baseClient, appCodec)
-	ibcClient := ibc.NewClient(baseClient, appCodec)
 
 	client := &IRITAClient{
 		logger:            baseClient.Logger(),
@@ -93,7 +91,6 @@ func NewCSChainClient(cfg types.ClientConfig) IRITAClient {
 		paramsClient,
 		validatorClient,
 		identityClient,
-		ibcClient,
 	)
 	return *client
 }
