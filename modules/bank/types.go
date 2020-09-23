@@ -26,11 +26,11 @@ var (
 
 	amino = codec.New()
 
-	// ModuleCdc references the global admin module codec. Note, the codec should
+	// ModuleCdc references the global bank module codec. Note, the codec should
 	// ONLY be used in certain instances of tests and for JSON encoding as Amino is
 	// still used for that purpose.
 	//
-	// The actual codec used for serialization should be provided to admin and
+	// The actual codec used for serialization should be provided to bank and
 	// defined at the application level.
 	ModuleCdc = codec.NewHybridCodec(amino, types.NewInterfaceRegistry())
 )
@@ -142,13 +142,13 @@ func (msg MsgMultiSend) GetSigners() []sdk.AccAddress {
 // ValidateBasic - validate transaction input
 func (in Input) ValidateBasic() error {
 	if len(in.Address) == 0 {
-		return errors.New(fmt.Sprintf(fmt.Sprintf("account %s is invalid", in.Address.String())))
+		return fmt.Errorf("account %s is invalid", in.Address.String())
 	}
 	if in.Coins.Empty() {
 		return errors.New("empty input coins")
 	}
 	if !in.Coins.IsValid() {
-		return errors.New(fmt.Sprintf("invalid input coins [%s]", in.Coins))
+		fmt.Errorf("invalid input coins [%s]", in.Coins)
 	}
 	return nil
 }
@@ -165,13 +165,13 @@ func NewInput(addr sdk.AccAddress, coins sdk.Coins) Input {
 // ValidateBasic - validate transaction output
 func (out Output) ValidateBasic() error {
 	if len(out.Address) == 0 {
-		return errors.New(fmt.Sprintf(fmt.Sprintf("account %s is invalid", out.Address.String())))
+		return fmt.Errorf("account %s is invalid", out.Address.String())
 	}
 	if out.Coins.Empty() {
 		return errors.New("empty input coins")
 	}
 	if !out.Coins.IsValid() {
-		return errors.New(fmt.Sprintf("invalid input coins [%s]", out.Coins))
+		return fmt.Errorf("invalid input coins [%s]", out.Coins)
 	}
 	return nil
 }

@@ -21,7 +21,7 @@ var (
 
 	amino = codec.New()
 
-	// ModuleCdc references the global modules/validator module codec. Note, the codec should
+	// ModuleCdc references the global validator module codec. Note, the codec should
 	// ONLY be used in certain instances of tests and for JSON encoding as Amino is
 	// still used for that purpose.
 	//

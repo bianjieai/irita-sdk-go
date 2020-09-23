@@ -59,7 +59,7 @@ func (aa AccAddress) Equals(aa2 AccAddress) bool {
 		return true
 	}
 
-	return bytes.Compare(aa.Bytes(), aa2.Bytes()) == 0
+	return bytes.Equal(aa.Bytes(), aa2.Bytes())
 }
 
 // Returns boolean for whether an AccAddress is empty
@@ -69,7 +69,7 @@ func (aa AccAddress) Empty() bool {
 	}
 
 	aa2 := AccAddress{}
-	return bytes.Compare(aa.Bytes(), aa2.Bytes()) == 0
+	return bytes.Equal(aa.Bytes(), aa2.Bytes())
 }
 
 // Marshal returns the raw address bytes. It is needed for protobuf
@@ -137,7 +137,7 @@ func (va ValAddress) Equals(va2 ValAddress) bool {
 		return true
 	}
 
-	return bytes.Compare(va.Bytes(), va2.Bytes()) == 0
+	return bytes.Equal(va.Bytes(), va2.Bytes())
 }
 
 // Returns boolean for whether an AccAddress is empty
@@ -147,7 +147,7 @@ func (va ValAddress) Empty() bool {
 	}
 
 	va2 := ValAddress{}
-	return bytes.Compare(va.Bytes(), va2.Bytes()) == 0
+	return bytes.Equal(va.Bytes(), va2.Bytes())
 }
 
 // Marshal returns the raw address bytes. It is needed for protobuf
@@ -207,7 +207,7 @@ func (va ValAddress) String() string {
 func (va ValAddress) Format(s fmt.State, verb rune) {
 	switch verb {
 	case 's':
-		_, _ = s.Write([]byte(fmt.Sprintf("%s", va.String())))
+		_, _ = s.Write([]byte(va.String()))
 	case 'p':
 		_, _ = s.Write([]byte(fmt.Sprintf("%p", va)))
 	default:

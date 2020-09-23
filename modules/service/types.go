@@ -261,7 +261,7 @@ func (msg MsgUpdateServiceBinding) ValidateBasic() error {
 	}
 
 	if !msg.Deposit.Empty() {
-		return errors.New(fmt.Sprintf("invalid deposit: %s", msg.Deposit))
+		return fmt.Errorf("invalid deposit: %s", msg.Deposit)
 	}
 
 	return nil
@@ -378,7 +378,7 @@ func (msg MsgEnableServiceBinding) ValidateBasic() error {
 	}
 
 	if !msg.Deposit.Empty() {
-		return errors.New(fmt.Sprintf("invalid deposit: %s", msg.Deposit))
+		return fmt.Errorf("invalid deposit: %s", msg.Deposit)
 	}
 
 	return nil
