@@ -52,6 +52,9 @@ type ClientConfig struct {
 
 	//adjustment factor to be multiplied against the estimate returned by the tx simulation;
 	GasAdjustment float64
+
+	//whether to enable caching
+	Cached bool
 }
 
 func NewClientConfig(uri, chainID string, options ...Option) (ClientConfig, error) {
@@ -68,7 +71,6 @@ func NewClientConfig(uri, chainID string, options ...Option) (ClientConfig, erro
 	if err := cfg.checkAndSetDefault(); err != nil {
 		return ClientConfig{}, err
 	}
-
 	return cfg, nil
 }
 
@@ -113,7 +115,10 @@ func (cfg *ClientConfig) checkAndSetDefault() error {
 		return err
 	}
 
-	return GasAdjustmentOption(cfg.GasAdjustment)(cfg)
+	if err := GasAdjustmentOption(cfg.GasAdjustment)(cfg); err != nil {
+		return err
+	}
+	return nil
 }
 
 type Option func(cfg *ClientConfig) error
@@ -210,6 +215,13 @@ func GasAdjustmentOption(gasAdjustment float64) Option {
 			gasAdjustment = defaultGasAdjustment
 		}
 		cfg.GasAdjustment = gasAdjustment
+		return nil
+	}
+}
+
+func CachedOption(enabled bool) Option {
+	return func(cfg *ClientConfig) error {
+		cfg.Cached = enabled
 		return nil
 	}
 }

@@ -33,35 +33,40 @@ func (ac *AminoCodec) jsonUnmarshalAnys(o interface{}) error {
 }
 
 func (ac *AminoCodec) MarshalBinaryBare(o ProtoMarshaler) ([]byte, error) {
-	if err := ac.marshalAnys(o); err != nil {
+	err := ac.marshalAnys(o)
+	if err != nil {
 		return nil, err
 	}
 	return ac.amino.MarshalBinaryBare(o)
 }
 
 func (ac *AminoCodec) MustMarshalBinaryBare(o ProtoMarshaler) []byte {
-	if err := ac.marshalAnys(o); err != nil {
+	err := ac.marshalAnys(o)
+	if err != nil {
 		panic(err)
 	}
 	return ac.amino.MustMarshalBinaryBare(o)
 }
 
 func (ac *AminoCodec) MarshalBinaryLengthPrefixed(o ProtoMarshaler) ([]byte, error) {
-	if err := ac.marshalAnys(o); err != nil {
+	err := ac.marshalAnys(o)
+	if err != nil {
 		return nil, err
 	}
 	return ac.amino.MarshalBinaryLengthPrefixed(o)
 }
 
 func (ac *AminoCodec) MustMarshalBinaryLengthPrefixed(o ProtoMarshaler) []byte {
-	if err := ac.marshalAnys(o); err != nil {
+	err := ac.marshalAnys(o)
+	if err != nil {
 		panic(err)
 	}
 	return ac.amino.MustMarshalBinaryLengthPrefixed(o)
 }
 
 func (ac *AminoCodec) UnmarshalBinaryBare(bz []byte, ptr ProtoMarshaler) error {
-	if err := ac.amino.UnmarshalBinaryBare(bz, ptr); err != nil {
+	err := ac.amino.UnmarshalBinaryBare(bz, ptr)
+	if err != nil {
 		return err
 	}
 	return ac.unmarshalAnys(ptr)
@@ -69,13 +74,15 @@ func (ac *AminoCodec) UnmarshalBinaryBare(bz []byte, ptr ProtoMarshaler) error {
 
 func (ac *AminoCodec) MustUnmarshalBinaryBare(bz []byte, ptr ProtoMarshaler) {
 	ac.amino.MustUnmarshalBinaryBare(bz, ptr)
-	if err := ac.unmarshalAnys(ptr); err != nil {
+	err := ac.unmarshalAnys(ptr)
+	if err != nil {
 		panic(err)
 	}
 }
 
 func (ac *AminoCodec) UnmarshalBinaryLengthPrefixed(bz []byte, ptr ProtoMarshaler) error {
-	if err := ac.amino.UnmarshalBinaryLengthPrefixed(bz, ptr); err != nil {
+	err := ac.amino.UnmarshalBinaryLengthPrefixed(bz, ptr)
+	if err != nil {
 		return err
 	}
 	return ac.unmarshalAnys(ptr)
@@ -83,27 +90,31 @@ func (ac *AminoCodec) UnmarshalBinaryLengthPrefixed(bz []byte, ptr ProtoMarshale
 
 func (ac *AminoCodec) MustUnmarshalBinaryLengthPrefixed(bz []byte, ptr ProtoMarshaler) {
 	ac.amino.MustUnmarshalBinaryLengthPrefixed(bz, ptr)
-	if err := ac.unmarshalAnys(ptr); err != nil {
+	err := ac.unmarshalAnys(ptr)
+	if err != nil {
 		panic(err)
 	}
 }
 
 func (ac *AminoCodec) MarshalJSON(o interface{}) ([]byte, error) {
-	if err := ac.jsonMarshalAnys(o); err != nil {
+	err := ac.jsonMarshalAnys(o)
+	if err != nil {
 		return nil, err
 	}
 	return ac.amino.MarshalJSON(o)
 }
 
 func (ac *AminoCodec) MustMarshalJSON(o interface{}) []byte {
-	if err := ac.jsonMarshalAnys(o); err != nil {
+	err := ac.jsonMarshalAnys(o)
+	if err != nil {
 		panic(err)
 	}
 	return ac.amino.MustMarshalJSON(o)
 }
 
 func (ac *AminoCodec) UnmarshalJSON(bz []byte, ptr interface{}) error {
-	if err := ac.amino.UnmarshalJSON(bz, ptr); err != nil {
+	err := ac.amino.UnmarshalJSON(bz, ptr)
+	if err != nil {
 		return err
 	}
 	return ac.jsonUnmarshalAnys(ptr)
@@ -111,7 +122,8 @@ func (ac *AminoCodec) UnmarshalJSON(bz []byte, ptr interface{}) error {
 
 func (ac *AminoCodec) MustUnmarshalJSON(bz []byte, ptr interface{}) {
 	ac.amino.MustUnmarshalJSON(bz, ptr)
-	if err := ac.jsonUnmarshalAnys(ptr); err != nil {
+	err := ac.jsonUnmarshalAnys(ptr)
+	if err != nil {
 		panic(err)
 	}
 }

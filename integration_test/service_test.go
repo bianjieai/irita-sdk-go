@@ -5,8 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bianjieai/irita-sdk-go/modules/service"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
+
+	"github.com/bianjieai/irita-sdk-go/modules/service"
 )
 
 func (s IntegrationTestSuite) TestService() {
@@ -89,7 +90,7 @@ func (s IntegrationTestSuite) TestService() {
 
 	var requestContextID string
 	var sub2 sdk.Subscription
-	var exit = make(chan int)
+	var exit = make(chan int, 0)
 
 	requestContextID, err = s.Service.InvokeService(invocation, baseTx)
 	require.NoError(s.T(), err)
@@ -110,8 +111,9 @@ func (s IntegrationTestSuite) TestService() {
 	for {
 		select {
 		case <-exit:
-			require.NoError(s.T(), s.Unsubscribe(sub1))
-			require.NoError(s.T(), s.Unsubscribe(sub2))
+			err = s.Unsubscribe(sub1)
+			err = s.Unsubscribe(sub2)
+			require.NoError(s.T(), err)
 			goto loop
 		case <-time.After(2 * time.Minute):
 			require.Panics(s.T(), func() {}, "test service timeout")

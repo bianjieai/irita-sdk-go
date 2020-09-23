@@ -5,10 +5,10 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/bianjieai/irita-sdk-go/codec"
+
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/multisig"
-
-	"github.com/bianjieai/irita-sdk-go/codec"
 )
 
 const (
@@ -151,7 +151,7 @@ func (tx StdTx) ValidateBasic() error {
 	}
 
 	if tx.Fee.Amount.IsAnyNegative() {
-		return fmt.Errorf("invalid fee %s amount provided", tx.Fee.Amount)
+		return errors.New(fmt.Sprintf("invalid fee %s amount provided", tx.Fee.Amount))
 	}
 
 	if len(stdSigs) == 0 {
@@ -162,8 +162,7 @@ func (tx StdTx) ValidateBasic() error {
 	}
 	if len(stdSigs) != len(tx.GetSigners()) {
 		return fmt.Errorf(
-			"wrong number of signers; expected %d, got %d",
-			len(tx.GetSigners()), len(stdSigs),
+			"wrong number of signers; expected %d, got %d", len(tx.GetSigners()), len(stdSigs),
 		)
 	}
 	return nil

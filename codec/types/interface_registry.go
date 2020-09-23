@@ -142,11 +142,13 @@ func (registry *interfaceRegistry) UnpackAny(any *Any, iface interface{}) error 
 		return fmt.Errorf("can't proto unmarshal %T", msg)
 	}
 
-	if err := proto.Unmarshal(any.Value, msg); err != nil {
+	err := proto.Unmarshal(any.Value, msg)
+	if err != nil {
 		return err
 	}
 
-	if err := UnpackInterfaces(msg, registry); err != nil {
+	err = UnpackInterfaces(msg, registry)
+	if err != nil {
 		return err
 	}
 

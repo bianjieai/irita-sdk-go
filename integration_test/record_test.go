@@ -37,11 +37,17 @@ func (s IntegrationTestSuite) TestRecord() {
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), recordID)
 
-	record, err := s.Record.QueryRecord(recordID)
+	request := record.QueryRecordRequest{
+		RecordID: recordID,
+		Prove:    true,
+		Height:   0,
+	}
+
+	result, err := s.Record.QueryRecord(request)
 	require.NoError(s.T(), err)
-	require.NotEmpty(s.T(), record.Contents)
+	require.NotEmpty(s.T(), result.Record.Contents)
 
 	for i := 0; i < num; i++ {
-		require.EqualValues(s.T(), contents[i], record.Contents[i])
+		require.EqualValues(s.T(), contents[i], result.Record.Contents[i])
 	}
 }

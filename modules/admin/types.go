@@ -151,7 +151,7 @@ func (m MsgUnblockAccount) GetSigners() []sdk.AccAddress {
 }
 
 // RoleFromstring turns a string into a Auth
-func roleFromstring(str string) (Role, error) {
+func roleFromString(str string) (Role, error) {
 	switch str {
 	case "RootAdmin":
 		return RoleRootAdmin, nil
@@ -171,6 +171,11 @@ func roleFromstring(str string) (Role, error) {
 	case "PowerUser":
 		return RolePowerUser, nil
 
+	case "RelayerUser":
+		return RoleRelayerUser, nil
+
+	case "RoleIDAdmin":
+		return RoleIDAdmin, nil
 	default:
 		return Role(0xff), fmt.Errorf("'%s' is not a valid role", str)
 	}
@@ -195,17 +200,17 @@ func (r Role) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON Unmarshals from JSON assuming Bech32 encoding
 func (r *Role) UnmarshalJSON(data []byte) error {
 	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
+	err := json.Unmarshal(data, &s)
+	if err != nil {
 		return err
 	}
 
-	bz2, err := roleFromstring(s)
+	bz2, err := roleFromString(s)
 	if err != nil {
 		return err
 	}
 
 	*r = bz2
-
 	return nil
 }
 
@@ -229,6 +234,12 @@ func (r Role) string() string {
 
 	case RolePowerUser:
 		return "PowerUser"
+
+	case RoleRelayerUser:
+		return "RelayerUser"
+
+	case RoleIDAdmin:
+		return "RoleIDAdmin"
 
 	default:
 		return ""

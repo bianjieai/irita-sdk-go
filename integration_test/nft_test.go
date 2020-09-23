@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/bianjieai/irita-sdk-go/modules/nft"
+
 	"github.com/stretchr/testify/require"
 
-	"github.com/bianjieai/irita-sdk-go/modules/nft"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 

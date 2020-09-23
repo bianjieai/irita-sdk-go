@@ -56,6 +56,5 @@ func (p paramsClient) UpdateParams(requests []UpdateParamRequest, baseTx sdk.Bas
 		Changes:  changes,
 		Operator: sender,
 	}
-
 	return p.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }

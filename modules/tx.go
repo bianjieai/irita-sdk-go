@@ -29,11 +29,11 @@ func (base baseClient) QueryTx(hash string) (sdk.ResultQueryTx, error) {
 	if err != nil {
 		return sdk.ResultQueryTx{}, err
 	}
-
 	return base.parseTxResult(res, resBlocks[res.Height])
 }
 
 func (base baseClient) QueryTxs(builder *sdk.EventQueryBuilder, page, size int) (sdk.ResultSearchTxs, error) {
+
 	query := builder.Build()
 	if len(query) == 0 {
 		return sdk.ResultSearchTxs{}, errors.New("must declare at least one tag to search")
@@ -64,6 +64,24 @@ func (base baseClient) QueryTxs(builder *sdk.EventQueryBuilder, page, size int) 
 	}, nil
 }
 
+func (base baseClient) QueryBlock(height int64) (sdk.BlockDetail, error) {
+	block, err := base.Block(&height)
+	if err != nil {
+		return sdk.BlockDetail{}, err
+	}
+
+	blockResult, err := base.BlockResults(&height)
+	if err != nil {
+		return sdk.BlockDetail{}, err
+	}
+
+	return sdk.BlockDetail{
+		BlockID:     block.BlockID,
+		Block:       sdk.ParseBlock(base.cdc, block.Block),
+		BlockResult: sdk.ParseBlockResult(blockResult),
+	}, nil
+}
+
 func (base baseClient) EstimateTxGas(txBytes []byte) (uint64, error) {
 	res, err := base.ABCIQuery("/app/simulate", txBytes)
 	if err != nil {
@@ -76,7 +94,6 @@ func (base baseClient) EstimateTxGas(txBytes []byte) (uint64, error) {
 	}
 
 	adjusted := adjustGasEstimate(simRes.GasUsed, base.cfg.GasAdjustment)
-
 	return adjusted, nil
 }
 
@@ -100,8 +117,7 @@ func (base *baseClient) buildTx(msgs []sdk.Msg, baseTx sdk.BaseTx) ([]byte, *sdk
 		return nil, builder, sdk.Wrap(err)
 	}
 
-	base.Logger().Debug().Msg("sign transaction success")
-
+	base.Logger().Debug("sign transaction success")
 	return txByte, builder, nil
 }
 
@@ -125,7 +141,6 @@ func (base baseClient) broadcastTx(txBytes []byte, mode sdk.BroadcastMode, simul
 	default:
 		err = sdk.Wrapf("commit mode(%s) not supported", mode)
 	}
-
 	return
 }
 
@@ -143,11 +158,8 @@ func (base baseClient) broadcastTxCommit(tx []byte) (sdk.ResultTx, sdk.Error) {
 	}
 
 	if !res.DeliverTx.IsOK() {
-		return sdk.ResultTx{}, sdk.GetError(
-			res.DeliverTx.Codespace,
-			res.DeliverTx.Code,
-			res.DeliverTx.Log,
-		)
+		return sdk.ResultTx{}, sdk.GetError(res.DeliverTx.Codespace,
+			res.DeliverTx.Code, res.DeliverTx.Log)
 	}
 
 	return sdk.ResultTx{
@@ -168,10 +180,13 @@ func (base baseClient) broadcastTxSync(tx []byte) (sdk.ResultTx, sdk.Error) {
 	}
 
 	if res.Code != 0 {
-		return sdk.ResultTx{}, sdk.GetError(sdk.RootCodespace, res.Code, res.Log)
+		return sdk.ResultTx{}, sdk.GetError(sdk.RootCodespace,
+			res.Code, res.Log)
 	}
 
-	return sdk.ResultTx{Hash: res.Hash.String()}, nil
+	return sdk.ResultTx{
+		Hash: res.Hash.String(),
+	}, nil
 }
 
 // BroadcastTxAsync broadcasts transaction bytes to a Tendermint node
@@ -182,7 +197,9 @@ func (base baseClient) broadcastTxAsync(tx []byte) (sdk.ResultTx, sdk.Error) {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	return sdk.ResultTx{Hash: res.Hash.String()}, nil
+	return sdk.ResultTx{
+		Hash: res.Hash.String(),
+	}, nil
 }
 
 func (base baseClient) getResultBlocks(resTxs []*ctypes.ResultTx) (map[int64]*ctypes.ResultBlock, error) {
@@ -201,6 +218,7 @@ func (base baseClient) getResultBlocks(resTxs []*ctypes.ResultTx) (map[int64]*ct
 }
 
 func (base baseClient) parseTxResult(res *ctypes.ResultTx, resBlock *ctypes.ResultBlock) (sdk.ResultQueryTx, error) {
+
 	var tx sdk.StdTx
 	if err := base.cdc.UnmarshalBinaryBare(res.Tx, &tx); err != nil {
 		return sdk.ResultQueryTx{}, err

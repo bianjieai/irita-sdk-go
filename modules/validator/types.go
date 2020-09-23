@@ -6,6 +6,7 @@ import (
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
+
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 

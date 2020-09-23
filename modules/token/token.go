@@ -144,13 +144,13 @@ func (t tokenClient) QueryTokens(owner string) (sdk.Tokens, error) {
 		return sdk.Tokens{}, err
 	}
 
-	if err = t.UnmarshalJSON(bz, &tokens); err != nil {
+	err = t.UnmarshalJSON(bz, &tokens)
+	if err != nil {
 		return sdk.Tokens{}, err
 	}
 
 	ts := tokens.Convert().(sdk.Tokens)
 	t.SaveTokens(ts...)
-
 	return ts, nil
 }
 
@@ -165,7 +165,6 @@ func (t tokenClient) QueryFees(symbol string) (QueryFeesResponse, error) {
 	if err := t.QueryWithResponse("custom/token/fees", param, &tokens); err != nil {
 		return QueryFeesResponse{}, err
 	}
-
 	return tokens.Convert().(QueryFeesResponse), nil
 }
 

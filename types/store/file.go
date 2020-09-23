@@ -65,15 +65,10 @@ func (f FileDAO) Write(name, password string, info KeyInfo) error {
 		return err
 	}
 
-	token, err := jose.Encrypt(
-		string(bytes),
-		jose.PBES2_HS256_A128KW,
-		jose.A256GCM,
-		password,
-		jose.Headers(
-			map[string]interface{}{"created": time.Now().String()},
-		),
-	)
+	token, err := jose.Encrypt(string(bytes), jose.PBES2_HS256_A128KW, jose.A256GCM, password,
+		jose.Headers(map[string]interface{}{
+			"created": time.Now().String(),
+		}))
 	if err != nil {
 		return err
 	}
@@ -108,7 +103,8 @@ func (f FileDAO) Read(name, password string) (KeyInfo, error) {
 	}
 
 	var decoded keyring.Item
-	if err = json.Unmarshal([]byte(payload), &decoded); err != nil {
+	err = json.Unmarshal([]byte(payload), &decoded)
+	if err != nil {
 		return KeyInfo{}, err
 	}
 
@@ -133,7 +129,8 @@ func (f FileDAO) Read(name, password string) (KeyInfo, error) {
 // Delete will delete user data and use user password to verify permissions
 func (f FileDAO) Delete(name, password string) error {
 	//Perform security verification
-	if _, err := f.Read(name, password); err != nil {
+	_, err := f.Read(name, password)
+	if err != nil {
 		return err
 	}
 
@@ -151,13 +148,13 @@ func (f FileDAO) Has(name string) bool {
 	if err != nil {
 		return false
 	}
-	if _, err = os.Stat(filename); err == nil {
+	_, err = os.Stat(filename)
+	if err == nil {
 		return true
 	}
 	if os.IsNotExist(err) {
 		return false
 	}
-
 	return false
 }
 

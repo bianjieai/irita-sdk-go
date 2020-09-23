@@ -67,8 +67,8 @@ func (aa AccAddress) Empty() bool {
 	if aa == nil {
 		return true
 	}
-	aa2 := AccAddress{}
 
+	aa2 := AccAddress{}
 	return bytes.Equal(aa.Bytes(), aa2.Bytes())
 }
 
@@ -172,7 +172,8 @@ func (va ValAddress) MarshalJSON() ([]byte, error) {
 func (va *ValAddress) UnmarshalJSON(data []byte) error {
 	var s string
 
-	if err := json.Unmarshal(data, &s); err != nil {
+	err := json.Unmarshal(data, &s)
+	if err != nil {
 		return nil
 	}
 

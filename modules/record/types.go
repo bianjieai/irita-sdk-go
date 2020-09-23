@@ -5,6 +5,7 @@ import (
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
+
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -19,6 +20,8 @@ var (
 	_ sdk.Msg = MsgCreateRecord{}
 
 	amino = codec.New()
+
+	recordKey = []byte{0x01} // record key
 
 	// ModuleCdc references the global record module codec. Note, the codec should
 	// ONLY be used in certain instances of tests and for JSON encoding as Amino is
@@ -75,10 +78,17 @@ func (msg MsgCreateRecord) GetSigners() []sdk.AccAddress {
 
 func (this Record) Convert() interface{} {
 	return QueryRecordResponse{
-		TxHash:   this.TxHash.String(),
-		Contents: this.Contents,
-		Creator:  this.Creator.String(),
+		Record: Data{
+			TxHash:   this.TxHash.String(),
+			Contents: this.Contents,
+			Creator:  this.Creator.String(),
+		},
 	}
+}
+
+// GetRecordKey returns record key bytes
+func GetRecordKey(recordID []byte) []byte {
+	return append(recordKey, recordID...)
 }
 
 func registerCodec(cdc *codec.Codec) {

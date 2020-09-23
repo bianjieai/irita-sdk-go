@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"strings"
 
+	cryptoAmino "github.com/tendermint/tendermint/crypto/encoding/amino"
+
+	"github.com/bianjieai/irita-sdk-go/crypto/hd"
+
+	"github.com/cosmos/go-bip39"
 	"github.com/pkg/errors"
 
 	"github.com/tendermint/tendermint/crypto"
-	cryptoAmino "github.com/tendermint/tendermint/crypto/encoding/amino"
-
-	"github.com/cosmos/go-bip39"
-
-	"github.com/bianjieai/irita-sdk-go/crypto/hd"
 )
 
 const (
@@ -21,8 +21,10 @@ const (
 type KeyManager interface {
 	Generate() (string, crypto.PrivKey)
 	Sign(data []byte) ([]byte, error)
+
 	ExportPrivKey(password string) (armor string, err error)
 	ImportPrivKey(armor, passphrase string) (crypto.PrivKey, string, error)
+
 	ExportPubKey() crypto.PubKey
 }
 
@@ -65,7 +67,6 @@ func NewPrivateKeyManager(priv []byte, algo string) (KeyManager, error) {
 		privKey: privKey,
 		algo:    algo,
 	}
-
 	return &k, err
 }
 
@@ -97,7 +98,6 @@ func (m *keyManager) recoveryFromMnemonic(mnemonic, hdPath, algoStr string) erro
 	privKey := algo.Generate()(derivedPriv)
 	m.privKey = privKey
 	m.algo = algoStr
-
 	return nil
 }
 
@@ -113,7 +113,6 @@ func (m *keyManager) ImportPrivKey(armor, passphrase string) (crypto.PrivKey, st
 
 	m.privKey = privKey
 	m.algo = algo
-
 	return privKey, algo, nil
 }
 

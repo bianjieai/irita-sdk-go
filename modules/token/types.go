@@ -7,6 +7,7 @@ import (
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
+
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -35,14 +36,10 @@ func init() {
 	registerCodec(amino)
 }
 
-func (msg MsgIssueToken) Route() string {
-	return ModuleName
-}
+func (msg MsgIssueToken) Route() string { return ModuleName }
 
 // Implements Msg.
-func (msg MsgIssueToken) Type() string {
-	return "issue_token"
-}
+func (msg MsgIssueToken) Type() string { return "issue_token" }
 
 // Implements Msg.
 func (msg MsgIssueToken) ValidateBasic() error {
@@ -111,23 +108,15 @@ func (msg MsgTransferTokenOwner) ValidateBasic() error {
 	return nil
 }
 
-func (msg MsgTransferTokenOwner) Route() string {
-	return ModuleName
-}
+func (msg MsgTransferTokenOwner) Route() string { return ModuleName }
 
 // Type implements Msg
-func (msg MsgTransferTokenOwner) Type() string {
-	return "transfer_token_owner"
-}
+func (msg MsgTransferTokenOwner) Type() string { return "transfer_token_owner" }
 
-func (msg MsgEditToken) Route() string {
-	return ModuleName
-}
+func (msg MsgEditToken) Route() string { return ModuleName }
 
 // Type implements Msg
-func (msg MsgEditToken) Type() string {
-	return "edit_token"
-}
+func (msg MsgEditToken) Type() string { return "edit_token" }
 
 // ValidateBasic implements Msg
 func (msg MsgEditToken) ValidateBasic() error {
@@ -138,7 +127,6 @@ func (msg MsgEditToken) ValidateBasic() error {
 	if len(msg.Symbol) == 0 {
 		return errors.New("symbol must be not empty")
 	}
-
 	return nil
 }
 
@@ -157,14 +145,10 @@ func (msg MsgEditToken) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Owner}
 }
 
-func (msg MsgMintToken) Route() string {
-	return ModuleName
-}
+func (msg MsgMintToken) Route() string { return ModuleName }
 
 // Type implements Msg
-func (msg MsgMintToken) Type() string {
-	return "mint_token"
-}
+func (msg MsgMintToken) Type() string { return "mint_token" }
 
 // GetSignBytes implements Msg
 func (msg MsgMintToken) GetSignBytes() []byte {
@@ -241,7 +225,8 @@ func (b Bool) MarshalJSON() ([]byte, error) {
 // Unmarshals from JSON assuming Bech32 encoding
 func (b *Bool) UnmarshalJSON(data []byte) error {
 	var s string
-	if err := json2.Unmarshal(data, &s); err != nil {
+	err := json2.Unmarshal(data, &s)
+	if err != nil {
 		return nil
 	}
 	*b = Bool(s)
@@ -317,7 +302,6 @@ func (ts Tokens) Convert() interface{} {
 			Owner:         t.GetOwner().String(),
 		})
 	}
-
 	return tokens
 }
 

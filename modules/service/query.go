@@ -110,17 +110,11 @@ func (s serviceClient) queryRequestByTxQuery(requestID string) (Request, error) 
 
 // queryResponseByTxQuery will query for a single request via a direct txs tags query.
 func (s serviceClient) queryResponseByTxQuery(requestID string) (Response, error) {
-	builder := sdk.NewEventQueryBuilder().AddCondition(
-		sdk.NewCond(
-			sdk.EventTypeMessage,
-			sdk.AttributeKeyAction,
-		).EQ("respond_service"),
-	).AddCondition(
-		sdk.NewCond(
-			sdk.EventTypeMessage,
-			sdk.AttributeKeyAction,
-		).EQ(attributeKeyRequestID),
-	)
+	builder := sdk.NewEventQueryBuilder().
+		AddCondition(sdk.NewCond(sdk.EventTypeMessage,
+			sdk.AttributeKeyAction).EQ("respond_service")).
+		AddCondition(sdk.NewCond(sdk.EventTypeMessage,
+			sdk.AttributeKeyAction).EQ(attributeKeyRequestID))
 
 	result, err := s.QueryTxs(builder, 1, 1)
 	if err != nil {
@@ -174,7 +168,6 @@ func splitRequestContextID(reqCtxID string) (sdk.HexBytes, int64, error) {
 
 	txHash := contextID[0:32]
 	msgIndex := int64(binary.BigEndian.Uint64(contextID[32:40]))
-
 	return txHash, msgIndex, nil
 }
 
@@ -193,6 +186,5 @@ func splitRequestID(reqID string) (sdk.HexBytes, uint64, int64, int16, error) {
 	batchCounter := binary.BigEndian.Uint64(requestID[40:48])
 	requestHeight := int64(binary.BigEndian.Uint64(requestID[48:56]))
 	batchRequestIndex := int16(binary.BigEndian.Uint16(requestID[56:]))
-
 	return reqCtxID, batchCounter, requestHeight, batchRequestIndex, nil
 }

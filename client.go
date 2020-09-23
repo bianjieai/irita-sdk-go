@@ -2,7 +2,8 @@ package sdk
 
 import (
 	"fmt"
-	"io"
+
+	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	cdctypes "github.com/bianjieai/irita-sdk-go/codec/types"
@@ -19,18 +20,16 @@ import (
 	"github.com/bianjieai/irita-sdk-go/modules/validator"
 	"github.com/bianjieai/irita-sdk-go/std"
 	"github.com/bianjieai/irita-sdk-go/types"
-	"github.com/bianjieai/irita-sdk-go/utils/log"
 )
 
 type IRITAClient struct {
-	logger            *log.Logger
+	logger            log.Logger
 	cdc               *codec.Codec
 	appCodec          *std.Codec
 	interfaceRegistry cdctypes.InterfaceRegistry
 	moduleManager     map[string]types.Module
 
 	types.BaseClient
-
 	Token     token.TokenI
 	Record    record.RecordI
 	Validator validator.ValidatorI
@@ -48,10 +47,9 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 	cdc := types.NewCodec()
 	interfaceRegistry := cdctypes.NewInterfaceRegistry()
 	appCodec := std.NewAppCodec(cdc, interfaceRegistry)
-	moduleManager := make(map[string]types.Module)
 
 	//create a instance of baseClient
-	baseClient := modules.NewBaseClient(cfg, appCodec)
+	baseClient := modules.NewBaseClient(cfg, appCodec,nil)
 
 	bankClient := bank.NewClient(baseClient, appCodec)
 	tokenClient := token.NewClient(baseClient, appCodec)
@@ -69,19 +67,18 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 		cdc:               cdc,
 		appCodec:          appCodec,
 		interfaceRegistry: interfaceRegistry,
-		moduleManager:     moduleManager,
 		BaseClient:        baseClient,
-
-		Bank:      bankClient,
-		Token:     tokenClient,
-		Key:       keysClient,
-		Record:    recordClient,
-		NFT:       nftClient,
-		Service:   serviceClient,
-		Admin:     adminClient,
-		Params:    paramsClient,
-		Validator: validatorClient,
-		Identity:  identityClient,
+		Bank:              bankClient,
+		Token:             tokenClient,
+		Key:               keysClient,
+		Record:            recordClient,
+		NFT:               nftClient,
+		Service:           serviceClient,
+		Admin:             adminClient,
+		Params:            paramsClient,
+		Validator:         validatorClient,
+		Identity:          identityClient,
+		moduleManager:     make(map[string]types.Module),
 	}
 
 	client.RegisterModule(
@@ -95,39 +92,38 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 		validatorClient,
 		identityClient,
 	)
-
 	return *client
 }
 
-func (s *IRITAClient) SetOutput(w io.Writer) {
-	s.logger.SetOutput(w)
+func (client *IRITAClient) SetLogger(logger log.Logger) {
+	client.BaseClient.SetLogger(logger)
 }
 
-func (s *IRITAClient) Codec() *codec.Codec {
-	return s.cdc
+func (client *IRITAClient) Codec() *codec.Codec {
+	return client.cdc
 }
 
-func (s *IRITAClient) AppCodec() *std.Codec {
-	return s.appCodec
+func (client *IRITAClient) AppCodec() *std.Codec {
+	return client.appCodec
 }
 
-func (s *IRITAClient) Manager() types.BaseClient {
-	return s.BaseClient
+func (client *IRITAClient) Manager() types.BaseClient {
+	return client.BaseClient
 }
 
-func (s *IRITAClient) RegisterModule(ms ...types.Module) {
+func (client *IRITAClient) RegisterModule(ms ...types.Module) {
 	for _, m := range ms {
-		_, ok := s.moduleManager[m.Name()]
+		_, ok := client.moduleManager[m.Name()]
 		if ok {
 			panic(fmt.Sprintf("%s has register", m.Name()))
 		}
 
-		m.RegisterCodec(s.cdc)
-		m.RegisterInterfaceTypes(s.interfaceRegistry)
-		s.moduleManager[m.Name()] = m
+		m.RegisterCodec(client.cdc)
+		m.RegisterInterfaceTypes(client.interfaceRegistry)
+		client.moduleManager[m.Name()] = m
 	}
 }
 
-func (s *IRITAClient) Module(name string) types.Module {
-	return s.moduleManager[name]
+func (client *IRITAClient) Module(name string) types.Module {
+	return client.moduleManager[name]
 }

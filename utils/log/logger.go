@@ -1,57 +1,113 @@
 package log
 
 import (
-	"fmt"
 	"io"
 	"os"
-	"strconv"
 	"strings"
-	"time"
 
-	"github.com/rs/zerolog"
+	"github.com/sirupsen/logrus"
+	"github.com/tendermint/tendermint/libs/log"
 )
 
-type Logger struct {
-	zerolog.Logger
+var (
+	_ log.Logger = LogrusLogger{}
+	_ log.Logger = entry{}
+)
+
+type LogrusLogger struct {
+	logger *logrus.Logger
 }
 
-func NewLogger(level string) *Logger {
-	l, err := zerolog.ParseLevel(level)
-	if err != nil {
-		l = zerolog.InfoLevel
+func NewDefaultLogger() LogrusLogger {
+	logger := logrus.New()
+
+	logger.SetFormatter(&logrus.TextFormatter{FullTimestamp: true})
+	logger.SetOutput(os.Stdout)
+	logger.SetLevel(logrus.InfoLevel)
+	return LogrusLogger{
+		logger: logger,
 	}
-
-	//override default CallerMarshalFunc
-	zerolog.CallerMarshalFunc = func(file string, line int) string {
-		index := strings.LastIndex(file, string(os.PathSeparator))
-		rs := []rune(file)
-		fileName := string(rs[index+1:])
-		return fileName + ":" + strconv.Itoa(line)
-	}
-
-	log := zerolog.New(prettyWriter(os.Stdout)).
-		Level(l).
-		With().
-		Caller().
-		Timestamp().Logger()
-
-	return &Logger{log}
 }
 
-func (l *Logger) SetOutput(w io.Writer) {
-	l.Logger = zerolog.New(prettyWriter(w)).
-		Level(l.GetLevel()).
-		With().
-		Timestamp().Logger()
+func NewLogger(cfg Config) LogrusLogger {
+	logger := logrus.New()
+
+	switch cfg.Format {
+	case FormatText:
+		logger.SetFormatter(&logrus.TextFormatter{FullTimestamp: true})
+	case FormatJSON:
+		logger.SetFormatter(&logrus.JSONFormatter{})
+	}
+
+	switch strings.ToLower(cfg.Level) {
+	case DebugLevel:
+		logger.SetLevel(logrus.DebugLevel)
+	case InfoLevel:
+		logger.SetLevel(logrus.InfoLevel)
+	case WarnLevel:
+		logger.SetLevel(logrus.WarnLevel)
+	case ErrorLevel:
+		logger.SetLevel(logrus.ErrorLevel)
+	}
+
+	logger.SetOutput(os.Stdout)
+	return LogrusLogger{
+		logger: logger,
+	}
 }
 
-func prettyWriter(w io.Writer) io.Writer {
-	output := zerolog.ConsoleWriter{Out: w, TimeFormat: time.RFC3339}
-	output.FormatMessage = func(i interface{}) string {
-		return fmt.Sprintf("****%s****", i)
+func (l *LogrusLogger) SetOutput(output io.Writer){
+	l.logger.SetOutput(os.Stdout)
+}
+
+func (l LogrusLogger) Debug(msg string, keyvals ...interface{}) {
+	l.logger.WithFields(argsToFields(keyvals...)).Debug(msg)
+}
+
+func (l LogrusLogger) Info(msg string, keyvals ...interface{}) {
+	l.logger.WithFields(argsToFields(keyvals...)).Info(msg)
+}
+
+func (l LogrusLogger) Error(msg string, keyvals ...interface{}) {
+	l.logger.WithFields(argsToFields(keyvals...)).Error(msg)
+}
+
+func (l LogrusLogger) With(keyvals ...interface{}) log.Logger {
+	return entry{
+		l.logger.WithFields(argsToFields(keyvals...)),
 	}
-	output.FormatFieldName = func(i interface{}) string {
-		return fmt.Sprintf("[%s]:", i)
+}
+
+type entry struct {
+	*logrus.Entry
+}
+
+func (e entry) Debug(msg string, keyvals ...interface{}) {
+	e.Entry.WithFields(argsToFields(keyvals...)).Debug(msg)
+}
+
+func (e entry) Info(msg string, keyvals ...interface{}) {
+	e.Entry.WithFields(argsToFields(keyvals...)).Info(msg)
+}
+
+func (e entry) Error(msg string, keyvals ...interface{}) {
+	e.Entry.WithFields(argsToFields(keyvals...)).Error(msg)
+}
+
+func (e entry) With(keyvals ...interface{}) log.Logger {
+	return entry{
+		e.WithFields(argsToFields(keyvals...)),
 	}
-	return output
+}
+
+func argsToFields(keyvals ...interface{}) logrus.Fields {
+	var fields = make(logrus.Fields)
+	if len(keyvals)%2 != 0 {
+		return fields
+	}
+
+	for i := 0; i < len(keyvals); i += 2 {
+		fields[keyvals[i].(string)] = keyvals[i+1]
+	}
+	return fields
 }

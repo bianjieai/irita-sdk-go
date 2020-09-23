@@ -3,11 +3,11 @@ package types
 import (
 	"encoding/base64"
 
+	"github.com/bianjieai/irita-sdk-go/codec"
+
 	abci "github.com/tendermint/tendermint/abci/types"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
-
-	"github.com/bianjieai/irita-sdk-go/codec"
 )
 
 type Block struct {
@@ -42,6 +42,12 @@ func ParseBlock(cdc *codec.Codec, block *tmtypes.Block) Block {
 type BlockResult struct {
 	Height  int64         `json:"height"`
 	Results ABCIResponses `json:"results"`
+}
+
+type BlockDetail struct {
+	BlockID     tmtypes.BlockID `json:"block_id"`
+	Block       Block           `json:"block"`
+	BlockResult BlockResult     `json:"block_result"`
 }
 
 type ABCIResponses struct {

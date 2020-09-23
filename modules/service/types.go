@@ -139,7 +139,6 @@ func (msg MsgBindService) ValidateBasic() error {
 	if len(msg.Pricing) == 0 {
 		return errors.New("pricing missing")
 	}
-
 	return nil
 }
 
@@ -156,9 +155,7 @@ func (msg MsgBindService) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Owner}
 }
 
-func (msg MsgCallService) Route() string {
-	return ModuleName
-}
+func (msg MsgCallService) Route() string { return ModuleName }
 
 func (msg MsgCallService) Type() string {
 	return "request_service"
@@ -168,7 +165,6 @@ func (msg MsgCallService) ValidateBasic() error {
 	if len(msg.Consumer) == 0 {
 		return errors.New("consumer missing")
 	}
-
 	if len(msg.Providers) == 0 {
 		return errors.New("providers missing")
 	}
@@ -180,7 +176,6 @@ func (msg MsgCallService) ValidateBasic() error {
 	if len(msg.Input) == 0 {
 		return errors.New("input missing")
 	}
-
 	return nil
 }
 
@@ -197,9 +192,7 @@ func (msg MsgCallService) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Consumer}
 }
 
-func (msg MsgRespondService) Route() string {
-	return ModuleName
-}
+func (msg MsgRespondService) Route() string { return ModuleName }
 
 func (msg MsgRespondService) Type() string {
 	return "respond_service"
@@ -238,14 +231,10 @@ func (msg MsgRespondService) GetSigners() []sdk.AccAddress {
 
 //______________________________________________________________________
 
-func (msg MsgUpdateServiceBinding) Route() string {
-	return ModuleName
-}
+func (msg MsgUpdateServiceBinding) Route() string { return ModuleName }
 
 // Type implements Msg.
-func (msg MsgUpdateServiceBinding) Type() string {
-	return "update_service_binding"
-}
+func (msg MsgUpdateServiceBinding) Type() string { return "update_service_binding" }
 
 // GetSignBytes implements Msg.
 func (msg MsgUpdateServiceBinding) GetSignBytes() []byte {
@@ -285,14 +274,10 @@ func (msg MsgUpdateServiceBinding) GetSigners() []sdk.AccAddress {
 
 //______________________________________________________________________
 
-func (msg MsgSetWithdrawAddress) Route() string {
-	return ModuleName
-}
+func (msg MsgSetWithdrawAddress) Route() string { return ModuleName }
 
 // Type implements Msg.
-func (msg MsgSetWithdrawAddress) Type() string {
-	return "set_withdraw_address"
-}
+func (msg MsgSetWithdrawAddress) Type() string { return "set_withdraw_address" }
 
 // GetSignBytes implements Msg.
 func (msg MsgSetWithdrawAddress) GetSignBytes() []byte {
@@ -324,14 +309,10 @@ func (msg MsgSetWithdrawAddress) GetSigners() []sdk.AccAddress {
 
 //______________________________________________________________________
 
-func (msg MsgDisableServiceBinding) Route() string {
-	return ModuleName
-}
+func (msg MsgDisableServiceBinding) Route() string { return ModuleName }
 
 // Type implements Msg.
-func (msg MsgDisableServiceBinding) Type() string {
-	return "disable_service_binding"
-}
+func (msg MsgDisableServiceBinding) Type() string { return "disable_service_binding" }
 
 // GetSignBytes implements Msg.
 func (msg MsgDisableServiceBinding) GetSignBytes() []byte {
@@ -367,14 +348,10 @@ func (msg MsgDisableServiceBinding) GetSigners() []sdk.AccAddress {
 
 //______________________________________________________________________
 
-func (msg MsgEnableServiceBinding) Route() string {
-	return ModuleName
-}
+func (msg MsgEnableServiceBinding) Route() string { return ModuleName }
 
 // Type implements Msg.
-func (msg MsgEnableServiceBinding) Type() string {
-	return "enable_service_binding"
-}
+func (msg MsgEnableServiceBinding) Type() string { return "enable_service_binding" }
 
 // GetSignBytes implements Msg.
 func (msg MsgEnableServiceBinding) GetSignBytes() []byte {
@@ -414,14 +391,10 @@ func (msg MsgEnableServiceBinding) GetSigners() []sdk.AccAddress {
 
 //______________________________________________________________________
 
-func (msg MsgRefundServiceDeposit) Route() string {
-	return ModuleName
-}
+func (msg MsgRefundServiceDeposit) Route() string { return ModuleName }
 
 // Type implements Msg.
-func (msg MsgRefundServiceDeposit) Type() string {
-	return "refund_service_deposit"
-}
+func (msg MsgRefundServiceDeposit) Type() string { return "refund_service_deposit" }
 
 // GetSignBytes implements Msg.
 func (msg MsgRefundServiceDeposit) GetSignBytes() []byte {
@@ -457,14 +430,10 @@ func (msg MsgRefundServiceDeposit) GetSigners() []sdk.AccAddress {
 
 //______________________________________________________________________
 
-func (msg MsgPauseRequestContext) Route() string {
-	return ModuleName
-}
+func (msg MsgPauseRequestContext) Route() string { return ModuleName }
 
 // Type implements Msg.
-func (msg MsgPauseRequestContext) Type() string {
-	return "pause_request_context"
-}
+func (msg MsgPauseRequestContext) Type() string { return "pause_request_context" }
 
 // GetSignBytes implements Msg.
 func (msg MsgPauseRequestContext) GetSignBytes() []byte {
@@ -491,14 +460,10 @@ func (msg MsgPauseRequestContext) GetSigners() []sdk.AccAddress {
 
 //______________________________________________________________________
 
-func (msg MsgStartRequestContext) Route() string {
-	return ModuleName
-}
+func (msg MsgStartRequestContext) Route() string { return ModuleName }
 
 // Type implements Msg.
-func (msg MsgStartRequestContext) Type() string {
-	return "start_request_context"
-}
+func (msg MsgStartRequestContext) Type() string { return "start_request_context" }
 
 // GetSignBytes implements Msg.
 func (msg MsgStartRequestContext) GetSignBytes() []byte {
@@ -525,14 +490,10 @@ func (msg MsgStartRequestContext) GetSigners() []sdk.AccAddress {
 
 //______________________________________________________________________
 
-func (msg MsgKillRequestContext) Route() string {
-	return ModuleName
-}
+func (msg MsgKillRequestContext) Route() string { return ModuleName }
 
 // Type implements Msg.
-func (msg MsgKillRequestContext) Type() string {
-	return "kill_request_context"
-}
+func (msg MsgKillRequestContext) Type() string { return "kill_request_context" }
 
 // GetSignBytes implements Msg.
 func (msg MsgKillRequestContext) GetSignBytes() []byte {
@@ -560,14 +521,10 @@ func (msg MsgKillRequestContext) GetSigners() []sdk.AccAddress {
 
 //______________________________________________________________________
 
-func (msg MsgUpdateRequestContext) Route() string {
-	return ModuleName
-}
+func (msg MsgUpdateRequestContext) Route() string { return ModuleName }
 
 // Type implements Msg.
-func (msg MsgUpdateRequestContext) Type() string {
-	return "update_request_context"
-}
+func (msg MsgUpdateRequestContext) Type() string { return "update_request_context" }
 
 // GetSignBytes implements Msg.
 func (msg MsgUpdateRequestContext) GetSignBytes() []byte {
@@ -598,9 +555,7 @@ func (msg MsgUpdateRequestContext) GetSigners() []sdk.AccAddress {
 func (msg MsgWithdrawEarnedFees) Route() string { return ModuleName }
 
 // Type implements Msg.
-func (msg MsgWithdrawEarnedFees) Type() string {
-	return "withdraw_earned_fees"
-}
+func (msg MsgWithdrawEarnedFees) Type() string { return "withdraw_earned_fees" }
 
 // GetSignBytes implements Msg.
 func (msg MsgWithdrawEarnedFees) GetSignBytes() []byte {
@@ -654,6 +609,7 @@ func (b ServiceBinding) Convert() interface{} {
 		DisabledTime: b.DisabledTime,
 		Owner:        b.Owner,
 	}
+
 }
 
 type serviceBindings []ServiceBinding
@@ -764,8 +720,8 @@ func (state *RequestContextBatchState) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	*state = bz
 
+	*state = bz
 	return nil
 }
 
@@ -780,8 +736,8 @@ func (state *RequestContextState) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	*state = bz
 
+	*state = bz
 	return nil
 }
 

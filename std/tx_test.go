@@ -3,11 +3,11 @@ package std_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	"github.com/bianjieai/irita-sdk-go/modules/bank"
 	"github.com/bianjieai/irita-sdk-go/std"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestTransaction(t *testing.T) {

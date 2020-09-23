@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"time"
 
+	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/libs/log"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
@@ -16,7 +18,7 @@ import (
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/utils"
 	"github.com/bianjieai/irita-sdk-go/utils/cache"
-	"github.com/bianjieai/irita-sdk-go/utils/log"
+	sdklog "github.com/bianjieai/irita-sdk-go/utils/log"
 )
 
 const (
@@ -30,7 +32,7 @@ const (
 type baseClient struct {
 	sdk.TmClient
 	sdk.KeyManager
-	logger    *log.Logger
+	logger    log.Logger
 	cfg       *sdk.ClientConfig
 	marshaler codec.Marshaler
 	cdc       *codec.Codec
@@ -42,9 +44,14 @@ type baseClient struct {
 }
 
 //NewBaseClient return the baseClient for every sub modules
-func NewBaseClient(cfg sdk.ClientConfig, cdc *std.Codec) sdk.BaseClient {
+func NewBaseClient(cfg sdk.ClientConfig, cdc *std.Codec, logger log.Logger) sdk.BaseClient {
 	//create logger
-	logger := log.NewLogger(cfg.Level)
+	if logger == nil {
+		logger = sdklog.NewLogger(sdklog.Config{
+			Format: sdklog.FormatText,
+			Level:  sdklog.InfoLevel,
+		})
+	}
 
 	base := baseClient{
 		TmClient:  NewRPCClient(cfg.NodeURI, cdc.Amino, logger, cfg.Timeout),
@@ -60,7 +67,7 @@ func NewBaseClient(cfg sdk.ClientConfig, cdc *std.Codec) sdk.BaseClient {
 		algo:   cfg.Algo,
 	}
 
-	c := cache.NewCache(cacheCapacity)
+	c := cache.NewCache(cacheCapacity, cfg.Cached)
 	base.accountQuery = accountQuery{
 		Queries:    base,
 		Logger:     base.Logger(),
@@ -83,12 +90,15 @@ func NewBaseClient(cfg sdk.ClientConfig, cdc *std.Codec) sdk.BaseClient {
 		cdc:        cdc.Marshaler,
 		expiration: cacheExpirePeriod,
 	}
-
 	return &base
 }
 
-func (base *baseClient) Logger() *log.Logger {
+func (base *baseClient) Logger() log.Logger {
 	return base.logger
+}
+
+func (base *baseClient) SetLogger(logger log.Logger) {
+	base.logger = logger
 }
 
 // Codec returns codec.
@@ -105,7 +115,6 @@ func (base *baseClient) BuildAndSend(msg []sdk.Msg, baseTx sdk.BaseTx) (sdk.Resu
 	if err := base.ValidateTxSize(len(txByte), msg); err != nil {
 		return sdk.ResultTx{}, err
 	}
-
 	return base.broadcastTx(txByte, ctx.Mode(), baseTx.Simulate)
 }
 
@@ -115,8 +124,7 @@ func (base *baseClient) SendBatch(msgs sdk.Msgs, baseTx sdk.BaseTx) (rs []sdk.Re
 	}
 
 	defer sdk.CatchPanic(func(errMsg string) {
-		base.Logger().Error().
-			Msgf("broadcast msg failed:%s", errMsg)
+		base.Logger().Error("broadcast msg failed", "errMsg", errMsg)
 	})
 	//validate msg
 	for _, m := range msgs {
@@ -124,7 +132,7 @@ func (base *baseClient) SendBatch(msgs sdk.Msgs, baseTx sdk.BaseTx) (rs []sdk.Re
 			return rs, sdk.Wrap(err)
 		}
 	}
-	base.Logger().Debug().Msg("validate msg success")
+	base.Logger().Debug("validate msg success")
 
 	//lock the account
 	base.l.Lock(baseTx.From)
@@ -144,9 +152,7 @@ resize:
 		}
 
 		if err := base.ValidateTxSize(len(txByte), mss); err != nil {
-			base.Logger().Warn().
-				Int("msgsLength", batch).
-				Msg(err.Error())
+			base.Logger().Debug("tx is too large","msgsLength", batch,"errMsg",err.Error())
 
 			// filter out transactions that have been sent
 			msgs = msgs[i*batch:]
@@ -159,10 +165,7 @@ resize:
 		res, err := base.broadcastTx(txByte, ctx.Mode(), baseTx.Simulate)
 		if err != nil {
 			if sdk.Code(err.Code()) == sdk.InvalidSequence {
-				base.Logger().Warn().
-					Str("address", ctx.Address()).
-					Int("tryCnt", tryCnt).
-					Msg("cached account information outdated, retrying ...")
+				base.Logger().Debug("wrong sequence,retrying ...","address", ctx.Address(),"tryCnt", tryCnt)
 
 				_ = base.removeCache(ctx.Address())
 				if tryCnt++; tryCnt >= tryThreshold {
@@ -171,18 +174,13 @@ resize:
 				goto retry
 			}
 
-			base.Logger().
-				Err(err).
-				Msg("broadcast transaction failed")
+			base.Logger().Error("broadcast transaction failed","errMsg",err.Error())
 			return rs, err
 		}
-		base.Logger().Info().
-			Str("txHash", res.Hash).
-			Int64("height", res.Height).
-			Msg("broadcast transaction success")
 		rs = append(rs, res)
-	}
 
+		base.Logger().Info("broadcast transaction success","txHash", res.Hash,"height", res.Height)
+	}
 	return rs, nil
 }
 
@@ -226,11 +224,15 @@ func (base baseClient) Query(path string, data interface{}) ([]byte, error) {
 	return resp.Value, nil
 }
 
-func (base baseClient) QueryStore(key sdk.HexBytes, storeName string) (res []byte, err error) {
+func (base baseClient) QueryStore(key sdk.HexBytes,
+	storeName string,
+	height int64,
+	prove bool,
+) (res abci.ResponseQuery, err error) {
 	path := fmt.Sprintf("/store/%s/%s", storeName, "key")
 	opts := rpcclient.ABCIQueryOptions{
-		//Height: cliCtx.Height,
-		Prove: false,
+		Prove:  prove,
+		Height: height,
 	}
 
 	result, err := base.ABCIQueryWithOptions(path, key, opts)
@@ -242,7 +244,7 @@ func (base baseClient) QueryStore(key sdk.HexBytes, storeName string) (res []byt
 	if !resp.IsOK() {
 		return res, errors.New(resp.Log)
 	}
-	return resp.Value, nil
+	return resp, nil
 }
 
 func (base *baseClient) prepare(baseTx sdk.BaseTx) (*sdk.TxBuilder, error) {

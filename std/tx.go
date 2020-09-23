@@ -1,11 +1,11 @@
 package std
 
 import (
-	"github.com/tendermint/go-amino"
-	"github.com/tendermint/tendermint/crypto"
-
 	clientx "github.com/bianjieai/irita-sdk-go/client/tx"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
+
+	"github.com/tendermint/go-amino"
+	"github.com/tendermint/tendermint/crypto"
 )
 
 var (
@@ -113,7 +113,6 @@ func (tx *Transaction) SetMsgs(sdkMsgs ...sdk.Msg) error {
 	}
 
 	tx.Msgs = msgs
-
 	return nil
 }
 
@@ -138,7 +137,6 @@ func (tx *Transaction) SetSignatures(sdkSigs ...clientx.ClientSignature) error {
 	}
 
 	tx.Signatures = sigs
-
 	return nil
 }
 
@@ -244,7 +242,6 @@ func (m StdSignature) GetPubKey() crypto.PubKey {
 	}
 
 	amino.MustUnmarshalBinaryBare(m.PubKey, &pk)
-
 	return pk
 }
 
