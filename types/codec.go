@@ -1,20 +1,18 @@
 package types
 
 import (
-	jsonc "github.com/gibson042/canonicaljson-go"
-	"github.com/tendermint/go-amino"
-
 	"github.com/bianjieai/irita-sdk-go/codec"
+	jsonc "github.com/gibson042/canonicaljson-go"
 )
 
-func NewCodec() *codec.Codec {
-	cdc := amino.NewCodec()
+func NewCodec() *codec.LegacyAmino {
+	cdc := codec.NewLegacyAmino()
 	RegisterCodec(cdc)
 	return cdc
 }
 
 // Register the sdk message type
-func RegisterCodec(cdc *codec.Codec) {
+func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*Msg)(nil), nil)
 	cdc.RegisterInterface((*Tx)(nil), nil)
 	cdc.RegisterConcrete(StdTx{}, "cosmos-sdk/StdTx", nil)

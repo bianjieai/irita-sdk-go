@@ -20,7 +20,7 @@ type SplitAble interface {
 
 type Module interface {
 	Name() string
-	RegisterCodec(cdc *codec.Codec)
+	RegisterCodec(cdc *codec.LegacyAmino)
 	RegisterInterfaceTypes(registry cdctypes.InterfaceRegistry)
 }
 

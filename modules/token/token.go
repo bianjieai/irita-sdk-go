@@ -1,8 +1,10 @@
 // Package token allows individuals and companies to create and issue their own tokens.
 //
+
 package token
 
 import (
+	"context"
 	"strconv"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
@@ -26,18 +28,12 @@ func (t tokenClient) Name() string {
 	return ModuleName
 }
 
-func (t tokenClient) RegisterCodec(cdc *codec.Codec) {
-	registerCodec(cdc)
+func (t tokenClient) RegisterCodec(cdc *codec.LegacyAmino) {
+	RegisterLegacyAminoCodec(cdc)
 }
 
 func (t tokenClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
-	registry.RegisterImplementations(
-		(*sdk.Msg)(nil),
-		&MsgIssueToken{},
-		&MsgEditToken{},
-		&MsgTransferTokenOwner{},
-		&MsgMintToken{},
-	)
+	RegisterInterfaces(registry)
 }
 
 func (t tokenClient) IssueToken(req IssueTokenRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
@@ -46,7 +42,7 @@ func (t tokenClient) IssueToken(req IssueTokenRequest, baseTx sdk.BaseTx) (sdk.R
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	msg := MsgIssueToken{
+	msg := &MsgIssueToken{
 		Symbol:        req.Symbol,
 		Name:          req.Name,
 		Scale:         req.Scale,
@@ -66,7 +62,7 @@ func (t tokenClient) EditToken(req EditTokenRequest, baseTx sdk.BaseTx) (sdk.Res
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	msg := MsgEditToken{
+	msg := &MsgEditToken{
 		Symbol:    req.Symbol,
 		Name:      req.Name,
 		MaxSupply: req.MaxSupply,
@@ -109,7 +105,7 @@ func (t tokenClient) MintToken(symbol string, amount uint64, to string, baseTx s
 		}
 	}
 
-	msg := MsgMintToken{
+	msg := &MsgMintToken{
 		Symbol: symbol,
 		Amount: amount,
 		To:     receipt,
@@ -132,21 +128,28 @@ func (t tokenClient) QueryTokens(owner string) (sdk.Tokens, error) {
 		ownerAddr = addr
 	}
 
-	param := struct {
-		Owner sdk.AccAddress
-	}{
+	conn, err := t.GenConn()
+	defer conn.Close()
+	if err != nil {
+		return sdk.Tokens{}, sdk.Wrap(err)
+	}
+
+	request := &QueryTokensRequest{
 		Owner: ownerAddr,
 	}
 
-	var tokens Tokens
-	bz, err := t.Query("custom/token/tokens", param)
+	res, err := NewQueryClient(conn).Tokens(context.Background(), request)
 	if err != nil {
 		return sdk.Tokens{}, err
 	}
 
-	err = t.UnmarshalJSON(bz, &tokens)
-	if err != nil {
-		return sdk.Tokens{}, err
+	tokens := make(Tokens, 0, len(res.Tokens))
+	for _, eviAny := range res.Tokens {
+		var evi Token
+		if err = t.UnpackAny(eviAny, &evi); err != nil {
+			return sdk.Tokens{}, err
+		}
+		tokens = append(tokens, evi)
 	}
 
 	ts := tokens.Convert().(sdk.Tokens)

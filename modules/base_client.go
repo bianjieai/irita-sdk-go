@@ -13,8 +13,6 @@ import (
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/modules/service"
-	"github.com/bianjieai/irita-sdk-go/std"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/utils"
 	"github.com/bianjieai/irita-sdk-go/utils/cache"
@@ -31,11 +29,12 @@ const (
 
 type baseClient struct {
 	sdk.TmClient
+	sdk.GRPCClient
 	sdk.KeyManager
 	logger    log.Logger
 	cfg       *sdk.ClientConfig
 	marshaler codec.Marshaler
-	cdc       *codec.Codec
+	cdc       *codec.LegacyAmino
 	l         *locker
 
 	accountQuery
@@ -44,7 +43,7 @@ type baseClient struct {
 }
 
 //NewBaseClient return the baseClient for every sub modules
-func NewBaseClient(cfg sdk.ClientConfig, cdc *std.Codec, logger log.Logger) sdk.BaseClient {
+func NewBaseClient(cfg sdk.ClientConfig, cdc *codec.LegacyAmino, marshaler codec.Marshaler, logger log.Logger) sdk.BaseClient {
 	//create logger
 	if logger == nil {
 		logger = sdklog.NewLogger(sdklog.Config{
@@ -54,12 +53,13 @@ func NewBaseClient(cfg sdk.ClientConfig, cdc *std.Codec, logger log.Logger) sdk.
 	}
 
 	base := baseClient{
-		TmClient:  NewRPCClient(cfg.NodeURI, cdc.Amino, logger, cfg.Timeout),
-		logger:    logger,
-		cfg:       &cfg,
-		marshaler: cdc.Marshaler,
-		cdc:       cdc.Amino,
-		l:         NewLocker(concurrency),
+		TmClient:   NewRPCClient(cfg.NodeURI, cdc, logger, cfg.Timeout),
+		GRPCClient: NewGRPCClient(cfg.GRPCAddr),
+		logger:     logger,
+		cfg:        &cfg,
+		marshaler:  marshaler,
+		cdc:        cdc,
+		l:          NewLocker(concurrency),
 	}
 
 	base.KeyManager = keyManager{
@@ -70,26 +70,30 @@ func NewBaseClient(cfg sdk.ClientConfig, cdc *std.Codec, logger log.Logger) sdk.
 	c := cache.NewCache(cacheCapacity, cfg.Cached)
 	base.accountQuery = accountQuery{
 		Queries:    base,
+		GRPCClient: base.GRPCClient,
 		Logger:     base.Logger(),
 		Cache:      c,
-		cdc:        cdc.Marshaler,
+		cdc:        marshaler,
 		km:         base.KeyManager,
 		expiration: cacheExpirePeriod,
 	}
 
 	base.tokenQuery = tokenQuery{
-		q:      base,
-		Logger: base.Logger(),
-		Cache:  c,
+		q:          base,
+		GRPCClient: base.GRPCClient,
+		cdc:        marshaler,
+		Logger:     base.Logger(),
+		Cache:      c,
 	}
 
 	base.paramsQuery = paramsQuery{
 		Queries:    base,
 		Logger:     base.Logger(),
 		Cache:      c,
-		cdc:        cdc.Marshaler,
+		cdc:        marshaler,
 		expiration: cacheExpirePeriod,
 	}
+
 	return &base
 }
 
@@ -152,7 +156,7 @@ resize:
 		}
 
 		if err := base.ValidateTxSize(len(txByte), mss); err != nil {
-			base.Logger().Debug("tx is too large","msgsLength", batch,"errMsg",err.Error())
+			base.Logger().Debug("tx is too large", "msgsLength", batch, "errMsg", err.Error())
 
 			// filter out transactions that have been sent
 			msgs = msgs[i*batch:]
@@ -165,7 +169,7 @@ resize:
 		res, err := base.broadcastTx(txByte, ctx.Mode(), baseTx.Simulate)
 		if err != nil {
 			if sdk.Code(err.Code()) == sdk.InvalidSequence {
-				base.Logger().Debug("wrong sequence,retrying ...","address", ctx.Address(),"tryCnt", tryCnt)
+				base.Logger().Debug("wrong sequence,retrying ...", "address", ctx.Address(), "tryCnt", tryCnt)
 
 				_ = base.removeCache(ctx.Address())
 				if tryCnt++; tryCnt >= tryThreshold {
@@ -174,12 +178,12 @@ resize:
 				goto retry
 			}
 
-			base.Logger().Error("broadcast transaction failed","errMsg",err.Error())
+			base.Logger().Error("broadcast transaction failed", "errMsg", err.Error())
 			return rs, err
 		}
 		rs = append(rs, res)
 
-		base.Logger().Info("broadcast transaction success","txHash", res.Hash,"height", res.Height)
+		base.Logger().Info("broadcast transaction success", "txHash", res.Hash, "height", res.Height)
 	}
 	return rs, nil
 }
@@ -190,7 +194,7 @@ func (base baseClient) QueryWithResponse(path string, data interface{}, result s
 		return err
 	}
 
-	if err := base.marshaler.UnmarshalJSON(res, result); err != nil {
+	if err := base.cdc.UnmarshalJSON(res, result); err != nil {
 		return err
 	}
 
@@ -201,7 +205,7 @@ func (base baseClient) Query(path string, data interface{}) ([]byte, error) {
 	var bz []byte
 	var err error
 	if data != nil {
-		bz, err = base.marshaler.MarshalJSON(data)
+		bz, err = base.cdc.MarshalJSON(data)
 		if err != nil {
 			return nil, err
 		}
@@ -307,31 +311,31 @@ func (base *baseClient) prepare(baseTx sdk.BaseTx) (*sdk.TxBuilder, error) {
 }
 
 func (base *baseClient) ValidateTxSize(txSize int, msgs []sdk.Msg) sdk.Error {
-	var isServiceTx bool
-	for _, msg := range msgs {
-		if msg.Route() == service.ModuleName {
-			isServiceTx = true
-			break
-		}
-	}
-	if isServiceTx {
-		var param service.Params
-
-		err := base.QueryParams(service.ModuleName, &param)
-		if err != nil {
-			panic(err)
-		}
-
-		if uint64(txSize) > param.TxSizeLimit {
-			return sdk.Wrapf("tx size too large, expected: <= %d, got %d", param.TxSizeLimit, txSize)
-		}
-		return nil
-
-	} else {
-		if uint64(txSize) > base.cfg.MaxTxBytes {
-			return sdk.Wrapf("tx size too large, expected: <= %d, got %d", base.cfg.MaxTxBytes, txSize)
-		}
-	}
+	//var isServiceTx bool
+	//for _, msg := range msgs {
+	//	if msg.Route() == service.ModuleName {
+	//		isServiceTx = true
+	//		break
+	//	}
+	//}
+	//if isServiceTx {
+	//	var param service.Params
+	//
+	//	err := base.QueryParams(service.ModuleName, &param)
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//
+	//	if uint64(txSize) > param.TxSizeLimit {
+	//		return sdk.Wrapf("tx size too large, expected: <= %d, got %d", param.TxSizeLimit, txSize)
+	//	}
+	//	return nil
+	//
+	//} else {
+	//	if uint64(txSize) > base.cfg.MaxTxBytes {
+	//		return sdk.Wrapf("tx size too large, expected: <= %d, got %d", base.cfg.MaxTxBytes, txSize)
+	//	}
+	//}
 	return nil
 }
 

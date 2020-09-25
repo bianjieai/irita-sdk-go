@@ -1,11 +1,12 @@
 package bank
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/codec/types"
+	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
 
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	utils "github.com/bianjieai/irita-sdk-go/utils"
@@ -27,11 +28,11 @@ func (b bankClient) Name() string {
 	return ModuleName
 }
 
-func (b bankClient) RegisterCodec(cdc *codec.Codec) {
+func (b bankClient) RegisterCodec(cdc *codec.LegacyAmino) {
 	registerCodec(cdc)
 }
 
-func (b bankClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
+func (b bankClient) RegisterInterfaceTypes(registry codectypes.InterfaceRegistry) {
 	registry.RegisterImplementations(
 		(*sdk.Msg)(nil),
 		&MsgSend{},
@@ -41,6 +42,12 @@ func (b bankClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
 
 // QueryAccount return account information specified address
 func (b bankClient) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
+	conn, err := b.GenConn()
+	defer conn.Close()
+	if err != nil {
+		return sdk.BaseAccount{}, sdk.Wrap(err)
+	}
+
 	account, err := b.BaseClient.QueryAccount(address)
 	if err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
@@ -48,24 +55,19 @@ func (b bankClient) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
 
 	addr, err := sdk.AccAddressFromBech32(address)
 	if err != nil {
-		return sdk.BaseAccount{}, sdk.Wrapf(fmt.Sprintf("%s invalid address", address))
+		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
-	param := struct {
-		Address sdk.AccAddress
-	}{
-		Address: addr,
+	request := &QueryAllBalancesRequest{
+		Address:    addr,
+		Pagination: nil,
 	}
-	bz, er := b.Query("custom/bank/all_balances", param)
-	if er != nil {
-		return sdk.BaseAccount{}, sdk.Wrap(er)
+	balances, err := NewQueryClient(conn).AllBalances(context.Background(), request)
+	if err != nil {
+		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
-	var coin sdk.Coins
-	if err := b.UnmarshalJSON(bz, &coin); err != nil {
-		return sdk.BaseAccount{}, sdk.Wrap(er)
-	}
-	account.Coins = coin
+	account.Coins = balances.Balances
 	return account, nil
 }
 
@@ -87,7 +89,7 @@ func (b bankClient) Send(to string, amount sdk.DecCoins, baseTx sdk.BaseTx) (sdk
 	}
 
 	msg := NewMsgSend(sender, outAddr, amt)
-	return b.BuildAndSend([]sdk.Msg{msg}, baseTx)
+	return b.BuildAndSend([]sdk.Msg{&msg}, baseTx)
 }
 
 func (b bankClient) MultiSend(request MultiSendRequest, baseTx sdk.BaseTx) (resTxs []sdk.ResultTx, err sdk.Error) {

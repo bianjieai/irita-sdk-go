@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/base64"
+	"github.com/tendermint/tendermint/crypto/encoding"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 
@@ -21,7 +22,7 @@ type Data struct {
 	Txs []StdTx `json:"txs"`
 }
 
-func ParseBlock(cdc *codec.Codec, block *tmtypes.Block) Block {
+func ParseBlock(cdc *codec.LegacyAmino, block *tmtypes.Block) Block {
 	var txs []StdTx
 	for _, tx := range block.Txs {
 		var stdTx StdTx
@@ -57,21 +58,22 @@ type ABCIResponses struct {
 }
 
 type ResultBeginBlock struct {
-	Events Events `json:"events"`
+	Events StringEvents `json:"events"`
 }
 
 type ResultEndBlock struct {
-	Events           Events            `json:"events"`
+	Events           StringEvents      `json:"events"`
 	ValidatorUpdates []ValidatorUpdate `json:"validator_updates"`
 }
 
 func ParseValidatorUpdate(updates []abci.ValidatorUpdate) []ValidatorUpdate {
 	var vUpdates []ValidatorUpdate
 	for _, v := range updates {
+		pubkey, _ := encoding.PubKeyFromProto(v.PubKey)
 		vUpdates = append(vUpdates, ValidatorUpdate{
 			PubKey: PubKey{
-				Type:  v.PubKey.Type,
-				Value: base64.StdEncoding.EncodeToString(v.PubKey.Data),
+				Type:  pubkey.Type(),
+				Value: base64.StdEncoding.EncodeToString(pubkey.Bytes()),
 			},
 			Power: v.Power,
 		})
@@ -87,7 +89,7 @@ func ParseBlockResult(res *ctypes.ResultBlockResults) BlockResult {
 			Log:       r.Log,
 			GasWanted: r.GasWanted,
 			GasUsed:   r.GasUsed,
-			Events:    ParseEvents(r.Events),
+			Events:    StringifyEvents(r.Events),
 		}
 	}
 	return BlockResult{
@@ -95,17 +97,17 @@ func ParseBlockResult(res *ctypes.ResultBlockResults) BlockResult {
 		Results: ABCIResponses{
 			DeliverTx: txResults,
 			EndBlock: ResultEndBlock{
-				Events:           ParseEvents(res.EndBlockEvents),
+				Events:           StringifyEvents(res.EndBlockEvents),
 				ValidatorUpdates: ParseValidatorUpdate(res.ValidatorUpdates),
 			},
 			BeginBlock: ResultBeginBlock{
-				Events: ParseEvents(res.BeginBlockEvents),
+				Events: StringifyEvents(res.BeginBlockEvents),
 			},
 		},
 	}
 }
 
-func ParseValidators(cdc *codec.Codec, vs []*tmtypes.Validator) []Validator {
+func ParseValidators(cdc *codec.LegacyAmino, vs []*tmtypes.Validator) []Validator {
 	var validators = make([]Validator, len(vs))
 	for i, v := range vs {
 		bech32Addr, _ := ConsAddressFromHex(v.Address.String())

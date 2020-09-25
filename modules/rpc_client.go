@@ -17,11 +17,11 @@ import (
 type rpcClient struct {
 	rpc.Client
 	log.Logger
-	cdc    *codec.Codec
+	cdc *codec.LegacyAmino
 }
 
 func NewRPCClient(remote string,
-	cdc *codec.Codec,
+	cdc *codec.LegacyAmino,
 	logger log.Logger,
 	timeout uint) sdk.TmClient {
 	client, err := rpchttp.NewWithTimeout(remote, "/websocket", timeout)
@@ -84,10 +84,10 @@ func (r rpcClient) Resubscribe(subscription sdk.Subscription, handler sdk.EventH
 }
 
 func (r rpcClient) Unsubscribe(subscription sdk.Subscription) sdk.Error {
-	r.Info("end to subscribe event","query", subscription.Query,"subscriber", subscription.ID)
+	r.Info("end to subscribe event", "query", subscription.Query, "subscriber", subscription.ID)
 	err := r.Client.Unsubscribe(subscription.Ctx, subscription.ID, subscription.Query)
 	if err != nil {
-		r.Error("unsubscribe failed","query", subscription.Query,"subscriber", subscription.ID,"errMsg",err.Error())
+		r.Error("unsubscribe failed", "query", subscription.Query, "subscriber", subscription.ID, "errMsg", err.Error())
 		return sdk.Wrap(err)
 	}
 	return nil
@@ -101,7 +101,7 @@ func (r rpcClient) SubscribeAny(query string, handler sdk.EventHandler) (subscri
 		return subscription, sdk.Wrap(e)
 	}
 
-	r.Info("subscribe event","query", subscription.Query,"subscriber", subscription.ID)
+	r.Info("subscribe event", "query", subscription.Query, "subscriber", subscription.ID)
 
 	subscription = sdk.Subscription{
 		Ctx:   ctx,
@@ -114,7 +114,7 @@ func (r rpcClient) SubscribeAny(query string, handler sdk.EventHandler) (subscri
 			data := <-ch
 			go func() {
 				defer sdk.CatchPanic(func(errMsg string) {
-					r.Error("unsubscribe failed","query", subscription.Query,"subscriber", subscription.ID,"errMsg",err.Error())
+					r.Error("unsubscribe failed", "query", subscription.Query, "subscriber", subscription.ID, "errMsg", err.Error())
 				})
 
 				switch data := data.Data.(type) {
@@ -145,13 +145,13 @@ func (r rpcClient) parseTx(data sdk.EventData) sdk.EventDataTx {
 	if err := r.cdc.UnmarshalBinaryBare(tx.Tx, &stdTx); err != nil {
 		return sdk.EventDataTx{}
 	}
-	hash := sdk.HexBytes(tx.Tx.Hash()).String()
+	hash := sdk.HexBytes(tx.Tx).String()
 	result := sdk.TxResult{
 		Code:      tx.Result.Code,
 		Log:       tx.Result.Log,
 		GasWanted: tx.Result.GasWanted,
 		GasUsed:   tx.Result.GasUsed,
-		Events:    sdk.ParseEvents(tx.Result.Events),
+		Events:    sdk.StringifyEvents(tx.Result.Events),
 	}
 	return sdk.EventDataTx{
 		Hash:   hash,
@@ -167,10 +167,10 @@ func (r rpcClient) parseNewBlock(data sdk.EventData) sdk.EventDataNewBlock {
 	return sdk.EventDataNewBlock{
 		Block: sdk.ParseBlock(r.cdc, block.Block),
 		ResultBeginBlock: sdk.ResultBeginBlock{
-			Events: sdk.ParseEvents(block.ResultBeginBlock.Events),
+			Events: sdk.StringifyEvents(block.ResultBeginBlock.Events),
 		},
 		ResultEndBlock: sdk.ResultEndBlock{
-			Events:           sdk.ParseEvents(block.ResultEndBlock.Events),
+			Events:           sdk.StringifyEvents(block.ResultEndBlock.Events),
 			ValidatorUpdates: sdk.ParseValidatorUpdate(block.ResultEndBlock.ValidatorUpdates),
 		},
 	}
@@ -181,10 +181,10 @@ func (r rpcClient) parseNewBlockHeader(data sdk.EventData) sdk.EventDataNewBlock
 	return sdk.EventDataNewBlockHeader{
 		Header: blockHeader.Header,
 		ResultBeginBlock: sdk.ResultBeginBlock{
-			Events: sdk.ParseEvents(blockHeader.ResultBeginBlock.Events),
+			Events: sdk.StringifyEvents(blockHeader.ResultBeginBlock.Events),
 		},
 		ResultEndBlock: sdk.ResultEndBlock{
-			Events:           sdk.ParseEvents(blockHeader.ResultEndBlock.Events),
+			Events:           sdk.StringifyEvents(blockHeader.ResultEndBlock.Events),
 			ValidatorUpdates: sdk.ParseValidatorUpdate(blockHeader.ResultEndBlock.ValidatorUpdates),
 		},
 	}

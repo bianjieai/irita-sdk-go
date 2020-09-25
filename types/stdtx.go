@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/bianjieai/irita-sdk-go/crypto/types/multisig"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 
 	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/multisig"
 )
 
 const (
@@ -84,7 +84,7 @@ func (msg StdSignMsg) Bytes(cdc codec.Marshaler) []byte {
 	for _, msg := range msg.Msgs {
 		msgsBytes = append(msgsBytes, json.RawMessage(msg.GetSignBytes()))
 	}
-	bz, err := cdc.MarshalJSON(StdSignDoc{
+	bz, err := json.Marshal(StdSignDoc{
 		AccountNumber: msg.AccountNumber,
 		ChainID:       msg.ChainID,
 		Fee:           json.RawMessage(msg.Fee.Bytes()),
@@ -223,11 +223,11 @@ type BaseTx struct {
 // ResultTx encapsulates the return result of the transaction. When the transaction fails,
 // it is an empty object. The specific error information can be obtained through the Error interface.
 type ResultTx struct {
-	GasWanted int64  `json:"gas_wanted"`
-	GasUsed   int64  `json:"gas_used"`
-	Events    Events `json:"events"`
-	Hash      string `json:"hash"`
-	Height    int64  `json:"height"`
+	GasWanted int64        `json:"gas_wanted"`
+	GasUsed   int64        `json:"gas_used"`
+	Events    StringEvents `json:"events"`
+	Hash      string       `json:"hash"`
+	Height    int64        `json:"height"`
 }
 
 // ResultQueryTx is used to prepare info to display

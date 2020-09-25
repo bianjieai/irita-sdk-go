@@ -18,15 +18,16 @@ import (
 )
 
 const (
-	nodeURI = "tcp://localhost:26657"
-	chainID = "test"
-	mode    = types.Commit
-	fee     = "4point"
-	gas     = 200000
-	algo    = "sm2"
-	level   = "info"
-	charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	addr    = "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz"
+	nodeURI  = "tcp://localhost:26657"
+	grpcAddr = "localhost:9090"
+	chainID  = "test"
+	mode     = types.Commit
+	fee      = "4point"
+	gas      = 200000
+	algo     = "sm2"
+	level    = "info"
+	charset  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	addr     = "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz"
 )
 
 var (
@@ -61,7 +62,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		types.KeyDAOOption(store.NewMemory(nil)),
 		types.TimeoutOption(10),
 	}
-	cfg, err := types.NewClientConfig(nodeURI, chainID, options...)
+	cfg, err := types.NewClientConfig(nodeURI, grpcAddr, chainID, options...)
 	if err != nil {
 		panic(err)
 	}

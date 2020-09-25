@@ -6,21 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
-
-	tmtypes "github.com/tendermint/tendermint/abci/types"
-)
-
-const (
-	TypeKey EventKey = "tm.event"
-
-	EventTypeMessage = "message"
-
-	AttributeKeyAction = "action"
-	AttributeKeyModule = "module"
-	AttributeKeySender = "sender"
-	AttributeKeyAmount = "amount"
-
-	TxValue EventValue = "Tx"
 )
 
 type WSClient interface {
@@ -68,16 +53,11 @@ func (tx EventDataTx) MarshalJson() []byte {
 }
 
 type TxResult struct {
-	Code      uint32 `json:"code"`
-	Log       string `json:"log"`
-	GasWanted int64  `json:"gas_wanted"`
-	GasUsed   int64  `json:"gas_used"`
-	Events    Events `json:"events"`
-}
-
-type Attribute struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
+	Code      uint32       `json:"code"`
+	Log       string       `json:"log"`
+	GasWanted int64        `json:"gas_wanted"`
+	GasUsed   int64        `json:"gas_used"`
+	Events    StringEvents `json:"events"`
 }
 
 type Attributes []Attribute
@@ -106,71 +86,6 @@ func (a Attributes) String() string {
 		attrs[i] = fmt.Sprintf("%s=%s", attr.Key, attr.Value)
 	}
 	return strings.Join(attrs, ",")
-}
-
-type Event struct {
-	Type       string     `json:"type"`
-	Attributes Attributes `json:"attributes"`
-}
-
-func ParseEvent(event tmtypes.Event) Event {
-	var tags Attributes
-	for _, pair := range event.Attributes {
-		key := string(pair.Key)
-		value := string(pair.Value)
-		tags = append(tags, Attribute{
-			Key:   key,
-			Value: value,
-		})
-	}
-	return Event{
-		Type:       event.Type,
-		Attributes: tags,
-	}
-}
-
-type Events []Event
-
-func ParseEvents(events []tmtypes.Event) (es Events) {
-	for _, event := range events {
-		es = append(es, ParseEvent(event))
-	}
-	return
-}
-
-func (es Events) Filter(typ string) (evts Events) {
-	for _, e := range es {
-		if e.Type == typ {
-			evts = append(evts, e)
-		}
-	}
-	return evts
-}
-
-func (es Events) GetValue(typ, key string) (string, error) {
-	for _, e := range es {
-		if e.Type == typ {
-			for _, attr := range e.Attributes {
-				if attr.Key == key {
-					return attr.Value, nil
-				}
-			}
-		}
-	}
-	return "", fmt.Errorf("not found type:%s key:%s", typ, key)
-}
-
-func (es Events) GetValues(typ, key string) (values []string) {
-	for _, e := range es {
-		if e.Type == typ {
-			for _, attr := range e.Attributes {
-				if attr.Key == key {
-					values = append(values, attr.Value)
-				}
-			}
-		}
-	}
-	return values
 }
 
 type EventTxHandler func(EventDataTx)

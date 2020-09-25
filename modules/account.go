@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -8,6 +9,7 @@ import (
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 
+	"github.com/bianjieai/irita-sdk-go/modules/auth"
 	"github.com/bianjieai/irita-sdk-go/modules/bank"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/utils/cache"
@@ -16,6 +18,7 @@ import (
 // Must be used with locker, otherwise there are thread safety issues
 type accountQuery struct {
 	sdk.Queries
+	sdk.GRPCClient
 	log.Logger
 	cache.Cache
 	cdc        codec.Marshaler
@@ -37,33 +40,47 @@ func (a accountQuery) QueryAndRefreshAccount(address string) (sdk.BaseAccount, s
 	}
 	a.saveAccount(baseAcc)
 
-	a.Debug("query account from cache","address", address)
+	a.Debug("query account from cache", "address", address)
 	return baseAcc, nil
 }
 
 func (a accountQuery) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
+	conn, err := a.GenConn()
+	defer conn.Close()
+	if err != nil {
+		return sdk.BaseAccount{}, sdk.Wrap(err)
+	}
+
 	addr, err := sdk.AccAddressFromBech32(address)
 	if err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
-	param := struct {
-		Address sdk.AccAddress `json:"account"`
-	}{
+	request := &auth.QueryAccountRequest{
 		Address: addr,
 	}
-
-	bz, er := a.Query("custom/auth/account", param)
-	if er != nil {
-		return sdk.BaseAccount{}, sdk.Wrap(er)
-	}
-	var account bank.BaseAccount
-	if err := a.cdc.UnmarshalJSON(bz, &account); err != nil {
+	response, err := auth.NewQueryClient(conn).Account(context.Background(), request)
+	if err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
-	a.Debug("query account from chain","address", address)
-	return account.Convert().(sdk.BaseAccount), nil
+	var baseAccount auth.BaseAccount
+	a.cdc.UnpackAny(response.Account, &baseAccount)
+
+	account := baseAccount.Convert().(sdk.BaseAccount)
+
+	breq := &bank.QueryAllBalancesRequest{
+		Address:    addr,
+		Pagination: nil,
+	}
+	balances, err := bank.NewQueryClient(conn).AllBalances(context.Background(), breq)
+	if err != nil {
+		return sdk.BaseAccount{}, sdk.Wrap(err)
+	}
+
+	account.Coins = balances.Balances
+
+	return account, nil
 }
 
 func (a accountQuery) QueryAddress(name, password string) (sdk.AccAddress, sdk.Error) {
@@ -71,7 +88,7 @@ func (a accountQuery) QueryAddress(name, password string) (sdk.AccAddress, sdk.E
 	if err == nil {
 		address, err := sdk.AccAddressFromBech32(addr.(string))
 		if err != nil {
-			a.Debug("invalid address","name", name)
+			a.Debug("invalid address", "name", name)
 			_ = a.Remove(a.prefixKey(name))
 		} else {
 			return address, nil
@@ -80,14 +97,14 @@ func (a accountQuery) QueryAddress(name, password string) (sdk.AccAddress, sdk.E
 
 	address, err := a.km.Find(name, password)
 	if err != nil {
-		a.Debug("can't find account","name", name)
+		a.Debug("can't find account", "name", name)
 		return address, sdk.Wrap(err)
 	}
 
 	if err := a.SetWithExpire(a.prefixKey(name), address.String(), a.expiration); err != nil {
-		a.Debug("cache user failed","name", name)
+		a.Debug("cache user failed", "name", name)
 	}
-	a.Debug("query user from cache","name", name,"address", address.String())
+	a.Debug("query user from cache", "name", name, "address", address.String())
 	return address, nil
 }
 
@@ -98,7 +115,7 @@ func (a accountQuery) removeCache(address string) bool {
 func (a accountQuery) refresh(address string) (sdk.BaseAccount, sdk.Error) {
 	account, err := a.QueryAccount(address)
 	if err != nil {
-		a.Error("update cache failed","address", address,"errMsg",err.Error())
+		a.Error("update cache failed", "address", address, "errMsg", err.Error())
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
@@ -113,10 +130,10 @@ func (a accountQuery) saveAccount(account sdk.BaseAccount) {
 		S: account.Sequence,
 	}
 	if err := a.SetWithExpire(a.prefixKey(address), info, a.expiration); err != nil {
-		a.Debug("cache user failed","address", account.Address.String())
+		a.Debug("cache user failed", "address", account.Address.String())
 		return
 	}
-	a.Debug("cache account","address", address,"expiration",a.expiration.String())
+	a.Debug("cache account", "address", address, "expiration", a.expiration.String())
 }
 
 func (a accountQuery) prefixKey(address string) string {

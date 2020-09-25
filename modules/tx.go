@@ -39,7 +39,7 @@ func (base baseClient) QueryTxs(builder *sdk.EventQueryBuilder, page, size int) 
 		return sdk.ResultSearchTxs{}, errors.New("must declare at least one tag to search")
 	}
 
-	res, err := base.TxSearch(query, true, page, size, "asc")
+	res, err := base.TxSearch(query, true, &page, &size, "asc")
 	if err != nil {
 		return sdk.ResultSearchTxs{}, err
 	}
@@ -165,7 +165,7 @@ func (base baseClient) broadcastTxCommit(tx []byte) (sdk.ResultTx, sdk.Error) {
 	return sdk.ResultTx{
 		GasWanted: res.DeliverTx.GasWanted,
 		GasUsed:   res.DeliverTx.GasUsed,
-		Events:    sdk.ParseEvents(res.DeliverTx.Events),
+		Events:    sdk.StringifyEvents(res.DeliverTx.Events),
 		Hash:      res.Hash.String(),
 		Height:    res.Height,
 	}, nil
@@ -233,7 +233,7 @@ func (base baseClient) parseTxResult(res *ctypes.ResultTx, resBlock *ctypes.Resu
 			Log:       res.TxResult.Log,
 			GasWanted: res.TxResult.GasWanted,
 			GasUsed:   res.TxResult.GasUsed,
-			Events:    sdk.ParseEvents(res.TxResult.Events),
+			Events:    sdk.StringifyEvents(res.TxResult.Events),
 		},
 		Timestamp: resBlock.Block.Time.Format(time.RFC3339),
 	}, nil

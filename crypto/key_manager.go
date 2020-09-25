@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	cryptoAmino "github.com/tendermint/tendermint/crypto/encoding/amino"
+	cryptoAmino "github.com/bianjieai/irita-sdk-go/crypto/codec"
 
 	"github.com/bianjieai/irita-sdk-go/crypto/hd"
 

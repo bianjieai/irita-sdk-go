@@ -3,6 +3,7 @@ package store
 import (
 	"encoding/json"
 	"fmt"
+	cryptoamino "github.com/bianjieai/irita-sdk-go/crypto/codec"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -120,7 +121,7 @@ func (f FileDAO) Read(name, password string) (KeyInfo, error) {
 
 	return KeyInfo{
 		Name:         i.Name,
-		PubKey:       i.PubKey.Bytes(),
+		PubKey:       cryptoamino.MarshalPubkey(i.PubKey),
 		PrivKeyArmor: i.PrivKeyArmor,
 		Algo:         string(i.Algo),
 	}, nil

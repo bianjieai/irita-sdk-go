@@ -74,7 +74,15 @@ type Int struct {
 
 // BigInt converts Int to big.Int
 func (i Int) BigInt() *big.Int {
+	if i.IsNil() {
+		return nil
+	}
 	return new(big.Int).Set(i.i)
+}
+
+// IsNil returns true if Int is uninitialized
+func (i Int) IsNil() bool {
+	return i.i == nil
 }
 
 // NewInt constructs Int from int64
@@ -414,4 +422,8 @@ func (i *Int) UnmarshalAmino(bz []byte) error { return i.Unmarshal(bz) }
 // intended to be used with require/assert:  require.True(IntEq(...))
 func IntEq(t *testing.T, exp, got Int) (*testing.T, bool, string, string, string) {
 	return t, exp.Equal(got), "expected:\t%v\ngot:\t\t%v", exp.String(), got.String()
+}
+
+func (ip IntProto) String() string {
+	return ip.Int.String()
 }

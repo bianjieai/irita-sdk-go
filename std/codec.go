@@ -12,11 +12,11 @@ type Codec struct {
 
 	// Keep reference to the amino codec to allow backwards compatibility along
 	// with type, and interface registration.
-	Amino *codec.Codec
+	Amino *codec.LegacyAmino
 
 	anyUnpacker types.AnyUnpacker
 }
 
-func NewAppCodec(amino *codec.Codec, anyUnpacker types.AnyUnpacker) *Codec {
-	return &Codec{Marshaler: codec.NewHybridCodec(amino, anyUnpacker), Amino: amino, anyUnpacker: anyUnpacker}
+func NewAppCodec(amino *codec.LegacyAmino, anyUnpacker types.AnyUnpacker) *Codec {
+	return &Codec{Marshaler: codec.NewAminoCodec(amino), Amino: amino, anyUnpacker: anyUnpacker}
 }

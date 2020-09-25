@@ -6,6 +6,7 @@ import (
 	tmcrypto "github.com/tendermint/tendermint/crypto"
 
 	"github.com/bianjieai/irita-sdk-go/crypto"
+	cryptoamino "github.com/bianjieai/irita-sdk-go/crypto/codec"
 	"github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/types/store"
 )
@@ -51,8 +52,8 @@ func (k keyManager) Insert(name, password string) (string, string, error) {
 
 	info := store.KeyInfo{
 		Name:         name,
-		PubKey:       pubKey.Bytes(),
-		PrivKeyArmor: string(priv.Bytes()),
+		PubKey:       cryptoamino.MarshalPubkey(pubKey),
+		PrivKeyArmor: string(cryptoamino.MarshalPrivKey(priv)),
 		Algo:         k.algo,
 	}
 
@@ -79,8 +80,8 @@ func (k keyManager) Recover(name, password, mnemonic string) (string, error) {
 
 	info := store.KeyInfo{
 		Name:         name,
-		PubKey:       pubKey.Bytes(),
-		PrivKeyArmor: string(priv.Bytes()),
+		PubKey:       cryptoamino.MarshalPubkey(pubKey),
+		PrivKeyArmor: string(cryptoamino.MarshalPrivKey(priv)),
 		Algo:         k.algo,
 	}
 
@@ -109,8 +110,8 @@ func (k keyManager) Import(name, password, armor string) (string, error) {
 
 	info := store.KeyInfo{
 		Name:         name,
-		PubKey:       pubKey.Bytes(),
-		PrivKeyArmor: string(priv.Bytes()),
+		PubKey:       cryptoamino.MarshalPubkey(pubKey),
+		PrivKeyArmor: string(cryptoamino.MarshalPrivKey(priv)),
 		Algo:         k.algo,
 	}
 
@@ -145,7 +146,7 @@ func (k keyManager) Find(name, password string) (types.AccAddress, error) {
 		return nil, fmt.Errorf("name %s not exist", name)
 	}
 
-	pubKey, err := store.PubKeyFromBytes(info.PubKey)
+	pubKey, err := cryptoamino.PubKeyFromBytes(info.PubKey)
 	if err != nil {
 		return nil, fmt.Errorf("name %s not exist", name)
 	}

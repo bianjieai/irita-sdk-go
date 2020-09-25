@@ -36,14 +36,14 @@ type EditTokenRequest struct {
 }
 
 // QueryFeesResponse is for the token fees query output
-type QueryFeesResponse struct {
+type QueryFeesResponseOutput struct {
 	Exist    bool     `json:"exist"`     // indicate if the token has existed
 	IssueFee sdk.Coin `json:"issue_fee"` // issue fee
 	MintFee  sdk.Coin `json:"mint_fee"`  // mint fee
 }
 
 // token params
-type QueryParamsResponse struct {
+type QueryParamsResponseOutput struct {
 	TokenTaxRate      string `json:"token_tax_rate"`       // e.g., 40%
 	IssueTokenBaseFee string `json:"issue_token_base_fee"` // e.g., 300000*10^18iris-atto
 	MintTokenFeeRatio string `json:"mint_token_fee_ratio"` // e.g., 10%

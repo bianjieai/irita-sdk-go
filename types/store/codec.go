@@ -1,24 +1,24 @@
 package store
 
 import (
+	cryptoAmino "github.com/bianjieai/irita-sdk-go/crypto/codec"
 	"github.com/tendermint/tendermint/crypto"
-	cryptoAmino "github.com/tendermint/tendermint/crypto/encoding/amino"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/crypto/hd"
 )
 
-var cdc *codec.Codec
+var cdc *codec.LegacyAmino
 
 func init() {
-	cdc = codec.New()
-	cryptoAmino.RegisterAmino(cdc)
+	cdc = codec.NewLegacyAmino()
+	cryptoAmino.RegisterCrypto(cdc)
 	RegisterCodec(cdc)
 	cdc.Seal()
 }
 
 // RegisterCodec registers concrete types and interfaces on the given codec.
-func RegisterCodec(cdc *codec.Codec) {
+func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*Info)(nil), nil)
 	cdc.RegisterConcrete(hd.BIP44Params{}, "crypto/keys/hd/BIP44Params", nil)
 	cdc.RegisterConcrete(localInfo{}, "crypto/keys/localInfo", nil)

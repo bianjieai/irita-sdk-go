@@ -1,12 +1,14 @@
 package types
 
 import (
+	"github.com/gogo/protobuf/proto"
 	"github.com/tendermint/tendermint/crypto"
 )
 
 type (
 	// Msg defines the interface a transaction message must fulfill.
 	Msg interface {
+		proto.Message
 
 		// Return the message type.
 		// Must be alphanumeric or empty.
