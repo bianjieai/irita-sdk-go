@@ -1,228 +1,264 @@
 package types
 
 import (
+	"errors"
 	"fmt"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
+	"github.com/bianjieai/irita-sdk-go/types/tx/signing"
 )
 
-// TxBuilder implements a transaction context created in SDK modules.
-type TxBuilder struct {
-	address       string
-	chainID       string
-	memo          string
-	password      string
-	accountNumber uint64
-	sequence      uint64
-	gas           uint64
+// Factory implements a transaction context created in SDK modules.
+type (
+	Factory struct {
+		address         string
+		chainID         string
+		memo            string
+		password        string
+		accountNumber   uint64
+		sequence        uint64
+		gas             uint64
+		simulate        bool
+		fees            Coins
+		gasPrices       DecCoins
+		mode            BroadcastMode
+		signMode        signing.SignMode
+		signModeHandler SignModeHandler
+		txEncoder       TxEncoder
+		keyManager      KeyManager
+		txConfig        TxConfig
+	}
+)
 
-	fee        Coins
-	mode       BroadcastMode
-	simulate   bool
-	codec      codec.Marshaler
-	txEncoder  TxEncoder
-	keyManager KeyManager
-}
-
-func NewTxBuilder(txEncoder TxEncoder) *TxBuilder {
-	return &TxBuilder{txEncoder: txEncoder}
-}
-
-// WithCodec returns a pointer of the context with an updated codec.
-func (builder *TxBuilder) WithCodec(cdc codec.Marshaler) *TxBuilder {
-	builder.codec = cdc
-	return builder
-}
-
-// Codec returns codec.
-func (builder *TxBuilder) Codec() codec.Marshaler {
-	return builder.codec
-}
-
-// WithChainID returns a pointer of the context with an updated ChainID.
-func (builder *TxBuilder) WithChainID(chainID string) *TxBuilder {
-	builder.chainID = chainID
-	return builder
+func NewFactory(txEncoder TxEncoder) *Factory {
+	return &Factory{txEncoder: txEncoder}
 }
 
 // ChainID returns the chainID of the current chain.
-func (builder *TxBuilder) ChainID() string {
-	return builder.chainID
+func (f *Factory) ChainID() string { return f.chainID }
+
+// Gas returns the gas of the transaction.
+func (f *Factory) Gas() uint64 { return f.gas }
+
+// Fee returns the fee of the transaction.
+func (f *Factory) Fees() Coins { return f.fees }
+
+// Sequence returns the sequence of the account.
+func (f *Factory) Sequence() uint64 { return f.sequence }
+
+// Memo returns memo.
+func (f *Factory) Memo() string { return f.memo }
+
+// AccountNumber returns accountNumber.
+func (f *Factory) AccountNumber() uint64 { return f.accountNumber }
+
+// KeyManager returns keyManager.
+func (f *Factory) KeyManager() KeyManager { return f.keyManager }
+
+// Mode returns mode.
+func (f *Factory) Mode() BroadcastMode { return f.mode }
+
+// Simulate returns simulate.
+func (f *Factory) Simulate() bool { return f.simulate }
+
+// Password returns password.
+func (f *Factory) Password() string { return f.password }
+
+// Address returns the address.
+func (f *Factory) Address() string { return f.address }
+
+// WithChainID returns a pointer of the context with an updated ChainID.
+func (f *Factory) WithChainID(chainID string) *Factory {
+	f.chainID = chainID
+	return f
 }
 
 // WithGas returns a pointer of the context with an updated Gas.
-func (builder *TxBuilder) WithGas(gas uint64) *TxBuilder {
-	builder.gas = gas
-	return builder
-}
-
-// Gas returns the gas of the transaction.
-func (builder *TxBuilder) Gas() uint64 {
-	return builder.gas
+func (f *Factory) WithGas(gas uint64) *Factory {
+	f.gas = gas
+	return f
 }
 
 // WithFee returns a pointer of the context with an updated Fee.
-func (builder *TxBuilder) WithFee(fee Coins) *TxBuilder {
-	builder.fee = fee
-	return builder
-}
-
-// Fee returns the fee of the transaction.
-func (builder *TxBuilder) Fee() Coins {
-	return builder.fee
+func (f *Factory) WithFee(fee Coins) *Factory {
+	f.fees = fee
+	return f
 }
 
 // WithSequence returns a pointer of the context with an updated sequence number.
-func (builder *TxBuilder) WithSequence(sequence uint64) *TxBuilder {
-	builder.sequence = sequence
-	return builder
-}
-
-// Sequence returns the sequence of the account.
-func (builder *TxBuilder) Sequence() uint64 {
-	return builder.sequence
+func (f *Factory) WithSequence(sequence uint64) *Factory {
+	f.sequence = sequence
+	return f
 }
 
 // WithMemo returns a pointer of the context with an updated memo.
-func (builder *TxBuilder) WithMemo(memo string) *TxBuilder {
-	builder.memo = memo
-	return builder
-}
-
-// Memo returns memo.
-func (builder *TxBuilder) Memo() string {
-	return builder.memo
+func (f *Factory) WithMemo(memo string) *Factory {
+	f.memo = memo
+	return f
 }
 
 // WithAccountNumber returns a pointer of the context with an account number.
-func (builder *TxBuilder) WithAccountNumber(accnum uint64) *TxBuilder {
-	builder.accountNumber = accnum
-	return builder
-}
-
-// AccountNumber returns accountNumber.
-func (builder *TxBuilder) AccountNumber() uint64 {
-	return builder.accountNumber
+func (f *Factory) WithAccountNumber(accnum uint64) *Factory {
+	f.accountNumber = accnum
+	return f
 }
 
 // WithAccountNumber returns a pointer of the context with a keyDao.
-func (builder *TxBuilder) WithKeyManager(keyManager KeyManager) *TxBuilder {
-	builder.keyManager = keyManager
-	return builder
-}
-
-// KeyManager returns keyManager.
-func (builder *TxBuilder) KeyManager() KeyManager {
-	return builder.keyManager
+func (f *Factory) WithKeyManager(keyManager KeyManager) *Factory {
+	f.keyManager = keyManager
+	return f
 }
 
 // WithMode returns a pointer of the context with a Mode.
-func (builder *TxBuilder) WithMode(mode BroadcastMode) *TxBuilder {
-	builder.mode = mode
-	return builder
-}
-
-// Mode returns mode.
-func (builder *TxBuilder) Mode() BroadcastMode {
-	return builder.mode
+func (f *Factory) WithMode(mode BroadcastMode) *Factory {
+	f.mode = mode
+	return f
 }
 
 // WithRPC returns a pointer of the context with a simulate.
-func (builder *TxBuilder) WithSimulate(simulate bool) *TxBuilder {
-	builder.simulate = simulate
-	return builder
-}
-
-// Simulate returns simulate.
-func (builder *TxBuilder) Simulate() bool {
-	return builder.simulate
+func (f *Factory) WithSimulate(simulate bool) *Factory {
+	f.simulate = simulate
+	return f
 }
 
 // WithRPC returns a pointer of the context with a password.
-func (builder *TxBuilder) WithPassword(password string) *TxBuilder {
-	builder.password = password
-	return builder
-}
-
-// Password returns password.
-func (builder *TxBuilder) Password() string {
-	return builder.password
+func (f *Factory) WithPassword(password string) *Factory {
+	f.password = password
+	return f
 }
 
 // WithAddress returns a pointer of the context with a password.
-func (builder *TxBuilder) WithAddress(address string) *TxBuilder {
-	builder.address = address
-	return builder
+func (f *Factory) WithAddress(address string) *Factory {
+	f.address = address
+	return f
 }
 
-// Address returns the address.
-func (builder *TxBuilder) Address() string {
-	return builder.address
+// WithGas returns a pointer of the context with an updated Gas.
+func (f *Factory) WithTxConfig(txConfig TxConfig) *Factory {
+	f.txConfig = txConfig
+	return f
 }
 
-func (builder *TxBuilder) BuildAndSign(name string, msgs []Msg) ([]byte, error) {
-	msg, err := builder.BuildSignMsg(msgs)
+// WithGas returns a pointer of the context with an updated Gas.
+func (f *Factory) WithSignModeHandler(signModeHandler SignModeHandler) *Factory {
+	f.signModeHandler = signModeHandler
+	return f
+}
+
+func (f *Factory) BuildAndSign(name string, msgs []Msg) ([]byte, error) {
+	tx, err := f.BuildUnsignedTx(msgs)
+	err = f.Sign(name, tx)
 	if err != nil {
 		return nil, err
 	}
-	return builder.Sign(name, msg)
-}
 
-// BuildTxForSim creates a StdSignMsg and encodes a transaction with the
-// StdSignMsg with a single empty StdSignature for tx simulation.
-func (builder TxBuilder) BuildTxForSim(msgs []Msg) ([]byte, error) {
-	signMsg, err := builder.BuildSignMsg(msgs)
+	txBytes, err := f.txEncoder(tx.GetTx())
 	if err != nil {
 		return nil, err
 	}
-
-	// the ante handler will populate with a sentinel pubkey
-	sigs := []StdSignature{{}}
-	return builder.txEncoder(NewStdTx(signMsg.Msgs, signMsg.Fee, sigs, signMsg.Memo))
+	return txBytes, nil
 }
 
-// BuildSignMsg builds a single message to be signed from a TxBuilder given a
-// set of messages. It returns an error if a fee is supplied but cannot be
-// parsed.
-func (builder TxBuilder) BuildSignMsg(msgs []Msg) (StdSignMsg, error) {
-	if builder.chainID == "" {
-		return StdSignMsg{}, fmt.Errorf("chain ID required but not specified")
+func (f *Factory) BuildUnsignedTx(msgs []Msg) (TxBuilder, error) {
+	if f.chainID == "" {
+		return nil, fmt.Errorf("chain ID required but not specified")
 	}
 
-	return StdSignMsg{
-		ChainID:       builder.chainID,
-		AccountNumber: builder.accountNumber,
-		Sequence:      builder.sequence,
-		Memo:          builder.memo,
-		Msgs:          msgs,
-		Fee:           NewStdFee(builder.gas, builder.fee...),
-	}, nil
+	fees := f.fees
+
+	if !f.gasPrices.IsZero() {
+		if !fees.IsZero() {
+			return nil, errors.New("cannot provide both fees and gas prices")
+		}
+
+		glDec := NewDec(int64(f.gas))
+
+		// Derive the fees based on the provided gas prices, where
+		// fee = ceil(gasPrice * gasLimit).
+		fees = make(Coins, len(f.gasPrices))
+
+		for i, gp := range f.gasPrices {
+			fee := gp.Amount.Mul(glDec)
+			fees[i] = NewCoin(gp.Denom, fee.Ceil().RoundInt())
+		}
+	}
+
+	tx := f.txConfig.NewTxBuilder()
+
+	if err := tx.SetMsgs(msgs...); err != nil {
+		return nil, err
+	}
+
+	tx.SetMemo(f.memo)
+	tx.SetFeeAmount(fees)
+	tx.SetGasLimit(f.gas)
+	//f.txBuilder.SetTimeoutHeight(f.TimeoutHeight())
+
+	return tx, nil
 }
 
 // Sign signs a transaction given a name, passphrase, and a single message to
 // signed. An error is returned if signing fails.
-func (builder *TxBuilder) Sign(name string, msg StdSignMsg) ([]byte, error) {
-	sig, err := builder.makeSignature(name, msg)
-	if err != nil {
-		return nil, err
+func (f *Factory) Sign(name string, txBuilder TxBuilder) error {
+	signMode := f.signMode
+	if signMode == signing.SignMode_SIGN_MODE_UNSPECIFIED {
+		// use the SignModeHandler's default mode if unspecified
+		signMode = f.txConfig.SignModeHandler().DefaultMode()
+	}
+	signerData := SignerData{
+		ChainID:       f.chainID,
+		AccountNumber: f.accountNumber,
+		Sequence:      f.sequence,
 	}
 
-	return builder.MarshallTx([]StdSignature{sig}, msg)
-}
-
-// Sign signs a transaction given a name, passphrase, and a single message to
-// signed. An error is returned if signing fails.
-func (builder *TxBuilder) MarshallTx(sigs []StdSignature, msg StdSignMsg) ([]byte, error) {
-	return builder.txEncoder(NewStdTx(msg.Msgs, msg.Fee, sigs, msg.Memo))
-}
-
-func (builder *TxBuilder) makeSignature(name string, msg StdSignMsg) (sig StdSignature, err error) {
-	signature, pubKey, err := builder.keyManager.Sign(name, builder.password, msg.Bytes(builder.codec))
+	pubkey, _, err := f.keyManager.Find(name, f.password)
 	if err != nil {
-		return sig, err
+		return err
 	}
-	return StdSignature{
-		PubKey:    pubKey.Bytes(),
-		Signature: signature,
-	}, nil
+
+	// For SIGN_MODE_DIRECT, calling SetSignatures calls setSignerInfos on
+	// Factory under the hood, and SignerInfos is needed to generated the
+	// sign bytes. This is the reason for setting SetSignatures here, with a
+	// nil signature.
+	//
+	// Note: this line is not needed for SIGN_MODE_LEGACY_AMINO, but putting it
+	// also doesn't affect its generated sign bytes, so for code's simplicity
+	// sake, we put it here.
+	sigData := signing.SingleSignatureData{
+		SignMode:  signMode,
+		Signature: nil,
+	}
+	sig := signing.SignatureV2{
+		PubKey:   pubkey,
+		Data:     &sigData,
+		Sequence: f.Sequence(),
+	}
+	if err := txBuilder.SetSignatures(sig); err != nil {
+		return err
+	}
+
+	// Generate the bytes to be signed.
+	signBytes, err := f.signModeHandler.GetSignBytes(signMode, signerData, txBuilder.GetTx())
+	if err != nil {
+		return err
+	}
+
+	// Sign those bytes
+	sigBytes, _, err := f.keyManager.Sign(name, f.password, signBytes)
+	if err != nil {
+		return err
+	}
+
+	// Construct the SignatureV2 struct
+	sigData = signing.SingleSignatureData{
+		SignMode:  signMode,
+		Signature: sigBytes,
+	}
+	sig = signing.SignatureV2{
+		PubKey:   pubkey,
+		Data:     &sigData,
+		Sequence: f.Sequence(),
+	}
+
+	// And here the tx is populated with the signature
+	return txBuilder.SetSignatures(sig)
 }

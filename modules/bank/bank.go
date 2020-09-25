@@ -3,6 +3,7 @@ package bank
 import (
 	"context"
 	"fmt"
+	"github.com/bianjieai/irita-sdk-go/modules/auth"
 	"strings"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
@@ -37,6 +38,11 @@ func (b bankClient) RegisterInterfaceTypes(registry codectypes.InterfaceRegistry
 		(*sdk.Msg)(nil),
 		&MsgSend{},
 		&MsgMultiSend{},
+	)
+
+	registry.RegisterImplementations(
+		(*auth.Account)(nil),
+		&auth.BaseAccount{},
 	)
 }
 
@@ -174,7 +180,7 @@ func (b bankClient) SubscribeSendTx(from, to string, callback EventMsgSendCallba
 
 	subscription, _ := b.SubscribeTx(builder, func(data sdk.EventDataTx) {
 		for _, msg := range data.Tx.Msgs {
-			if value, ok := msg.(MsgSend); ok {
+			if value, ok := msg.(*MsgSend); ok {
 				callback(EventDataMsgSend{
 					Height: data.Height,
 					Hash:   data.Hash,

@@ -3,9 +3,10 @@ package modules
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/modules/token"
-	"strings"
 
 	"github.com/tendermint/tendermint/libs/log"
 

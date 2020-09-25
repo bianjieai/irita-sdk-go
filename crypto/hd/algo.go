@@ -2,6 +2,7 @@ package hd
 
 import (
 	"fmt"
+
 	"github.com/bianjieai/irita-sdk-go/crypto/keys/secp256k1"
 
 	"github.com/cosmos/go-bip39"

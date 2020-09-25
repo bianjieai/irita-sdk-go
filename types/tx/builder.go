@@ -37,7 +37,7 @@ var (
 	_ codectypes.IntoAny        = &wrapper{}
 )
 
-// ExtensionOptionsTxBuilder defines a TxBuilder that can also set extensions.
+// ExtensionOptionsTxBuilder defines a Factory that can also set extensions.
 type ExtensionOptionsTxBuilder interface {
 	SetExtensionOptions(...*codectypes.Any)
 	SetNonCriticalExtensionOptions(...*codectypes.Any)

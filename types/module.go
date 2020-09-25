@@ -31,5 +31,5 @@ type KeyManager interface {
 	Import(name, password string, privKeyArmor string) (address string, err error)
 	Export(name, password string) (privKeyArmor string, err error)
 	Delete(name, password string) error
-	Find(name, password string) (address AccAddress, err error)
+	Find(name, password string) (crypto.PubKey, AccAddress, error)
 }

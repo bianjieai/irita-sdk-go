@@ -56,7 +56,7 @@ func NewLogger(cfg Config) LogrusLogger {
 	}
 }
 
-func (l *LogrusLogger) SetOutput(output io.Writer){
+func (l *LogrusLogger) SetOutput(output io.Writer) {
 	l.logger.SetOutput(os.Stdout)
 }
 

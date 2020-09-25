@@ -3,13 +3,7 @@ package bank
 import (
 	"errors"
 	"fmt"
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/secp256k1"
-	"github.com/bianjieai/irita-sdk-go/crypto/types/multisig"
-	"github.com/bianjieai/irita-sdk-go/modules/auth"
-	"github.com/tendermint/tendermint/crypto/sm2"
-
-	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/ed25519"
+	//"github.com/bianjieai/irita-sdk-go/modules/auth"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
@@ -21,7 +15,7 @@ const (
 )
 
 var (
-	_ sdk.Msg = MsgSend{}
+	_ sdk.Msg = &MsgSend{}
 
 	amino = codec.NewLegacyAmino()
 
@@ -80,8 +74,8 @@ func (msg MsgSend) GetSigners() []sdk.AccAddress {
 }
 
 // NewMsgSend - construct arbitrary multi-in, multi-out send msg.
-func NewMsgMultiSend(in []Input, out []Output) MsgMultiSend {
-	return MsgMultiSend{Inputs: in, Outputs: out}
+func NewMsgMultiSend(in []Input, out []Output) *MsgMultiSend {
+	return &MsgMultiSend{Inputs: in, Outputs: out}
 }
 
 func (msg MsgMultiSend) Route() string { return ModuleName }
@@ -187,25 +181,4 @@ func NewOutput(addr sdk.AccAddress, coins sdk.Coins) Output {
 func registerCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(MsgSend{}, "cosmos-sdk/MsgSend", nil)
 	cdc.RegisterConcrete(MsgMultiSend{}, "cosmos-sdk/MsgMultiSend", nil)
-
-	cdc.RegisterInterface((*auth.Account)(nil), nil)
-	cdc.RegisterConcrete(&auth.BaseAccount{}, "cosmos-sdk/Account", nil)
-	cdc.RegisterInterface((*crypto.PubKey)(nil), nil)
-	cdc.RegisterConcrete(ed25519.PubKey{},
-		ed25519.PubKeyName, nil)
-	cdc.RegisterConcrete(secp256k1.PubKey{},
-		secp256k1.PubKeyName, nil)
-	cdc.RegisterConcrete(sm2.PubKeySm2{},
-		sm2.PubKeyName, nil)
-	cdc.RegisterConcrete(multisig.PubKeyMultisigThreshold{},
-		multisig.PubKeyAminoRoute, nil)
-
-	cdc.RegisterInterface((*crypto.PrivKey)(nil), nil)
-	cdc.RegisterConcrete(ed25519.PrivKey{},
-		ed25519.PrivKeyName, nil)
-	cdc.RegisterConcrete(secp256k1.PrivKey{},
-		secp256k1.PrivKeyName, nil)
-	cdc.RegisterConcrete(sm2.PrivKeySm2{},
-		sm2.PrivKeyName, nil)
-
 }

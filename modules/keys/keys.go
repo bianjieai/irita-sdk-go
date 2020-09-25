@@ -38,7 +38,7 @@ func (k keysClient) Delete(name, password string) sdk.Error {
 }
 
 func (k keysClient) Show(name, password string) (string, sdk.Error) {
-	address, err := k.KeyManager.Find(name, password)
+	_, address, err := k.KeyManager.Find(name, password)
 	if err != nil {
 		return "", sdk.Wrap(err)
 	}

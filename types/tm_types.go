@@ -2,13 +2,15 @@ package types
 
 import (
 	"encoding/hex"
-	cryptoAmino "github.com/bianjieai/irita-sdk-go/crypto/codec"
-	"github.com/bianjieai/irita-sdk-go/types/kv"
+	"strings"
+
 	"github.com/tendermint/tendermint/crypto"
 	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 	tmclient "github.com/tendermint/tendermint/rpc/client"
 	tmtypes "github.com/tendermint/tendermint/types"
-	"strings"
+
+	cryptoAmino "github.com/bianjieai/irita-sdk-go/crypto/codec"
+	"github.com/bianjieai/irita-sdk-go/types/kv"
 )
 
 type (

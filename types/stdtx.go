@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
 	"github.com/bianjieai/irita-sdk-go/crypto/types/multisig"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
@@ -50,14 +51,16 @@ func NewStdFee(gas uint64, amount ...Coin) StdFee {
 
 // Fee bytes for signing later
 func (fee StdFee) Bytes() []byte {
-	if len(fee.Amount) == 0 {
-		fee.Amount = Coins{}
-	}
-	bz, err := NewCodec().MarshalJSON(fee)
-	if err != nil {
-		panic(err)
-	}
-	return bz
+	//if len(fee.Amount) == 0 {
+	//	fee.Amount = Coins{}
+	//}
+	//bz, err := NewCodec().MarshalJSON(fee)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//return bz
+	//TODO
+	return nil
 }
 
 // Standard Signature

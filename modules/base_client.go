@@ -6,7 +6,10 @@ package modules
 import (
 	"errors"
 	"fmt"
+	"github.com/gogo/protobuf/proto"
 	"time"
+
+	"github.com/bianjieai/irita-sdk-go/types/tx"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -31,11 +34,10 @@ type baseClient struct {
 	sdk.TmClient
 	sdk.GRPCClient
 	sdk.KeyManager
-	logger    log.Logger
-	cfg       *sdk.ClientConfig
-	marshaler codec.Marshaler
-	cdc       *codec.LegacyAmino
-	l         *locker
+	logger         log.Logger
+	cfg            *sdk.ClientConfig
+	encodingConfig sdk.EncodingConfig
+	l              *locker
 
 	accountQuery
 	tokenQuery
@@ -43,7 +45,7 @@ type baseClient struct {
 }
 
 //NewBaseClient return the baseClient for every sub modules
-func NewBaseClient(cfg sdk.ClientConfig, cdc *codec.LegacyAmino, marshaler codec.Marshaler, logger log.Logger) sdk.BaseClient {
+func NewBaseClient(cfg sdk.ClientConfig, encodingConfig sdk.EncodingConfig, logger log.Logger) sdk.BaseClient {
 	//create logger
 	if logger == nil {
 		logger = sdklog.NewLogger(sdklog.Config{
@@ -53,13 +55,12 @@ func NewBaseClient(cfg sdk.ClientConfig, cdc *codec.LegacyAmino, marshaler codec
 	}
 
 	base := baseClient{
-		TmClient:   NewRPCClient(cfg.NodeURI, cdc, logger, cfg.Timeout),
-		GRPCClient: NewGRPCClient(cfg.GRPCAddr),
-		logger:     logger,
-		cfg:        &cfg,
-		marshaler:  marshaler,
-		cdc:        cdc,
-		l:          NewLocker(concurrency),
+		TmClient:       NewRPCClient(cfg.NodeURI, encodingConfig.Amino, logger, cfg.Timeout),
+		GRPCClient:     NewGRPCClient(cfg.GRPCAddr),
+		logger:         logger,
+		cfg:            &cfg,
+		encodingConfig: encodingConfig,
+		l:              NewLocker(concurrency),
 	}
 
 	base.KeyManager = keyManager{
@@ -73,7 +74,7 @@ func NewBaseClient(cfg sdk.ClientConfig, cdc *codec.LegacyAmino, marshaler codec
 		GRPCClient: base.GRPCClient,
 		Logger:     base.Logger(),
 		Cache:      c,
-		cdc:        marshaler,
+		cdc:        encodingConfig.Marshaler,
 		km:         base.KeyManager,
 		expiration: cacheExpirePeriod,
 	}
@@ -81,7 +82,7 @@ func NewBaseClient(cfg sdk.ClientConfig, cdc *codec.LegacyAmino, marshaler codec
 	base.tokenQuery = tokenQuery{
 		q:          base,
 		GRPCClient: base.GRPCClient,
-		cdc:        marshaler,
+		cdc:        encodingConfig.Marshaler,
 		Logger:     base.Logger(),
 		Cache:      c,
 	}
@@ -90,7 +91,7 @@ func NewBaseClient(cfg sdk.ClientConfig, cdc *codec.LegacyAmino, marshaler codec
 		Queries:    base,
 		Logger:     base.Logger(),
 		Cache:      c,
-		cdc:        marshaler,
+		cdc:        encodingConfig.Marshaler,
 		expiration: cacheExpirePeriod,
 	}
 
@@ -107,7 +108,7 @@ func (base *baseClient) SetLogger(logger log.Logger) {
 
 // Codec returns codec.
 func (base *baseClient) Marshaler() codec.Marshaler {
-	return base.marshaler
+	return base.encodingConfig.Marshaler
 }
 
 func (base *baseClient) BuildAndSend(msg []sdk.Msg, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
@@ -194,7 +195,7 @@ func (base baseClient) QueryWithResponse(path string, data interface{}, result s
 		return err
 	}
 
-	if err := base.cdc.UnmarshalJSON(res, result); err != nil {
+	if err := base.encodingConfig.Marshaler.UnmarshalJSON(res, result.(proto.Message)); err != nil {
 		return err
 	}
 
@@ -205,7 +206,7 @@ func (base baseClient) Query(path string, data interface{}) ([]byte, error) {
 	var bz []byte
 	var err error
 	if data != nil {
-		bz, err = base.cdc.MarshalJSON(data)
+		bz, err = base.encodingConfig.Marshaler.MarshalJSON(data.(proto.Message))
 		if err != nil {
 			return nil, err
 		}
@@ -251,29 +252,28 @@ func (base baseClient) QueryStore(key sdk.HexBytes,
 	return resp, nil
 }
 
-func (base *baseClient) prepare(baseTx sdk.BaseTx) (*sdk.TxBuilder, error) {
-	builder := sdk.NewTxBuilder(func(tx sdk.Tx) ([]byte, error) {
-		return base.cdc.MarshalBinaryBare(tx)
-	})
-	builder.WithCodec(base.marshaler).
-		WithChainID(base.cfg.ChainID).
+func (base *baseClient) prepare(baseTx sdk.BaseTx) (*sdk.Factory, error) {
+	factory := sdk.NewFactory(base.encodingConfig.TxConfig.TxEncoder())
+	factory.WithChainID(base.cfg.ChainID).
 		WithKeyManager(base.KeyManager).
 		WithMode(base.cfg.Mode).
-		WithSimulate(false).
-		WithGas(base.cfg.Gas)
+		WithSimulate(baseTx.Simulate).
+		WithGas(base.cfg.Gas).
+		WithSignModeHandler(tx.MakeSignModeHandler(tx.DefaultSignModes)).
+		WithTxConfig(base.encodingConfig.TxConfig)
 
 	if !baseTx.Simulate {
 		addr, err := base.QueryAddress(baseTx.From, baseTx.Password)
 		if err != nil {
 			return nil, err
 		}
-		builder.WithAddress(addr.String())
+		factory.WithAddress(addr.String())
 
 		account, err := base.QueryAndRefreshAccount(addr.String())
 		if err != nil {
 			return nil, err
 		}
-		builder.WithAccountNumber(account.AccountNumber).
+		factory.WithAccountNumber(account.AccountNumber).
 			WithSequence(account.Sequence).
 			WithPassword(baseTx.Password)
 	}
@@ -283,31 +283,27 @@ func (base *baseClient) prepare(baseTx sdk.BaseTx) (*sdk.TxBuilder, error) {
 		if err != nil {
 			return nil, err
 		}
-		builder.WithFee(fees)
+		factory.WithFee(fees)
 	} else {
 		fees, err := base.ToMinCoin(base.cfg.Fee...)
 		if err != nil {
 			panic(err)
 		}
-		builder.WithFee(fees)
+		factory.WithFee(fees)
 	}
 
 	if len(baseTx.Mode) > 0 {
-		builder.WithMode(baseTx.Mode)
-	}
-
-	if baseTx.Simulate {
-		builder.WithSimulate(baseTx.Simulate)
+		factory.WithMode(baseTx.Mode)
 	}
 
 	if baseTx.Gas > 0 {
-		builder.WithGas(baseTx.Gas)
+		factory.WithGas(baseTx.Gas)
 	}
 
 	if len(baseTx.Memo) > 0 {
-		builder.WithMemo(baseTx.Memo)
+		factory.WithMemo(baseTx.Memo)
 	}
-	return builder, nil
+	return factory, nil
 }
 
 func (base *baseClient) ValidateTxSize(txSize int, msgs []sdk.Msg) sdk.Error {

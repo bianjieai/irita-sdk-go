@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/base64"
+
 	"github.com/tendermint/tendermint/crypto/encoding"
 
 	"github.com/bianjieai/irita-sdk-go/codec"

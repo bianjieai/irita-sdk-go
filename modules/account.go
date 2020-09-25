@@ -64,10 +64,12 @@ func (a accountQuery) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) 
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
-	var baseAccount auth.BaseAccount
-	a.cdc.UnpackAny(response.Account, &baseAccount)
+	var baseAccount auth.Account
+	if err := a.cdc.UnpackAny(response.Account, &baseAccount); err != nil {
+		return sdk.BaseAccount{}, sdk.Wrap(err)
+	}
 
-	account := baseAccount.Convert().(sdk.BaseAccount)
+	account := baseAccount.(*auth.BaseAccount).Convert().(sdk.BaseAccount)
 
 	breq := &bank.QueryAllBalancesRequest{
 		Address:    addr,
@@ -95,7 +97,7 @@ func (a accountQuery) QueryAddress(name, password string) (sdk.AccAddress, sdk.E
 		}
 	}
 
-	address, err := a.km.Find(name, password)
+	_, address, err := a.km.Find(name, password)
 	if err != nil {
 		a.Debug("can't find account", "name", name)
 		return address, sdk.Wrap(err)

@@ -3,8 +3,10 @@ package auth
 import (
 	"encoding/json"
 	"errors"
-	cryptocodec "github.com/bianjieai/irita-sdk-go/crypto/codec"
+
 	"github.com/tendermint/tendermint/crypto"
+
+	cryptocodec "github.com/bianjieai/irita-sdk-go/crypto/codec"
 
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )

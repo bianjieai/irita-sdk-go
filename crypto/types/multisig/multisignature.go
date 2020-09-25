@@ -2,8 +2,9 @@ package multisig
 
 import (
 	"fmt"
-	"github.com/bianjieai/irita-sdk-go/types/tx/signing"
 	"strings"
+
+	"github.com/bianjieai/irita-sdk-go/types/tx/signing"
 
 	"github.com/tendermint/tendermint/crypto"
 

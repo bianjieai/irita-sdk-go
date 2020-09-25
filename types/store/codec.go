@@ -1,8 +1,9 @@
 package store
 
 import (
-	cryptoAmino "github.com/bianjieai/irita-sdk-go/crypto/codec"
 	"github.com/tendermint/tendermint/crypto"
+
+	cryptoAmino "github.com/bianjieai/irita-sdk-go/crypto/codec"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/crypto/hd"

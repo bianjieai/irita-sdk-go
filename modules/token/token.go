@@ -84,7 +84,7 @@ func (t tokenClient) TransferToken(to string, symbol string, baseTx sdk.BaseTx) 
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	msg := MsgTransferTokenOwner{
+	msg := &MsgTransferTokenOwner{
 		SrcOwner: owner,
 		DstOwner: dstOwner,
 		Symbol:   symbol,
