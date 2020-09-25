@@ -3,8 +3,6 @@ package types
 import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/tendermint/tendermint/crypto"
-
-	"github.com/bianjieai/irita-sdk-go/types/tx/signing"
 )
 
 type (
@@ -77,21 +75,6 @@ type (
 		Tx
 
 		GetTimeoutHeight() uint64
-	}
-
-	// Factory defines an interface which an application-defined concrete transaction
-	// type must implement. Namely, it must be able to set messages, generate
-	// signatures, and provide canonical bytes to sign over. The transaction must
-	// also know how to encode itself.
-	TxBuilder1 interface {
-		GetTx() SigTx
-
-		SetMsgs(msgs ...Msg) error
-		SetSignatures(signatures ...signing.SignatureV2) error
-		SetMemo(memo string)
-		SetFeeAmount(amount Coins)
-		SetGasLimit(limit uint64)
-		SetTimeoutHeight(height uint64)
 	}
 )
 

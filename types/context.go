@@ -8,29 +8,26 @@ import (
 )
 
 // Factory implements a transaction context created in SDK modules.
-type (
-	Factory struct {
-		address         string
-		chainID         string
-		memo            string
-		password        string
-		accountNumber   uint64
-		sequence        uint64
-		gas             uint64
-		simulate        bool
-		fees            Coins
-		gasPrices       DecCoins
-		mode            BroadcastMode
-		signMode        signing.SignMode
-		signModeHandler SignModeHandler
-		txEncoder       TxEncoder
-		keyManager      KeyManager
-		txConfig        TxConfig
-	}
-)
+type Factory struct {
+	address         string
+	chainID         string
+	memo            string
+	password        string
+	accountNumber   uint64
+	sequence        uint64
+	gas             uint64
+	simulate        bool
+	fees            Coins
+	gasPrices       DecCoins
+	mode            BroadcastMode
+	signMode        signing.SignMode
+	signModeHandler SignModeHandler
+	keyManager      KeyManager
+	txConfig        TxConfig
+}
 
-func NewFactory(txEncoder TxEncoder) *Factory {
-	return &Factory{txEncoder: txEncoder}
+func NewFactory() *Factory {
+	return &Factory{}
 }
 
 // ChainID returns the chainID of the current chain.
@@ -151,7 +148,7 @@ func (f *Factory) BuildAndSign(name string, msgs []Msg) ([]byte, error) {
 		return nil, err
 	}
 
-	txBytes, err := f.txEncoder(tx.GetTx())
+	txBytes, err := f.txConfig.TxEncoder()(tx.GetTx())
 	if err != nil {
 		return nil, err
 	}

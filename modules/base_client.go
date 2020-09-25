@@ -253,8 +253,8 @@ func (base baseClient) QueryStore(key sdk.HexBytes,
 }
 
 func (base *baseClient) prepare(baseTx sdk.BaseTx) (*sdk.Factory, error) {
-	factory := sdk.NewFactory(base.encodingConfig.TxConfig.TxEncoder())
-	factory.WithChainID(base.cfg.ChainID).
+	factory := sdk.NewFactory().
+		WithChainID(base.cfg.ChainID).
 		WithKeyManager(base.KeyManager).
 		WithMode(base.cfg.Mode).
 		WithSimulate(baseTx.Simulate).
