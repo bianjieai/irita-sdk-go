@@ -1,18 +1,23 @@
 package modules
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
+	"github.com/bianjieai/irita-sdk-go/codec"
+	"github.com/bianjieai/irita-sdk-go/modules/token"
+
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/bianjieai/irita-sdk-go/modules/token"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/utils/cache"
 )
 
 type tokenQuery struct {
 	q sdk.Queries
+	sdk.GRPCClient
+	cdc codec.Marshaler
 	log.Logger
 	cache.Cache
 }
@@ -23,18 +28,26 @@ func (l tokenQuery) QueryToken(denom string) (sdk.Token, error) {
 		return t.(sdk.Token), nil
 	}
 
-	param := struct {
-		Denom string
-	}{
+	conn, err := l.GenConn()
+	defer conn.Close()
+	if err != nil {
+		return sdk.Token{}, sdk.Wrap(err)
+	}
+
+	request := &token.QueryTokenRequest{
 		Denom: denom,
 	}
-
-	var t token.Token
-	if err := l.q.QueryWithResponse("custom/token/token", param, &t); err != nil {
-		return sdk.Token{}, err
+	response, err := token.NewQueryClient(conn).Token(context.Background(), request)
+	if err != nil {
+		return sdk.Token{}, sdk.Wrap(err)
 	}
 
-	token := t.Convert().(sdk.Token)
+	var srcToken token.TokenInterface
+	err = l.cdc.UnpackAny(response.Token, &srcToken)
+	if err != nil {
+		return sdk.Token{}, sdk.Wrap(err)
+	}
+	token := srcToken.(*token.Token).Convert().(sdk.Token)
 	l.SaveTokens(token)
 	return token, nil
 }
@@ -44,7 +57,7 @@ func (l tokenQuery) SaveTokens(tokens ...sdk.Token) {
 		err1 := l.Set(l.prefixKey(t.Symbol), t)
 		err2 := l.Set(l.prefixKey(t.MinUnit), t)
 		if err1 != nil || err2 != nil {
-			l.Debug("cache token failed","symbol", t.Symbol)
+			l.Debug("cache token failed", "symbol", t.Symbol)
 		}
 	}
 }

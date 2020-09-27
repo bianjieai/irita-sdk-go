@@ -3,6 +3,7 @@ package types
 import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
+	"google.golang.org/grpc"
 )
 
 type TxManager interface {
@@ -16,6 +17,10 @@ type Queries interface {
 	AccountQuery
 	TmQuery
 	ParamQuery
+}
+
+type GRPCClient interface {
+	GenConn() (*grpc.ClientConn, error)
 }
 
 type ParamQuery interface {
@@ -63,4 +68,5 @@ type BaseClient interface {
 	TokenConvert
 	TmClient
 	Logger
+	GRPCClient
 }

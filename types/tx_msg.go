@@ -1,12 +1,14 @@
 package types
 
 import (
+	"github.com/gogo/protobuf/proto"
 	"github.com/tendermint/tendermint/crypto"
 )
 
 type (
 	// Msg defines the interface a transaction message must fulfill.
 	Msg interface {
+		proto.Message
 
 		// Return the message type.
 		// Must be alphanumeric or empty.
@@ -51,6 +53,28 @@ type (
 		// ValidateBasic does a simple and lightweight validation check that doesn't
 		// require access to any other information.
 		ValidateBasic() error
+	}
+
+	// FeeTx defines the interface to be implemented by Tx to use the FeeDecorators
+	FeeTx interface {
+		Tx
+		GetGas() uint64
+		GetFee() Coins
+		FeePayer() AccAddress
+	}
+
+	// Tx must have GetMemo() method to use ValidateMemoDecorator
+	TxWithMemo interface {
+		Tx
+		GetMemo() string
+	}
+
+	// TxWithTimeoutHeight extends the Tx interface by allowing a transaction to
+	// set a height timeout.
+	TxWithTimeoutHeight interface {
+		Tx
+
+		GetTimeoutHeight() uint64
 	}
 )
 

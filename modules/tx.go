@@ -39,7 +39,7 @@ func (base baseClient) QueryTxs(builder *sdk.EventQueryBuilder, page, size int) 
 		return sdk.ResultSearchTxs{}, errors.New("must declare at least one tag to search")
 	}
 
-	res, err := base.TxSearch(query, true, page, size, "asc")
+	res, err := base.TxSearch(query, true, &page, &size, "asc")
 	if err != nil {
 		return sdk.ResultSearchTxs{}, err
 	}
@@ -77,7 +77,7 @@ func (base baseClient) QueryBlock(height int64) (sdk.BlockDetail, error) {
 
 	return sdk.BlockDetail{
 		BlockID:     block.BlockID,
-		Block:       sdk.ParseBlock(base.cdc, block.Block),
+		Block:       sdk.ParseBlock(base.encodingConfig.Amino, block.Block),
 		BlockResult: sdk.ParseBlockResult(blockResult),
 	}, nil
 }
@@ -97,22 +97,13 @@ func (base baseClient) EstimateTxGas(txBytes []byte) (uint64, error) {
 	return adjusted, nil
 }
 
-func (base *baseClient) buildTx(msgs []sdk.Msg, baseTx sdk.BaseTx) ([]byte, *sdk.TxBuilder, sdk.Error) {
+func (base *baseClient) buildTx(msgs []sdk.Msg, baseTx sdk.BaseTx) ([]byte, *sdk.Factory, sdk.Error) {
 	builder, err := base.prepare(baseTx)
 	if err != nil {
 		return nil, builder, sdk.Wrap(err)
 	}
 
-	var txByte []byte
-	if baseTx.Simulate {
-		txByte, err = builder.BuildTxForSim(msgs)
-		if err != nil {
-			return nil, builder, sdk.Wrap(err)
-		}
-		return txByte, builder, nil
-	}
-
-	txByte, err = builder.BuildAndSign(baseTx.From, msgs)
+	txByte, err := builder.BuildAndSign(baseTx.From, msgs)
 	if err != nil {
 		return nil, builder, sdk.Wrap(err)
 	}
@@ -165,7 +156,7 @@ func (base baseClient) broadcastTxCommit(tx []byte) (sdk.ResultTx, sdk.Error) {
 	return sdk.ResultTx{
 		GasWanted: res.DeliverTx.GasWanted,
 		GasUsed:   res.DeliverTx.GasUsed,
-		Events:    sdk.ParseEvents(res.DeliverTx.Events),
+		Events:    sdk.StringifyEvents(res.DeliverTx.Events),
 		Hash:      res.Hash.String(),
 		Height:    res.Height,
 	}, nil
@@ -219,8 +210,10 @@ func (base baseClient) getResultBlocks(resTxs []*ctypes.ResultTx) (map[int64]*ct
 
 func (base baseClient) parseTxResult(res *ctypes.ResultTx, resBlock *ctypes.ResultBlock) (sdk.ResultQueryTx, error) {
 
-	var tx sdk.StdTx
-	if err := base.cdc.UnmarshalBinaryBare(res.Tx, &tx); err != nil {
+	var tx sdk.Tx
+	var err error
+
+	if tx, err = base.encodingConfig.TxConfig.TxDecoder()(res.Tx); err != nil {
 		return sdk.ResultQueryTx{}, err
 	}
 
@@ -233,7 +226,7 @@ func (base baseClient) parseTxResult(res *ctypes.ResultTx, resBlock *ctypes.Resu
 			Log:       res.TxResult.Log,
 			GasWanted: res.TxResult.GasWanted,
 			GasUsed:   res.TxResult.GasUsed,
-			Events:    sdk.ParseEvents(res.TxResult.Events),
+			Events:    sdk.StringifyEvents(res.TxResult.Events),
 		},
 		Timestamp: resBlock.Block.Time.Format(time.RFC3339),
 	}, nil

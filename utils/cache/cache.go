@@ -19,9 +19,9 @@ type LRU struct {
 	enabled bool
 }
 
-func NewCache(capacity int,enable bool) Cache {
+func NewCache(capacity int, enable bool) Cache {
 	return &LRU{
-		cache: gcache.New(capacity).LRU().Build(),
+		cache:   gcache.New(capacity).LRU().Build(),
 		enabled: enable,
 	}
 }
@@ -42,7 +42,7 @@ func (l *LRU) SetWithExpire(key, value interface{}, expiration time.Duration) er
 
 func (l LRU) Get(key interface{}) (interface{}, error) {
 	if !l.enabled {
-		return nil,errors.New("cache not enabled")
+		return nil, errors.New("cache not enabled")
 	}
 	return l.cache.Get(key)
 }

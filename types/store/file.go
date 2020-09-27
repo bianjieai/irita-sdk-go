@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	cryptoamino "github.com/bianjieai/irita-sdk-go/crypto/codec"
+
 	"github.com/99designs/keyring"
 	jose "github.com/dvsekhvalnov/jose2go"
 	"github.com/mitchellh/go-homedir"
@@ -120,7 +122,7 @@ func (f FileDAO) Read(name, password string) (KeyInfo, error) {
 
 	return KeyInfo{
 		Name:         i.Name,
-		PubKey:       i.PubKey.Bytes(),
+		PubKey:       cryptoamino.MarshalPubkey(i.PubKey),
 		PrivKeyArmor: i.PrivKeyArmor,
 		Algo:         string(i.Algo),
 	}, nil

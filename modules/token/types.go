@@ -5,9 +5,6 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/codec/types"
-
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -16,25 +13,11 @@ const (
 )
 
 var (
-	amino = codec.New()
-
-	// ModuleCdc references the global token module codec. Note, the codec should
-	// ONLY be used in certain instances of tests and for JSON encoding as Amino is
-	// still used for that purpose.
-	//
-	// The actual codec used for serialization should be provided to token and
-	// defined at the application level.
-	ModuleCdc = codec.NewHybridCodec(amino, types.NewInterfaceRegistry())
-
 	_ sdk.Msg = &MsgIssueToken{}
 	_ sdk.Msg = &MsgEditToken{}
 	_ sdk.Msg = &MsgMintToken{}
 	_ sdk.Msg = &MsgTransferTokenOwner{}
 )
-
-func init() {
-	registerCodec(amino)
-}
 
 func (msg MsgIssueToken) Route() string { return ModuleName }
 
@@ -64,7 +47,7 @@ func (msg MsgIssueToken) ValidateBasic() error {
 
 // Implements Msg.
 func (msg MsgIssueToken) GetSignBytes() []byte {
-	b, err := ModuleCdc.MarshalJSON(msg)
+	b, err := ModuleCdc.MarshalJSON(&msg)
 	if err != nil {
 		panic(err)
 	}
@@ -79,7 +62,7 @@ func (msg MsgIssueToken) GetSigners() []sdk.AccAddress {
 
 // GetSignBytes implements Msg
 func (msg MsgTransferTokenOwner) GetSignBytes() []byte {
-	b, err := ModuleCdc.MarshalJSON(msg)
+	b, err := ModuleCdc.MarshalJSON(&msg)
 	if err != nil {
 		panic(err)
 	}
@@ -132,7 +115,7 @@ func (msg MsgEditToken) ValidateBasic() error {
 
 // GetSignBytes implements Msg
 func (msg MsgEditToken) GetSignBytes() []byte {
-	b, err := ModuleCdc.MarshalJSON(msg)
+	b, err := ModuleCdc.MarshalJSON(&msg)
 	if err != nil {
 		panic(err)
 	}
@@ -152,7 +135,7 @@ func (msg MsgMintToken) Type() string { return "mint_token" }
 
 // GetSignBytes implements Msg
 func (msg MsgMintToken) GetSignBytes() []byte {
-	b, err := ModuleCdc.MarshalJSON(msg)
+	b, err := ModuleCdc.MarshalJSON(&msg)
 	if err != nil {
 		panic(err)
 	}
@@ -317,19 +300,9 @@ type TokenInterface interface {
 }
 
 func (p Params) Convert() interface{} {
-	return QueryParamsResponse{
+	return QueryParamsResponseOutput{
 		TokenTaxRate:      p.TokenTaxRate.String(),
 		IssueTokenBaseFee: p.IssueTokenBaseFee.String(),
 		MintTokenFeeRatio: p.MintTokenFeeRatio.String(),
 	}
-}
-
-func registerCodec(cdc *codec.Codec) {
-	cdc.RegisterConcrete(MsgIssueToken{}, "irismod/token/MsgIssueToken", nil)
-	cdc.RegisterConcrete(MsgEditToken{}, "irismod/token/MsgEditToken", nil)
-	cdc.RegisterConcrete(MsgMintToken{}, "irismod/token/MsgMintToken", nil)
-	cdc.RegisterConcrete(MsgTransferTokenOwner{}, "irismod/token/MsgTransferTokenOwner", nil)
-
-	cdc.RegisterInterface((*TokenInterface)(nil), nil)
-	cdc.RegisterConcrete(Token{}, "irismod/token/Token", nil)
 }

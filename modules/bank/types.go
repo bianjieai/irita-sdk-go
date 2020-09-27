@@ -3,16 +3,9 @@ package bank
 import (
 	"errors"
 	"fmt"
-
-	"github.com/tendermint/tendermint/crypto/sm2"
-
-	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/ed25519"
-	"github.com/tendermint/tendermint/crypto/multisig"
-	"github.com/tendermint/tendermint/crypto/secp256k1"
+	//"github.com/bianjieai/irita-sdk-go/modules/auth"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/codec/types"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -22,9 +15,9 @@ const (
 )
 
 var (
-	_ sdk.Msg = MsgSend{}
+	_ sdk.Msg = &MsgSend{}
 
-	amino = codec.New()
+	amino = codec.NewLegacyAmino()
 
 	// ModuleCdc references the global bank module codec. Note, the codec should
 	// ONLY be used in certain instances of tests and for JSON encoding as Amino is
@@ -32,7 +25,7 @@ var (
 	//
 	// The actual codec used for serialization should be provided to bank and
 	// defined at the application level.
-	ModuleCdc = codec.NewHybridCodec(amino, types.NewInterfaceRegistry())
+	ModuleCdc = codec.NewAminoCodec(amino)
 )
 
 func init() {
@@ -69,7 +62,7 @@ func (msg MsgSend) ValidateBasic() error {
 }
 
 func (msg MsgSend) GetSignBytes() []byte {
-	bz, err := ModuleCdc.MarshalJSON(msg)
+	bz, err := ModuleCdc.MarshalJSON(&msg)
 	if err != nil {
 		panic(err)
 	}
@@ -81,8 +74,8 @@ func (msg MsgSend) GetSigners() []sdk.AccAddress {
 }
 
 // NewMsgSend - construct arbitrary multi-in, multi-out send msg.
-func NewMsgMultiSend(in []Input, out []Output) MsgMultiSend {
-	return MsgMultiSend{Inputs: in, Outputs: out}
+func NewMsgMultiSend(in []Input, out []Output) *MsgMultiSend {
+	return &MsgMultiSend{Inputs: in, Outputs: out}
 }
 
 func (msg MsgMultiSend) Route() string { return ModuleName }
@@ -123,7 +116,7 @@ func (msg MsgMultiSend) ValidateBasic() error {
 
 // Implements Msg.
 func (msg MsgMultiSend) GetSignBytes() []byte {
-	bz, err := ModuleCdc.MarshalJSON(msg)
+	bz, err := ModuleCdc.MarshalJSON(&msg)
 	if err != nil {
 		panic(err)
 	}
@@ -185,28 +178,7 @@ func NewOutput(addr sdk.AccAddress, coins sdk.Coins) Output {
 	return output
 }
 
-func registerCodec(cdc *codec.Codec) {
+func registerCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(MsgSend{}, "cosmos-sdk/MsgSend", nil)
 	cdc.RegisterConcrete(MsgMultiSend{}, "cosmos-sdk/MsgMultiSend", nil)
-
-	cdc.RegisterInterface((*Account)(nil), nil)
-	cdc.RegisterConcrete(&BaseAccount{}, "cosmos-sdk/Account", nil)
-	cdc.RegisterInterface((*crypto.PubKey)(nil), nil)
-	cdc.RegisterConcrete(ed25519.PubKeyEd25519{},
-		ed25519.PubKeyAminoName, nil)
-	cdc.RegisterConcrete(secp256k1.PubKeySecp256k1{},
-		secp256k1.PubKeyAminoName, nil)
-	cdc.RegisterConcrete(sm2.PubKeySm2{},
-		sm2.PubKeyAminoName, nil)
-	cdc.RegisterConcrete(multisig.PubKeyMultisigThreshold{},
-		multisig.PubKeyMultisigThresholdAminoRoute, nil)
-
-	cdc.RegisterInterface((*crypto.PrivKey)(nil), nil)
-	cdc.RegisterConcrete(ed25519.PrivKeyEd25519{},
-		ed25519.PrivKeyAminoName, nil)
-	cdc.RegisterConcrete(secp256k1.PrivKeySecp256k1{},
-		secp256k1.PrivKeyAminoName, nil)
-	cdc.RegisterConcrete(sm2.PrivKeySm2{},
-		sm2.PrivKeyAminoName, nil)
-
 }

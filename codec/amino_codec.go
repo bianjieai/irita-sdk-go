@@ -1,133 +1,80 @@
 package codec
 
-import (
-	"fmt"
+import "github.com/gogo/protobuf/proto"
 
-	"github.com/bianjieai/irita-sdk-go/codec/types"
-)
-
-// AminoCodec defines a codec that utilizes Amino for both binary and JSON
+// AminoCodec defines a codec that utilizes Codec for both binary and JSON
 // encoding.
 type AminoCodec struct {
-	amino *Codec
+	*LegacyAmino
 }
 
-func NewAminoCodec(amino *Codec) Marshaler {
-	return &AminoCodec{amino}
+var _ Marshaler = &AminoCodec{}
+
+// NewAminoCodec returns a reference to a new AminoCodec
+func NewAminoCodec(codec *LegacyAmino) *AminoCodec {
+	return &AminoCodec{LegacyAmino: codec}
 }
 
-func (ac *AminoCodec) marshalAnys(o ProtoMarshaler) error {
-	return types.UnpackInterfaces(o, types.AminoPacker{Cdc: ac.amino})
-}
-
-func (ac *AminoCodec) unmarshalAnys(o ProtoMarshaler) error {
-	return types.UnpackInterfaces(o, types.AminoUnpacker{Cdc: ac.amino})
-}
-
-func (ac *AminoCodec) jsonMarshalAnys(o interface{}) error {
-	return types.UnpackInterfaces(o, types.AminoJSONPacker{Cdc: ac.amino})
-}
-
-func (ac *AminoCodec) jsonUnmarshalAnys(o interface{}) error {
-	return types.UnpackInterfaces(o, types.AminoJSONUnpacker{Cdc: ac.amino})
-}
-
+// MarshalBinaryBare implements BinaryMarshaler.MarshalBinaryBare method.
 func (ac *AminoCodec) MarshalBinaryBare(o ProtoMarshaler) ([]byte, error) {
-	err := ac.marshalAnys(o)
-	if err != nil {
-		return nil, err
-	}
-	return ac.amino.MarshalBinaryBare(o)
+	return ac.LegacyAmino.MarshalBinaryBare(o)
 }
 
+// MustMarshalBinaryBare implements BinaryMarshaler.MustMarshalBinaryBare method.
 func (ac *AminoCodec) MustMarshalBinaryBare(o ProtoMarshaler) []byte {
-	err := ac.marshalAnys(o)
-	if err != nil {
-		panic(err)
-	}
-	return ac.amino.MustMarshalBinaryBare(o)
+	return ac.LegacyAmino.MustMarshalBinaryBare(o)
 }
 
+// MarshalBinaryLengthPrefixed implements BinaryMarshaler.MarshalBinaryLengthPrefixed method.
 func (ac *AminoCodec) MarshalBinaryLengthPrefixed(o ProtoMarshaler) ([]byte, error) {
-	err := ac.marshalAnys(o)
-	if err != nil {
-		return nil, err
-	}
-	return ac.amino.MarshalBinaryLengthPrefixed(o)
+	return ac.LegacyAmino.MarshalBinaryLengthPrefixed(o)
 }
 
+// MustMarshalBinaryLengthPrefixed implements BinaryMarshaler.MustMarshalBinaryLengthPrefixed method.
 func (ac *AminoCodec) MustMarshalBinaryLengthPrefixed(o ProtoMarshaler) []byte {
-	err := ac.marshalAnys(o)
-	if err != nil {
-		panic(err)
-	}
-	return ac.amino.MustMarshalBinaryLengthPrefixed(o)
+	return ac.LegacyAmino.MustMarshalBinaryLengthPrefixed(o)
 }
 
+// UnmarshalBinaryBare implements BinaryMarshaler.UnmarshalBinaryBare method.
 func (ac *AminoCodec) UnmarshalBinaryBare(bz []byte, ptr ProtoMarshaler) error {
-	err := ac.amino.UnmarshalBinaryBare(bz, ptr)
-	if err != nil {
-		return err
-	}
-	return ac.unmarshalAnys(ptr)
+	return ac.LegacyAmino.UnmarshalBinaryBare(bz, ptr)
 }
 
+// MustUnmarshalBinaryBare implements BinaryMarshaler.MustUnmarshalBinaryBare method.
 func (ac *AminoCodec) MustUnmarshalBinaryBare(bz []byte, ptr ProtoMarshaler) {
-	ac.amino.MustUnmarshalBinaryBare(bz, ptr)
-	err := ac.unmarshalAnys(ptr)
-	if err != nil {
-		panic(err)
-	}
+	ac.LegacyAmino.MustUnmarshalBinaryBare(bz, ptr)
 }
 
+// UnmarshalBinaryLengthPrefixed implements BinaryMarshaler.UnmarshalBinaryLengthPrefixed method.
 func (ac *AminoCodec) UnmarshalBinaryLengthPrefixed(bz []byte, ptr ProtoMarshaler) error {
-	err := ac.amino.UnmarshalBinaryLengthPrefixed(bz, ptr)
-	if err != nil {
-		return err
-	}
-	return ac.unmarshalAnys(ptr)
+	return ac.LegacyAmino.UnmarshalBinaryLengthPrefixed(bz, ptr)
 }
 
+// MustUnmarshalBinaryLengthPrefixed implements BinaryMarshaler.MustUnmarshalBinaryLengthPrefixed method.
 func (ac *AminoCodec) MustUnmarshalBinaryLengthPrefixed(bz []byte, ptr ProtoMarshaler) {
-	ac.amino.MustUnmarshalBinaryLengthPrefixed(bz, ptr)
-	err := ac.unmarshalAnys(ptr)
-	if err != nil {
-		panic(err)
-	}
+	ac.LegacyAmino.MustUnmarshalBinaryLengthPrefixed(bz, ptr)
 }
 
-func (ac *AminoCodec) MarshalJSON(o interface{}) ([]byte, error) {
-	err := ac.jsonMarshalAnys(o)
-	if err != nil {
-		return nil, err
-	}
-	return ac.amino.MarshalJSON(o)
+// MarshalJSON implements JSONMarshaler.MarshalJSON method,
+// it marshals to JSON using legacy amino codec.
+func (ac *AminoCodec) MarshalJSON(o proto.Message) ([]byte, error) {
+	return ac.LegacyAmino.MarshalJSON(o)
 }
 
-func (ac *AminoCodec) MustMarshalJSON(o interface{}) []byte {
-	err := ac.jsonMarshalAnys(o)
-	if err != nil {
-		panic(err)
-	}
-	return ac.amino.MustMarshalJSON(o)
+// MustMarshalJSON implements JSONMarshaler.MustMarshalJSON method,
+// it executes MarshalJSON except it panics upon failure.
+func (ac *AminoCodec) MustMarshalJSON(o proto.Message) []byte {
+	return ac.LegacyAmino.MustMarshalJSON(o)
 }
 
-func (ac *AminoCodec) UnmarshalJSON(bz []byte, ptr interface{}) error {
-	err := ac.amino.UnmarshalJSON(bz, ptr)
-	if err != nil {
-		return err
-	}
-	return ac.jsonUnmarshalAnys(ptr)
+// UnmarshalJSON implements JSONMarshaler.UnmarshalJSON method,
+// it unmarshals from JSON using legacy amino codec.
+func (ac *AminoCodec) UnmarshalJSON(bz []byte, ptr proto.Message) error {
+	return ac.LegacyAmino.UnmarshalJSON(bz, ptr)
 }
 
-func (ac *AminoCodec) MustUnmarshalJSON(bz []byte, ptr interface{}) {
-	ac.amino.MustUnmarshalJSON(bz, ptr)
-	err := ac.jsonUnmarshalAnys(ptr)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func (*AminoCodec) UnpackAny(*types.Any, interface{}) error {
-	return fmt.Errorf("AminoCodec can't handle unpack protobuf Any's")
+// MustUnmarshalJSON implements JSONMarshaler.MustUnmarshalJSON method,
+// it executes UnmarshalJSON except it panics upon failure.
+func (ac *AminoCodec) MustUnmarshalJSON(bz []byte, ptr proto.Message) {
+	ac.LegacyAmino.MustUnmarshalJSON(bz, ptr)
 }

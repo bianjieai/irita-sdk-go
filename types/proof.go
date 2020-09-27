@@ -1,8 +1,6 @@
 package types
 
-import (
-	"github.com/tendermint/tendermint/crypto/merkle"
-)
+import "github.com/tendermint/tendermint/proto/tendermint/crypto"
 
 type ProofValue struct {
 	Proof []byte   `json:"proof"`
@@ -11,5 +9,5 @@ type ProofValue struct {
 }
 
 type MerkleProof struct {
-	Proof *merkle.Proof `json:"proof"`
+	Proof *crypto.ProofOps `json:"proof"`
 }

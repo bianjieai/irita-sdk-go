@@ -23,6 +23,9 @@ type ClientConfig struct {
 	// irita node rpc address
 	NodeURI string
 
+	// irita grpc address
+	GRPCAddr string
+
 	// irita chain-id
 	ChainID string
 
@@ -57,10 +60,11 @@ type ClientConfig struct {
 	Cached bool
 }
 
-func NewClientConfig(uri, chainID string, options ...Option) (ClientConfig, error) {
+func NewClientConfig(uri, grpcAddr, chainID string, options ...Option) (ClientConfig, error) {
 	cfg := ClientConfig{
-		NodeURI: uri,
-		ChainID: chainID,
+		NodeURI:  uri,
+		ChainID:  chainID,
+		GRPCAddr: grpcAddr,
 	}
 	for _, optionFn := range options {
 		if err := optionFn(&cfg); err != nil {
