@@ -1,9 +1,10 @@
 package types
 
 import (
+	"google.golang.org/grpc"
+
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
-	"google.golang.org/grpc"
 )
 
 type TxManager interface {

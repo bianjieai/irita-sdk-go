@@ -37,8 +37,8 @@ func NewRPCClient(remote string,
 	}
 }
 
-//=============================================================================
-//SubscribeNewBlock implement WSClient interface
+// =============================================================================
+// SubscribeNewBlock implement WSClient interface
 func (r rpcClient) SubscribeNewBlock(builder *sdk.EventQueryBuilder,
 	handler sdk.EventNewBlockHandler) (sdk.Subscription, sdk.Error) {
 	if builder == nil {
@@ -53,7 +53,7 @@ func (r rpcClient) SubscribeNewBlock(builder *sdk.EventQueryBuilder,
 	})
 }
 
-//SubscribeTx implement WSClient interface
+// SubscribeTx implement WSClient interface
 func (r rpcClient) SubscribeTx(builder *sdk.EventQueryBuilder, handler sdk.EventTxHandler) (sdk.Subscription, sdk.Error) {
 	if builder == nil {
 		builder = sdk.NewEventQueryBuilder()

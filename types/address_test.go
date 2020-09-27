@@ -22,5 +22,4 @@ func TestGetFromBech32(t *testing.T) {
 	addr, err = bech32.ConvertAndEncode("icp", addBz)
 	require.NoError(t, err)
 	fmt.Println(addr)
-
 }

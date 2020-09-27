@@ -3,13 +3,12 @@ package types
 import (
 	"encoding/base64"
 
-	"github.com/tendermint/tendermint/crypto/encoding"
-
-	"github.com/bianjieai/irita-sdk-go/codec"
-
 	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/crypto/encoding"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
+
+	"github.com/bianjieai/irita-sdk-go/codec"
 )
 
 type Block struct {
@@ -32,10 +31,8 @@ func ParseBlock(cdc *codec.LegacyAmino, block *tmtypes.Block) Block {
 		}
 	}
 	return Block{
-		Header: block.Header,
-		Data: Data{
-			Txs: txs,
-		},
+		Header:     block.Header,
+		Data:       Data{Txs: txs},
 		Evidence:   block.Evidence,
 		LastCommit: block.LastCommit,
 	}
@@ -71,13 +68,16 @@ func ParseValidatorUpdate(updates []abci.ValidatorUpdate) []ValidatorUpdate {
 	var vUpdates []ValidatorUpdate
 	for _, v := range updates {
 		pubkey, _ := encoding.PubKeyFromProto(v.PubKey)
-		vUpdates = append(vUpdates, ValidatorUpdate{
-			PubKey: PubKey{
-				Type:  pubkey.Type(),
-				Value: base64.StdEncoding.EncodeToString(pubkey.Bytes()),
+		vUpdates = append(
+			vUpdates,
+			ValidatorUpdate{
+				PubKey: PubKey{
+					Type:  pubkey.Type(),
+					Value: base64.StdEncoding.EncodeToString(pubkey.Bytes()),
+				},
+				Power: v.Power,
 			},
-			Power: v.Power,
-		})
+		)
 	}
 	return vUpdates
 }

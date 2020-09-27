@@ -3,12 +3,10 @@ package tx
 import (
 	"fmt"
 
-	signingtypes "github.com/bianjieai/irita-sdk-go/types/tx/signing"
-
 	"github.com/bianjieai/irita-sdk-go/codec"
-
 	"github.com/bianjieai/irita-sdk-go/crypto/types"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
+	signingtypes "github.com/bianjieai/irita-sdk-go/types/tx/signing"
 )
 
 type config struct {

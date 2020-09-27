@@ -1,7 +1,6 @@
 package modules
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/tendermint/tendermint/libs/log"
@@ -19,9 +18,9 @@ type paramsQuery struct {
 	expiration time.Duration
 }
 
-func (p paramsQuery) prefixKey(module string) string {
-	return fmt.Sprintf("params:%s", module)
-}
+// func (p paramsQuery) prefixKey(module string) string {
+// 	return fmt.Sprintf("params:%s", module)
+// }
 
 func (p paramsQuery) QueryParams(module string, res sdk.Response) sdk.Error {
 	//param, err := p.Get(p.prefixKey(module))

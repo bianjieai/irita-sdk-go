@@ -2,6 +2,7 @@ package tx
 
 import (
 	"github.com/gogo/protobuf/proto"
+
 	"github.com/tendermint/tendermint/crypto"
 
 	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
@@ -46,10 +47,8 @@ type ExtensionOptionsTxBuilder interface {
 func newBuilder(pubkeyCodec types.PublicKeyCodec) *wrapper {
 	return &wrapper{
 		tx: &Tx{
-			Body: &TxBody{},
-			AuthInfo: &AuthInfo{
-				Fee: &Fee{},
-			},
+			Body:     &TxBody{},
+			AuthInfo: &AuthInfo{Fee: &Fee{}},
 		},
 		pubkeyCodec: pubkeyCodec,
 	}

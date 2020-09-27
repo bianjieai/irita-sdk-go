@@ -119,10 +119,7 @@ func (cfg *ClientConfig) checkAndSetDefault() error {
 		return err
 	}
 
-	if err := GasAdjustmentOption(cfg.GasAdjustment)(cfg); err != nil {
-		return err
-	}
-	return nil
+	return GasAdjustmentOption(cfg.GasAdjustment)(cfg)
 }
 
 type Option func(cfg *ClientConfig) error

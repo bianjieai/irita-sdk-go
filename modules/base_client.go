@@ -6,10 +6,9 @@ package modules
 import (
 	"errors"
 	"fmt"
-	"github.com/gogo/protobuf/proto"
 	"time"
 
-	"github.com/bianjieai/irita-sdk-go/types/tx"
+	"github.com/gogo/protobuf/proto"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -17,6 +16,7 @@ import (
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/types/tx"
 	"github.com/bianjieai/irita-sdk-go/utils"
 	"github.com/bianjieai/irita-sdk-go/utils/cache"
 	sdklog "github.com/bianjieai/irita-sdk-go/utils/log"
@@ -229,10 +229,8 @@ func (base baseClient) Query(path string, data interface{}) ([]byte, error) {
 	return resp.Value, nil
 }
 
-func (base baseClient) QueryStore(key sdk.HexBytes,
-	storeName string,
-	height int64,
-	prove bool,
+func (base baseClient) QueryStore(
+	key sdk.HexBytes, storeName string, height int64, prove bool,
 ) (res abci.ResponseQuery, err error) {
 	path := fmt.Sprintf("/store/%s/%s", storeName, "key")
 	opts := rpcclient.ABCIQueryOptions{

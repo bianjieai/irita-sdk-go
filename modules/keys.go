@@ -73,7 +73,7 @@ func (k keyManager) Recover(name, password, mnemonic string) (string, error) {
 		return "", err
 	}
 
-	mnemonic, priv := km.Generate()
+	_, priv := km.Generate()
 
 	pubKey := km.ExportPubKey()
 	address := types.AccAddress(pubKey.Address().Bytes()).String()

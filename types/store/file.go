@@ -9,14 +9,13 @@ import (
 	"strings"
 	"time"
 
-	cryptoamino "github.com/bianjieai/irita-sdk-go/crypto/codec"
-
 	"github.com/99designs/keyring"
 	jose "github.com/dvsekhvalnov/jose2go"
 	"github.com/mitchellh/go-homedir"
 	"github.com/mtibben/percent"
 	"github.com/pkg/errors"
 
+	cryptoamino "github.com/bianjieai/irita-sdk-go/crypto/codec"
 	"github.com/bianjieai/irita-sdk-go/crypto/hd"
 )
 
@@ -67,10 +66,10 @@ func (f FileDAO) Write(name, password string, info KeyInfo) error {
 		return err
 	}
 
-	token, err := jose.Encrypt(string(bytes), jose.PBES2_HS256_A128KW, jose.A256GCM, password,
-		jose.Headers(map[string]interface{}{
-			"created": time.Now().String(),
-		}))
+	token, err := jose.Encrypt(
+		string(bytes), jose.PBES2_HS256_A128KW, jose.A256GCM, password,
+		jose.Headers(map[string]interface{}{"created": time.Now().String()}),
+	)
 	if err != nil {
 		return err
 	}
@@ -131,8 +130,7 @@ func (f FileDAO) Read(name, password string) (KeyInfo, error) {
 // Delete will delete user data and use user password to verify permissions
 func (f FileDAO) Delete(name, password string) error {
 	//Perform security verification
-	_, err := f.Read(name, password)
-	if err != nil {
+	if _, err := f.Read(name, password); err != nil {
 		return err
 	}
 
@@ -150,8 +148,7 @@ func (f FileDAO) Has(name string) bool {
 	if err != nil {
 		return false
 	}
-	_, err = os.Stat(filename)
-	if err == nil {
+	if _, err = os.Stat(filename); err == nil {
 		return true
 	}
 	if os.IsNotExist(err) {

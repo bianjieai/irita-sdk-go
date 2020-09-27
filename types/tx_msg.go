@@ -2,6 +2,7 @@ package types
 
 import (
 	"github.com/gogo/protobuf/proto"
+
 	"github.com/tendermint/tendermint/crypto"
 )
 

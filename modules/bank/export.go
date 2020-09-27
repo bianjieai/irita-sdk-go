@@ -7,6 +7,7 @@ import (
 // expose bank module api for user
 type BankI interface {
 	sdk.Module
+
 	Send(to string, amount sdk.DecCoins, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 	MultiSend(receipts MultiSendRequest, baseTx sdk.BaseTx) ([]sdk.ResultTx, sdk.Error)
 	SubscribeSendTx(from, to string, callback EventMsgSendCallback) sdk.Subscription
@@ -38,4 +39,5 @@ type EventDataMsgSend struct {
 	To     string     `json:"to"`
 	Amount []sdk.Coin `json:"amount"`
 }
+
 type EventMsgSendCallback func(EventDataMsgSend)

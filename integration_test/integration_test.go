@@ -8,26 +8,25 @@ import (
 	"testing"
 	"time"
 
-	"github.com/bianjieai/irita-sdk-go/utils/log"
-
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/bianjieai/irita-sdk-go"
 	"github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/types/store"
+	"github.com/bianjieai/irita-sdk-go/utils/log"
 )
 
 const (
 	nodeURI  = "tcp://10.1.4.97:26657"
 	grpcAddr = "10.1.4.97:9090"
 	chainID  = "test"
-	mode     = types.Commit
-	fee      = "4point"
-	gas      = 200000
-	algo     = "sm2"
-	level    = "info"
-	charset  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	addr     = "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz"
+	// mode     = types.Commit
+	// fee      = "4point"
+	// gas      = 200000
+	// algo     = "sm2"
+	// level    = "info"
+	charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	addr    = "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz"
 )
 
 var (

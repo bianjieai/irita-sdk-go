@@ -129,7 +129,8 @@ func (t tokenClient) QueryTokens(owner string) (sdk.Tokens, error) {
 	}
 
 	conn, err := t.GenConn()
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return sdk.Tokens{}, sdk.Wrap(err)
 	}
