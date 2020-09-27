@@ -43,7 +43,7 @@ type EventDataTx struct {
 	Hash   string   `json:"hash"`
 	Height int64    `json:"height"`
 	Index  uint32   `json:"index"`
-	Tx     StdTx    `json:"tx"`
+	Tx     Tx       `json:"tx"`
 	Result TxResult `json:"result"`
 }
 

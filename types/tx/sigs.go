@@ -2,6 +2,7 @@ package tx
 
 import (
 	"fmt"
+
 	"github.com/bianjieai/irita-sdk-go/codec"
 
 	"github.com/bianjieai/irita-sdk-go/crypto/types"

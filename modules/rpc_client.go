@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/tendermint/tendermint/crypto/tmhash"
 	"github.com/tendermint/tendermint/libs/log"
 	rpc "github.com/tendermint/tendermint/rpc/client"
 	rpchttp "github.com/tendermint/tendermint/rpc/client/http"
@@ -17,11 +18,13 @@ import (
 type rpcClient struct {
 	rpc.Client
 	log.Logger
-	cdc *codec.LegacyAmino
+	cdc       *codec.LegacyAmino
+	txDecoder sdk.TxDecoder
 }
 
 func NewRPCClient(remote string,
 	cdc *codec.LegacyAmino,
+	txDecoder sdk.TxDecoder,
 	logger log.Logger,
 	timeout uint) sdk.TmClient {
 	client, err := rpchttp.NewWithTimeout(remote, "/websocket", timeout)
@@ -31,9 +34,10 @@ func NewRPCClient(remote string,
 
 	_ = client.Start()
 	return rpcClient{
-		Client: client,
-		Logger: logger,
-		cdc:    cdc,
+		Client:    client,
+		Logger:    logger,
+		cdc:       cdc,
+		txDecoder: txDecoder,
 	}
 }
 
@@ -140,24 +144,25 @@ func (r rpcClient) SubscribeAny(query string, handler sdk.EventHandler) (subscri
 }
 
 func (r rpcClient) parseTx(data sdk.EventData) sdk.EventDataTx {
-	tx := data.(tmtypes.EventDataTx)
-	var stdTx sdk.StdTx
-	if err := r.cdc.UnmarshalBinaryBare(tx.Tx, &stdTx); err != nil {
+	dataTx := data.(tmtypes.EventDataTx)
+	tx, err := r.txDecoder(dataTx.Tx)
+	if err != nil {
 		return sdk.EventDataTx{}
 	}
-	hash := sdk.HexBytes(tx.Tx).String()
+
+	hash := sdk.HexBytes(tmhash.Sum(dataTx.Tx)).String()
 	result := sdk.TxResult{
-		Code:      tx.Result.Code,
-		Log:       tx.Result.Log,
-		GasWanted: tx.Result.GasWanted,
-		GasUsed:   tx.Result.GasUsed,
-		Events:    sdk.StringifyEvents(tx.Result.Events),
+		Code:      dataTx.Result.Code,
+		Log:       dataTx.Result.Log,
+		GasWanted: dataTx.Result.GasWanted,
+		GasUsed:   dataTx.Result.GasUsed,
+		Events:    sdk.StringifyEvents(dataTx.Result.Events),
 	}
 	return sdk.EventDataTx{
 		Hash:   hash,
-		Height: tx.Height,
-		Index:  tx.Index,
-		Tx:     stdTx,
+		Height: dataTx.Height,
+		Index:  dataTx.Index,
+		Tx:     tx,
 		Result: result,
 	}
 }

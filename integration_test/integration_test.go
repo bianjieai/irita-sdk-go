@@ -18,8 +18,8 @@ import (
 )
 
 const (
-	nodeURI  = "tcp://10.1.4.97:26657"
-	grpcAddr = "10.1.4.97:9090"
+	nodeURI  = "tcp://localhost:26657"
+	grpcAddr = "localhost:9090"
 	chainID  = "test"
 	mode     = types.Commit
 	fee      = "4point"
