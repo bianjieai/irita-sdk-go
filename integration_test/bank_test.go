@@ -14,22 +14,22 @@ import (
 
 func (s IntegrationTestSuite) TestBank() {
 	cases := []SubTest{
-		//{
-		//	"TestQueryAccount",
-		//	queryAccount,
-		//},
+		{
+			"TestQueryAccount",
+			queryAccount,
+		},
 		{
 			"TestSend",
 			send,
 		},
-		//{
-		//	"TestMultiSend",
-		//	multiSend,
-		//},
-		//{
-		//	"TestSimulate",
-		//	simulate,
-		//},
+		{
+			"TestMultiSend",
+			multiSend,
+		},
+		{
+			"TestSimulate",
+			simulate,
+		},
 	}
 
 	for _, t := range cases {
@@ -37,11 +37,6 @@ func (s IntegrationTestSuite) TestBank() {
 			t.testCase(s)
 		})
 	}
-}
-
-func (s IntegrationTestSuite) TestQueryTx() {
-	tx, err := s.QueryTx("87A52345808DFB5CC71318E5EFD7F9CE3827BBF5E6CF0FA47A88AE9EB3F7ACBB")
-	fmt.Println(tx, err)
 }
 
 func queryAccount(s IntegrationTestSuite) {
@@ -82,7 +77,7 @@ func send(s IntegrationTestSuite) {
 func multiSend(s IntegrationTestSuite) {
 	baseTx := types.BaseTx{
 		From:     s.Account().Name,
-		Gas:      800000,
+		Gas:      500000,
 		Memo:     "test",
 		Mode:     types.Commit,
 		Password: s.Account().Password,

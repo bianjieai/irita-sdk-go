@@ -3,6 +3,7 @@ package bank
 import (
 	"errors"
 	"fmt"
+
 	//"github.com/bianjieai/irita-sdk-go/modules/auth"
 
 	"github.com/bianjieai/irita-sdk-go/codec"

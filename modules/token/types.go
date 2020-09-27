@@ -300,9 +300,17 @@ type TokenInterface interface {
 }
 
 func (p Params) Convert() interface{} {
-	return QueryParamsResponseOutput{
+	return QueryParamsResp{
 		TokenTaxRate:      p.TokenTaxRate.String(),
 		IssueTokenBaseFee: p.IssueTokenBaseFee.String(),
 		MintTokenFeeRatio: p.MintTokenFeeRatio.String(),
+	}
+}
+
+func (t QueryFeesResponse) Convert() interface{} {
+	return QueryFeesResp{
+		Exist:    t.Exist,
+		IssueFee: t.IssueFee,
+		MintFee:  t.MintFee,
 	}
 }

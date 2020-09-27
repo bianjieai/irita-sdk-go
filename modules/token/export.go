@@ -14,8 +14,8 @@ type TokenI interface {
 
 	QueryToken(symbol string) (sdk.Token, error)
 	QueryTokens(owner string) (sdk.Tokens, error)
-	QueryFees(symbol string) (QueryFeesResponse, error)
-	QueryParams() (QueryParamsResponse, error)
+	QueryFees(symbol string) (QueryFeesResp, error)
+	QueryParams() (QueryParamsResp, error)
 }
 
 type IssueTokenRequest struct {
@@ -35,15 +35,15 @@ type EditTokenRequest struct {
 	Mintable  bool   `json:"mintable"`
 }
 
-// QueryFeesResponse is for the token fees query output
-type QueryFeesResponseOutput struct {
+// QueryFeesResp is for the token fees query output
+type QueryFeesResp struct {
 	Exist    bool     `json:"exist"`     // indicate if the token has existed
 	IssueFee sdk.Coin `json:"issue_fee"` // issue fee
 	MintFee  sdk.Coin `json:"mint_fee"`  // mint fee
 }
 
 // token params
-type QueryParamsResponseOutput struct {
+type QueryParamsResp struct {
 	TokenTaxRate      string `json:"token_tax_rate"`       // e.g., 40%
 	IssueTokenBaseFee string `json:"issue_token_base_fee"` // e.g., 300000*10^18iris-atto
 	MintTokenFeeRatio string `json:"mint_token_fee_ratio"` // e.g., 10%
