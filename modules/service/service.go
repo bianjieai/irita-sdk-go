@@ -592,11 +592,11 @@ func (s serviceClient) QueryServiceResponses(reqCtxID string, batchCounter uint6
 }
 
 // QueryRequestContext return the specified request context
-func (s serviceClient) QueryRequestContext(reqCtxID string) (QueryRequestContextResponseOutput, sdk.Error) {
+func (s serviceClient) QueryRequestContext(reqCtxID string) (QueryRequestContextResp, sdk.Error) {
 	conn, err := s.GenConn()
 	defer func() { conn.Close() }()
 	if err != nil {
-		return QueryRequestContextResponseOutput{}, sdk.Wrap(err)
+		return QueryRequestContextResp{}, sdk.Wrap(err)
 	}
 
 	resp, err := NewQueryClient(conn).RequestContext(
@@ -604,10 +604,10 @@ func (s serviceClient) QueryRequestContext(reqCtxID string) (QueryRequestContext
 		&QueryRequestContextRequest{RequestContextId: sdk.MustHexBytesFrom(reqCtxID)},
 	)
 	if err != nil {
-		return QueryRequestContextResponseOutput{}, sdk.Wrap(err)
+		return QueryRequestContextResp{}, sdk.Wrap(err)
 	}
 
-	return resp.RequestContext.Convert().(QueryRequestContextResponseOutput), nil
+	return resp.RequestContext.Convert().(QueryRequestContextResp), nil
 }
 
 //QueryFees return the earned fees for a provider
@@ -633,12 +633,12 @@ func (s serviceClient) QueryFees(provider string) (sdk.Coins, sdk.Error) {
 	return res.Fees, nil
 }
 
-func (s serviceClient) QueryParams() (QueryParamsResponseOutput, sdk.Error) {
+func (s serviceClient) QueryParams() (QueryParamsResp, sdk.Error) {
 	var param Params
 	if err := s.BaseClient.QueryParams(ModuleName, &param); err != nil {
-		return QueryParamsResponseOutput{}, err
+		return QueryParamsResp{}, err
 	}
-	return param.Convert().(QueryParamsResponseOutput), nil
+	return param.Convert().(QueryParamsResp), nil
 }
 
 func (s serviceClient) GenServiceResponseMsgs(events sdk.StringEvents, serviceName string,
