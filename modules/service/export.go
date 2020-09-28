@@ -57,9 +57,9 @@ type Query interface {
 	QueryServiceResponse(requestID string) (QueryServiceResponseResponse, sdk.Error)
 	QueryServiceResponses(requestContextID string, batchCounter uint64) ([]QueryServiceResponseResponse, sdk.Error)
 
-	QueryRequestContext(requestContextID string) (QueryRequestContextResponseOutput, sdk.Error)
+	QueryRequestContext(requestContextID string) (QueryRequestContextResp, sdk.Error)
 	QueryFees(provider string) (sdk.Coins, sdk.Error)
-	QueryParams() (QueryParamsResponseOutput, sdk.Error)
+	QueryParams() (QueryParamsResp, sdk.Error)
 }
 
 // ServiceI defines a set of interfaces in the service module
@@ -177,8 +177,8 @@ type UpdateRequestContextRequest struct {
 	RepeatedTotal     int64        `json:"repeated_total"`
 }
 
-// QueryRequestContextResponseOutput defines a context which holds request-related data
-type QueryRequestContextResponseOutput struct {
+// QueryRequestContextResp defines a context which holds request-related data
+type QueryRequestContextResp struct {
 	ServiceName        string           `json:"service_name"`
 	Providers          []sdk.AccAddress `json:"providers"`
 	Consumer           sdk.AccAddress   `json:"consumer"`
@@ -198,7 +198,7 @@ type QueryRequestContextResponseOutput struct {
 	ModuleName         string           `json:"module_name"`
 }
 
-type QueryParamsResponseOutput struct {
+type QueryParamsResp struct {
 	MaxRequestTimeout    int64         `json:"max_request_timeout"`
 	MinDepositMultiple   int64         `json:"min_deposit_multiple"`
 	MinDeposit           string        `json:"min_deposit"`

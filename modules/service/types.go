@@ -739,7 +739,7 @@ func (r RequestContext) Empty() bool {
 }
 
 func (r RequestContext) Convert() interface{} {
-	return QueryRequestContextResponseOutput{
+	return QueryRequestContextResp{
 		ServiceName:        r.ServiceName,
 		Providers:          r.Providers,
 		Consumer:           r.Consumer,
@@ -761,7 +761,7 @@ func (r RequestContext) Convert() interface{} {
 }
 
 func (p Params) Convert() interface{} {
-	return QueryParamsResponseOutput{
+	return QueryParamsResp{
 		MaxRequestTimeout:    p.MaxRequestTimeout,
 		MinDepositMultiple:   p.MinDepositMultiple,
 		MinDeposit:           p.MinDeposit.String(),
