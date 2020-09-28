@@ -55,7 +55,7 @@ func NewBaseClient(cfg sdk.ClientConfig, encodingConfig sdk.EncodingConfig, logg
 	}
 
 	base := baseClient{
-		TmClient:       NewRPCClient(cfg.NodeURI, encodingConfig.Amino, logger, cfg.Timeout),
+		TmClient:       NewRPCClient(cfg.NodeURI, encodingConfig.Amino, encodingConfig.TxConfig.TxDecoder(), logger, cfg.Timeout),
 		GRPCClient:     NewGRPCClient(cfg.GRPCAddr),
 		logger:         logger,
 		cfg:            &cfg,
@@ -88,11 +88,12 @@ func NewBaseClient(cfg sdk.ClientConfig, encodingConfig sdk.EncodingConfig, logg
 	}
 
 	base.paramsQuery = paramsQuery{
-		Queries:    base,
-		Logger:     base.Logger(),
-		Cache:      c,
-		cdc:        encodingConfig.Marshaler,
-		expiration: cacheExpirePeriod,
+		Queries:     base,
+		Logger:      base.Logger(),
+		Cache:       c,
+		cdc:         encodingConfig.Marshaler,
+		legacyAmino: encodingConfig.Amino,
+		expiration:  cacheExpirePeriod,
 	}
 
 	return &base
@@ -260,21 +261,19 @@ func (base *baseClient) prepare(baseTx sdk.BaseTx) (*sdk.Factory, error) {
 		WithSignModeHandler(tx.MakeSignModeHandler(tx.DefaultSignModes)).
 		WithTxConfig(base.encodingConfig.TxConfig)
 
-	if !baseTx.Simulate {
-		addr, err := base.QueryAddress(baseTx.From, baseTx.Password)
-		if err != nil {
-			return nil, err
-		}
-		factory.WithAddress(addr.String())
-
-		account, err := base.QueryAndRefreshAccount(addr.String())
-		if err != nil {
-			return nil, err
-		}
-		factory.WithAccountNumber(account.AccountNumber).
-			WithSequence(account.Sequence).
-			WithPassword(baseTx.Password)
+	addr, err := base.QueryAddress(baseTx.From, baseTx.Password)
+	if err != nil {
+		return nil, err
 	}
+	factory.WithAddress(addr.String())
+
+	account, err := base.QueryAndRefreshAccount(addr.String())
+	if err != nil {
+		return nil, err
+	}
+	factory.WithAccountNumber(account.AccountNumber).
+		WithSequence(account.Sequence).
+		WithPassword(baseTx.Password)
 
 	if !baseTx.Fee.Empty() && baseTx.Fee.IsValid() {
 		fees, err := base.ToMinCoin(baseTx.Fee...)

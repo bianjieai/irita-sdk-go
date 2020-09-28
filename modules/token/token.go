@@ -146,11 +146,11 @@ func (t tokenClient) QueryTokens(owner string) (sdk.Tokens, error) {
 
 	tokens := make(Tokens, 0, len(res.Tokens))
 	for _, eviAny := range res.Tokens {
-		var evi Token
+		var evi TokenInterface
 		if err = t.UnpackAny(eviAny, &evi); err != nil {
 			return sdk.Tokens{}, err
 		}
-		tokens = append(tokens, evi)
+		tokens = append(tokens, evi.(*Token))
 	}
 
 	ts := tokens.Convert().(sdk.Tokens)
@@ -158,24 +158,29 @@ func (t tokenClient) QueryTokens(owner string) (sdk.Tokens, error) {
 	return ts, nil
 }
 
-func (t tokenClient) QueryFees(symbol string) (QueryFeesResponse, error) {
-	param := struct {
-		Symbol string
-	}{
+func (t tokenClient) QueryFees(symbol string) (QueryFeesResp, error) {
+	conn, err := t.GenConn()
+	defer conn.Close()
+	if err != nil {
+		return QueryFeesResp{}, sdk.Wrap(err)
+	}
+
+	request := &QueryFeesRequest{
 		Symbol: symbol,
 	}
 
-	var tokens tokenFees
-	if err := t.QueryWithResponse("custom/token/fees", param, &tokens); err != nil {
-		return QueryFeesResponse{}, err
+	res, err := NewQueryClient(conn).Fees(context.Background(), request)
+	if err != nil {
+		return QueryFeesResp{}, err
 	}
-	return tokens.Convert().(QueryFeesResponse), nil
+
+	return res.Convert().(QueryFeesResp), nil
 }
 
-func (t tokenClient) QueryParams() (QueryParamsResponse, error) {
+func (t tokenClient) QueryParams() (QueryParamsResp, error) {
 	var param Params
 	if err := t.BaseClient.QueryParams(ModuleName, &param); err != nil {
-		return QueryParamsResponse{}, err
+		return QueryParamsResp{}, err
 	}
-	return param.Convert().(QueryParamsResponse), nil
+	return param.Convert().(QueryParamsResp), nil
 }

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/bianjieai/irita-sdk-go/modules/auth"
+
 	"github.com/bianjieai/irita-sdk-go/codec"
 	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
 	"github.com/bianjieai/irita-sdk-go/modules/auth"
@@ -178,7 +180,7 @@ func (b bankClient) SubscribeSendTx(from, to string, callback EventMsgSendCallba
 	}
 
 	subscription, _ := b.SubscribeTx(builder, func(data sdk.EventDataTx) {
-		for _, msg := range data.Tx.Msgs {
+		for _, msg := range data.Tx.GetMsgs() {
 			if value, ok := msg.(*MsgSend); ok {
 				callback(EventDataMsgSend{
 					Height: data.Height,

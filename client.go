@@ -11,6 +11,9 @@ import (
 	"github.com/bianjieai/irita-sdk-go/modules"
 	"github.com/bianjieai/irita-sdk-go/modules/bank"
 	"github.com/bianjieai/irita-sdk-go/modules/keys"
+	"github.com/bianjieai/irita-sdk-go/modules/nft"
+	"github.com/bianjieai/irita-sdk-go/modules/record"
+	"github.com/bianjieai/irita-sdk-go/modules/service"
 	"github.com/bianjieai/irita-sdk-go/modules/token"
 	"github.com/bianjieai/irita-sdk-go/types"
 	txtypes "github.com/bianjieai/irita-sdk-go/types/tx"
@@ -22,22 +25,25 @@ type IRITAClient struct {
 	encodingConfig types.EncodingConfig
 
 	types.BaseClient
-	Bank  bank.BankI
-	Token token.TokenI
-	Key   keys.KeyI
+	Bank    bank.BankI
+	Token   token.TokenI
+	Record  record.RecordI
+	NFT     nft.NFTI
+	Service service.ServiceI
+	Key     keys.KeyI
 }
 
 func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
-	interfaceRegistry := cdctypes.NewInterfaceRegistry()
-	marshaler := codec.NewProtoCodec(interfaceRegistry)
-
 	encodingConfig := makeEncodingConfig()
 	//create a instance of baseClient
 	baseClient := modules.NewBaseClient(cfg, encodingConfig, nil)
 
-	bankClient := bank.NewClient(baseClient, marshaler)
-	tokenClient := token.NewClient(baseClient, marshaler)
+	bankClient := bank.NewClient(baseClient, encodingConfig.Marshaler)
+	tokenClient := token.NewClient(baseClient, encodingConfig.Marshaler)
 	keysClient := keys.NewClient(baseClient)
+	recordClient := record.NewClient(baseClient, encodingConfig.Marshaler)
+	nftClient := nft.NewClient(baseClient, encodingConfig.Marshaler)
+	serviceClient := service.NewClient(baseClient, encodingConfig.Marshaler)
 
 	client := &IRITAClient{
 		logger:         baseClient.Logger(),
@@ -45,6 +51,9 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 		Bank:           bankClient,
 		Token:          tokenClient,
 		Key:            keysClient,
+		Record:         recordClient,
+		NFT:            nftClient,
+		Service:        serviceClient,
 		moduleManager:  make(map[string]types.Module),
 		encodingConfig: encodingConfig,
 	}
@@ -52,6 +61,9 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 	client.RegisterModule(
 		bankClient,
 		tokenClient,
+		recordClient,
+		nftClient,
+		serviceClient,
 	)
 	return *client
 }
