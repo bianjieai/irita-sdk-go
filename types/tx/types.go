@@ -106,8 +106,7 @@ func (t *Tx) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 func (m *TxBody) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	for _, any := range m.Messages {
 		var msg sdk.Msg
-		err := unpacker.UnpackAny(any, &msg)
-		if err != nil {
+		if err := unpacker.UnpackAny(any, &msg); err != nil {
 			return err
 		}
 	}

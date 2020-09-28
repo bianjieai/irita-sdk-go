@@ -110,7 +110,7 @@ func GenPrivKeyFromSecret(secret []byte) PrivKey {
 	return PrivKey(privKey32)
 }
 
-//-------------------------------------
+// -------------------------------------
 
 var _ crypto.PubKey = PubKey{}
 

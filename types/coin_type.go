@@ -77,8 +77,5 @@ func (ct CoinType) isMinUnit(name string) bool {
 }
 
 func (ct CoinType) hasUnit(name string) bool {
-	if ct.isMainUnit(name) || ct.isMinUnit(name) {
-		return true
-	}
-	return false
+	return ct.isMainUnit(name) || ct.isMinUnit(name)
 }

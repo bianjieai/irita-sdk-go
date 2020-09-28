@@ -35,7 +35,7 @@ const (
 )
 
 var (
-	errUnknown = register(RootCodespace, 111222, "unknown error")
+	// errUnknown = register(RootCodespace, 111222, "unknown error")
 	errInvalid = register(RootCodespace, 999999, "sdk check error")
 )
 

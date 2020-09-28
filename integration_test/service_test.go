@@ -92,7 +92,7 @@ func (s IntegrationTestSuite) TestService() {
 
 	var requestContextID string
 	var sub2 sdk.Subscription
-	var exit = make(chan int, 0)
+	var exit = make(chan int)
 
 	requestContextID, err = s.Service.InvokeService(invocation, baseTx)
 	require.NoError(s.T(), err)
@@ -114,6 +114,7 @@ func (s IntegrationTestSuite) TestService() {
 		select {
 		case <-exit:
 			err = s.Unsubscribe(sub1)
+			require.NoError(s.T(), err)
 			err = s.Unsubscribe(sub2)
 			require.NoError(s.T(), err)
 			goto loop

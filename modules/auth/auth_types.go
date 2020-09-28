@@ -64,7 +64,6 @@ func (acc *BaseAccount) SetPubKey(pubKey crypto.PubKey) error {
 	} else {
 		acc.PubKey = pubKey.Bytes()
 	}
-
 	return nil
 }
 

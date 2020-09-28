@@ -41,7 +41,7 @@ const (
 // For further notes on security parameter choice, see README.md
 var BcryptSecurityParameter = 12
 
-//-----------------------------------------------------------------
+// -----------------------------------------------------------------
 // add armor
 
 // Armor the InfoBytes
@@ -66,7 +66,7 @@ func ArmorPubKeyBytes(bz []byte, algo string) string {
 	return armor.EncodeArmor(blockTypePubKey, header, bz)
 }
 
-//-----------------------------------------------------------------
+// -----------------------------------------------------------------
 // remove armor
 
 // Unarmor the InfoBytes
@@ -121,7 +121,7 @@ func unarmorBytes(armorStr, blockType string) (bz []byte, header map[string]stri
 	return
 }
 
-//-----------------------------------------------------------------
+// -----------------------------------------------------------------
 // encrypt/decrypt with armor
 // Encrypt and armor the private key.
 func EncryptArmorPrivKey(privKey crypto.PrivKey, passphrase string, algo string) string {

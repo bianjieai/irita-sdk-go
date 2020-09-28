@@ -3,9 +3,8 @@ package store
 import (
 	"github.com/tendermint/tendermint/crypto"
 
-	cryptoAmino "github.com/bianjieai/irita-sdk-go/crypto/codec"
-
 	"github.com/bianjieai/irita-sdk-go/codec"
+	cryptoAmino "github.com/bianjieai/irita-sdk-go/crypto/codec"
 	"github.com/bianjieai/irita-sdk-go/crypto/hd"
 )
 

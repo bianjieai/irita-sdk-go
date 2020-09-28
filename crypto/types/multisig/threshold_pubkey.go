@@ -160,4 +160,6 @@ func (pk PubKeyMultisigThreshold) GetThreshold() uint {
 	return pk.K
 }
 
-func (pk PubKeyMultisigThreshold) Type() string { return "PubKeyMultisigThreshold" }
+func (pk PubKeyMultisigThreshold) Type() string {
+	return "PubKeyMultisigThreshold"
+}

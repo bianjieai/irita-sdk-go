@@ -8,7 +8,6 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
-
 	"github.com/bianjieai/irita-sdk-go/modules/auth"
 	"github.com/bianjieai/irita-sdk-go/modules/bank"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
@@ -46,7 +45,7 @@ func (a accountQuery) QueryAndRefreshAccount(address string) (sdk.BaseAccount, s
 
 func (a accountQuery) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
 	conn, err := a.GenConn()
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}

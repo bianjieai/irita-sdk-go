@@ -22,26 +22,17 @@ func init() {
 // codec.
 func RegisterCrypto(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*crypto.PubKey)(nil), nil)
-	cdc.RegisterConcrete(ed25519.PubKey{},
-		ed25519.PubKeyName, nil)
-	cdc.RegisterConcrete(sr25519.PubKey{},
-		sr25519.PubKeyName, nil)
-	cdc.RegisterConcrete(secp256k1.PubKey{},
-		secp256k1.PubKeyName, nil)
-	cdc.RegisterConcrete(sm2.PubKeySm2{},
-		sm2.PubKeyName, nil)
-	cdc.RegisterConcrete(multisig.PubKeyMultisigThreshold{},
-		multisig.PubKeyAminoRoute, nil)
+	cdc.RegisterConcrete(ed25519.PubKey{}, ed25519.PubKeyName, nil)
+	cdc.RegisterConcrete(sr25519.PubKey{}, sr25519.PubKeyName, nil)
+	cdc.RegisterConcrete(secp256k1.PubKey{}, secp256k1.PubKeyName, nil)
+	cdc.RegisterConcrete(sm2.PubKeySm2{}, sm2.PubKeyName, nil)
+	cdc.RegisterConcrete(multisig.PubKeyMultisigThreshold{}, multisig.PubKeyAminoRoute, nil)
 
 	cdc.RegisterInterface((*crypto.PrivKey)(nil), nil)
-	cdc.RegisterConcrete(ed25519.PrivKey{},
-		ed25519.PrivKeyName, nil)
-	cdc.RegisterConcrete(sr25519.PrivKey{},
-		sr25519.PrivKeyName, nil)
-	cdc.RegisterConcrete(secp256k1.PrivKey{},
-		secp256k1.PrivKeyName, nil)
-	cdc.RegisterConcrete(sm2.PrivKeySm2{},
-		sm2.PrivKeyName, nil)
+	cdc.RegisterConcrete(ed25519.PrivKey{}, ed25519.PrivKeyName, nil)
+	cdc.RegisterConcrete(sr25519.PrivKey{}, sr25519.PrivKeyName, nil)
+	cdc.RegisterConcrete(secp256k1.PrivKey{}, secp256k1.PrivKeyName, nil)
+	cdc.RegisterConcrete(sm2.PrivKeySm2{}, sm2.PrivKeyName, nil)
 }
 
 // PrivKeyFromBytes unmarshals private key bytes and returns a PrivKey

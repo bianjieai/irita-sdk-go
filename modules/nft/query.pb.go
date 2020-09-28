@@ -181,7 +181,7 @@ func (m *QueryOwnerRequest) GetOwner() github_com_bianjieai_irita_sdk_go_types.A
 	return nil
 }
 
-// QueryOwnerResp is the response type for the Query/Owner RPC method
+// QueryOwnerResponse is the response type for the Query/Owner RPC method
 type QueryOwnerResponse struct {
 	Owner *Owner `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
 }
@@ -271,7 +271,7 @@ func (m *QueryCollectionRequest) GetDenom() string {
 	return ""
 }
 
-// QueryCollectionResp is the response type for the Query/Collection RPC method
+// QueryCollectionResponse is the response type for the Query/Collection RPC method
 type QueryCollectionResponse struct {
 	Collection *Collection `protobuf:"bytes,1,opt,name=collection,proto3" json:"collection,omitempty"`
 }
@@ -361,7 +361,7 @@ func (m *QueryDenomRequest) GetDenom() string {
 	return ""
 }
 
-// QueryDenomResp is the response type for the Query/Denom RPC method
+// QueryDenomResponse is the response type for the Query/Denom RPC method
 type QueryDenomResponse struct {
 	Denom *Denom `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
 }
@@ -541,7 +541,7 @@ func (m *QueryNFTRequest) GetId() string {
 	return ""
 }
 
-// QueryNFTResp is the response type for the Query/NFT RPC method
+// QueryNFTResponse is the response type for the Query/NFT RPC method
 type QueryNFTResponse struct {
 	NFT *BaseNFT `protobuf:"bytes,1,opt,name=nft,proto3" json:"nft,omitempty"`
 }
@@ -590,15 +590,15 @@ func init() {
 	proto.RegisterType((*QuerySupplyRequest)(nil), "irismod.nft.QuerySupplyRequest")
 	proto.RegisterType((*QuerySupplyResponse)(nil), "irismod.nft.QuerySupplyResponse")
 	proto.RegisterType((*QueryOwnerRequest)(nil), "irismod.nft.QueryOwnerRequest")
-	proto.RegisterType((*QueryOwnerResponse)(nil), "irismod.nft.QueryOwnerResp")
+	proto.RegisterType((*QueryOwnerResponse)(nil), "irismod.nft.QueryOwnerResponse")
 	proto.RegisterType((*QueryCollectionRequest)(nil), "irismod.nft.QueryCollectionRequest")
-	proto.RegisterType((*QueryCollectionResponse)(nil), "irismod.nft.QueryCollectionResp")
+	proto.RegisterType((*QueryCollectionResponse)(nil), "irismod.nft.QueryCollectionResponse")
 	proto.RegisterType((*QueryDenomRequest)(nil), "irismod.nft.QueryDenomRequest")
-	proto.RegisterType((*QueryDenomResponse)(nil), "irismod.nft.QueryDenomResp")
+	proto.RegisterType((*QueryDenomResponse)(nil), "irismod.nft.QueryDenomResponse")
 	proto.RegisterType((*QueryDenomsRequest)(nil), "irismod.nft.QueryDenomsRequest")
 	proto.RegisterType((*QueryDenomsResponse)(nil), "irismod.nft.QueryDenomsResponse")
 	proto.RegisterType((*QueryNFTRequest)(nil), "irismod.nft.QueryNFTRequest")
-	proto.RegisterType((*QueryNFTResponse)(nil), "irismod.nft.QueryNFTResp")
+	proto.RegisterType((*QueryNFTResponse)(nil), "irismod.nft.QueryNFTResponse")
 }
 
 func init() { proto.RegisterFile("nft/query.proto", fileDescriptor_ce02d034d3adf2e9) }
@@ -1834,10 +1834,10 @@ func (m *QueryOwnerResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryOwnerResp: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryOwnerResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryOwnerResp: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryOwnerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2008,10 +2008,10 @@ func (m *QueryCollectionResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryCollectionResp: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryCollectionResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryCollectionResp: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryCollectionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2182,10 +2182,10 @@ func (m *QueryDenomResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryDenomResp: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryDenomResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryDenomResp: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryDenomResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2528,10 +2528,10 @@ func (m *QueryNFTResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryNFTResp: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryNFTResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryNFTResp: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryNFTResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

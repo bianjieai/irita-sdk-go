@@ -5,17 +5,13 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/bianjieai/irita-sdk-go/crypto/types/multisig"
-
 	"github.com/bianjieai/irita-sdk-go/codec"
-
-	"github.com/tendermint/tendermint/crypto"
 )
 
 const (
-	maxMemoCharacters = 100
-	txSigLimit        = 7
-	maxGasWanted      = uint64((1 << 63) - 1)
+	// maxMemoCharacters = 100
+	// txSigLimit        = 7
+	maxGasWanted = uint64((1 << 63) - 1)
 
 	Sync   BroadcastMode = "sync"
 	Async  BroadcastMode = "async"
@@ -154,7 +150,7 @@ func (tx StdTx) ValidateBasic() error {
 	}
 
 	if tx.Fee.Amount.IsAnyNegative() {
-		return errors.New(fmt.Sprintf("invalid fee %s amount provided", tx.Fee.Amount))
+		return fmt.Errorf("invalid fee %s amount provided", tx.Fee.Amount)
 	}
 
 	if len(stdSigs) == 0 {
@@ -169,17 +165,6 @@ func (tx StdTx) ValidateBasic() error {
 		)
 	}
 	return nil
-}
-func countSubKeys(pub crypto.PubKey) int {
-	v, ok := pub.(multisig.PubKeyMultisigThreshold)
-	if !ok {
-		return 1
-	}
-	numKeys := 0
-	for _, subkey := range v.PubKeys {
-		numKeys += countSubKeys(subkey)
-	}
-	return numKeys
 }
 
 // GetSigners returns the addresses that must sign the transaction.

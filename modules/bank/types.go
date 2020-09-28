@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	//"github.com/bianjieai/irita-sdk-go/modules/auth"
-
 	"github.com/bianjieai/irita-sdk-go/codec"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
@@ -142,7 +140,7 @@ func (in Input) ValidateBasic() error {
 		return errors.New("empty input coins")
 	}
 	if !in.Coins.IsValid() {
-		fmt.Errorf("invalid input coins [%s]", in.Coins)
+		return fmt.Errorf("invalid input coins [%s]", in.Coins)
 	}
 	return nil
 }

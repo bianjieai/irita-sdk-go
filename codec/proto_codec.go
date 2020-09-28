@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/bianjieai/irita-sdk-go/codec/types"
-
 	"github.com/gogo/protobuf/jsonpb"
 	"github.com/gogo/protobuf/proto"
+
+	"github.com/bianjieai/irita-sdk-go/codec/types"
 )
 
 // ProtoCodec defines a codec that utilizes Protobuf for both binary and JSON
@@ -63,15 +63,10 @@ func (pc *ProtoCodec) MustMarshalBinaryLengthPrefixed(o ProtoMarshaler) []byte {
 
 // UnmarshalBinaryBare implements BinaryMarshaler.UnmarshalBinaryBare method.
 func (pc *ProtoCodec) UnmarshalBinaryBare(bz []byte, ptr ProtoMarshaler) error {
-	err := ptr.Unmarshal(bz)
-	if err != nil {
+	if err := ptr.Unmarshal(bz); err != nil {
 		return err
 	}
-	err = types.UnpackInterfaces(ptr, pc.anyUnpacker)
-	if err != nil {
-		return err
-	}
-	return nil
+	return types.UnpackInterfaces(ptr, pc.anyUnpacker)
 }
 
 // MustUnmarshalBinaryBare implements BinaryMarshaler.MustUnmarshalBinaryBare method.

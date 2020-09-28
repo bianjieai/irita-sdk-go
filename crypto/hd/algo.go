@@ -3,11 +3,12 @@ package hd
 import (
 	"fmt"
 
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/secp256k1"
-
-	"github.com/cosmos/go-bip39"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/sm2"
+
+	"github.com/cosmos/go-bip39"
+
+	"github.com/bianjieai/irita-sdk-go/crypto/keys/secp256k1"
 )
 
 type SignatureAlgo interface {
@@ -57,8 +58,7 @@ type WalletGenerator interface {
 	Generate(bz []byte) crypto.PrivKey
 }
 
-type secp256k1Algo struct {
-}
+type secp256k1Algo struct{}
 
 func (s secp256k1Algo) Name() PubKeyType {
 	return Secp256k1Type
@@ -90,8 +90,7 @@ func (s secp256k1Algo) Generate() GenerateFn {
 	}
 }
 
-type sm2Algo struct {
-}
+type sm2Algo struct{}
 
 func (s sm2Algo) Name() PubKeyType {
 	return Sm2Type

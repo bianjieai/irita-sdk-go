@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
-
 	"github.com/bianjieai/irita-sdk-go/crypto/types"
 	"github.com/bianjieai/irita-sdk-go/types/tx/signing"
 )
@@ -128,8 +127,7 @@ func (g config) MarshalSignatureJSON(sigs []signing.SignatureV2) ([]byte, error)
 
 func (g config) UnmarshalSignatureJSON(bz []byte) ([]signing.SignatureV2, error) {
 	var sigDescs signing.SignatureDescriptors
-	err := g.protoCodec.UnmarshalJSON(bz, &sigDescs)
-	if err != nil {
+	if err := g.protoCodec.UnmarshalJSON(bz, &sigDescs); err != nil {
 		return nil, err
 	}
 

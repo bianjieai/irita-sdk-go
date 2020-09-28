@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"strings"
 
-	cryptoAmino "github.com/bianjieai/irita-sdk-go/crypto/codec"
-
-	"github.com/bianjieai/irita-sdk-go/crypto/hd"
-
-	"github.com/cosmos/go-bip39"
 	"github.com/pkg/errors"
 
 	"github.com/tendermint/tendermint/crypto"
+
+	"github.com/cosmos/go-bip39"
+
+	cryptoAmino "github.com/bianjieai/irita-sdk-go/crypto/codec"
+	"github.com/bianjieai/irita-sdk-go/crypto/hd"
 )
 
 const (

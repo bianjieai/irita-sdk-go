@@ -15,13 +15,11 @@ func DefaultTxDecoder(cdc *codec.ProtoCodec, keyCodec cryptotypes.PublicKeyCodec
 		var raw TxRaw
 
 		// reject all unknown proto fields in the root TxRaw
-		err := unknownproto.RejectUnknownFieldsStrict(txBytes, &raw)
-		if err != nil {
+		if err := unknownproto.RejectUnknownFieldsStrict(txBytes, &raw); err != nil {
 			return nil, err
 		}
 
-		err = cdc.UnmarshalBinaryBare(txBytes, &raw)
-		if err != nil {
+		if err := cdc.UnmarshalBinaryBare(txBytes, &raw); err != nil {
 			return nil, err
 		}
 
@@ -33,21 +31,18 @@ func DefaultTxDecoder(cdc *codec.ProtoCodec, keyCodec cryptotypes.PublicKeyCodec
 			return nil, err
 		}
 
-		err = cdc.UnmarshalBinaryBare(raw.BodyBytes, &body)
-		if err != nil {
+		if err = cdc.UnmarshalBinaryBare(raw.BodyBytes, &body); err != nil {
 			return nil, err
 		}
 
 		var authInfo AuthInfo
 
 		// reject all unknown proto fields in AuthInfo
-		err = unknownproto.RejectUnknownFieldsStrict(raw.AuthInfoBytes, &authInfo)
-		if err != nil {
+		if err = unknownproto.RejectUnknownFieldsStrict(raw.AuthInfoBytes, &authInfo); err != nil {
 			return nil, err
 		}
 
-		err = cdc.UnmarshalBinaryBare(raw.AuthInfoBytes, &authInfo)
-		if err != nil {
+		if err = cdc.UnmarshalBinaryBare(raw.AuthInfoBytes, &authInfo); err != nil {
 			return nil, err
 		}
 
@@ -77,8 +72,7 @@ func DefaultTxDecoder(cdc *codec.ProtoCodec, keyCodec cryptotypes.PublicKeyCodec
 func DefaultJSONTxDecoder(cdc *codec.ProtoCodec, keyCodec cryptotypes.PublicKeyCodec) sdk.TxDecoder {
 	return func(txBytes []byte) (sdk.Tx, error) {
 		var theTx Tx
-		err := cdc.UnmarshalJSON(txBytes, &theTx)
-		if err != nil {
+		if err := cdc.UnmarshalJSON(txBytes, &theTx); err != nil {
 			return nil, err
 		}
 

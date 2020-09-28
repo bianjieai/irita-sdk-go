@@ -28,7 +28,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// QueryRecordReq is the request type for the Query/Record RPC method
+// QueryRecordRequest is the request type for the Query/Record RPC method
 type QueryRecordRequest struct {
 	RecordId []byte `protobuf:"bytes,1,opt,name=record_id,json=recordId,proto3" json:"record_id,omitempty"`
 }
@@ -73,7 +73,7 @@ func (m *QueryRecordRequest) GetRecordId() []byte {
 	return nil
 }
 
-// QueryRecordResp is the response type for the Query/Record RPC method
+// QueryRecordResponse is the response type for the Query/Record RPC method
 type QueryRecordResponse struct {
 	Record *Record `protobuf:"bytes,1,opt,name=record,proto3" json:"record,omitempty"`
 }
@@ -119,8 +119,8 @@ func (m *QueryRecordResponse) GetRecord() *Record {
 }
 
 func init() {
-	proto.RegisterType((*QueryRecordRequest)(nil), "irismod.record.QueryRecordReq")
-	proto.RegisterType((*QueryRecordResponse)(nil), "irismod.record.QueryRecordResp")
+	proto.RegisterType((*QueryRecordRequest)(nil), "irismod.record.QueryRecordRequest")
+	proto.RegisterType((*QueryRecordResponse)(nil), "irismod.record.QueryRecordResponse")
 }
 
 func init() { proto.RegisterFile("record/query.proto", fileDescriptor_45fc26642889837f) }
@@ -360,10 +360,10 @@ func (m *QueryRecordRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryRecordReq: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryRecordRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryRecordReq: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryRecordRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -447,10 +447,10 @@ func (m *QueryRecordResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryRecordResp: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryRecordResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryRecordResp: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryRecordResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

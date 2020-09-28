@@ -143,8 +143,11 @@ func (f *Factory) WithSignModeHandler(signModeHandler SignModeHandler) *Factory 
 
 func (f *Factory) BuildAndSign(name string, msgs []Msg) ([]byte, error) {
 	tx, err := f.BuildUnsignedTx(msgs)
-	err = f.Sign(name, tx)
 	if err != nil {
+		return nil, err
+	}
+
+	if err = f.Sign(name, tx); err != nil {
 		return nil, err
 	}
 
@@ -152,6 +155,7 @@ func (f *Factory) BuildAndSign(name string, msgs []Msg) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return txBytes, nil
 }
 

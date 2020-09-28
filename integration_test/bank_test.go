@@ -129,7 +129,7 @@ func multiSend(s IntegrationTestSuite) {
 	}
 	wait.Wait()
 	end := time.Now()
-	fmt.Println(fmt.Sprintf("total senconds:%s", end.Sub(begin).String()))
+	fmt.Printf("total senconds:%s\n", end.Sub(begin).String())
 }
 
 func simulate(s IntegrationTestSuite) {

@@ -6,7 +6,7 @@ IRITA GO SDK makes a simple package of API provided by IRITA Chain, which provid
 
 ### Requirement
 
- - Go version above 1.14.0
+- Go version above 1.14.0
 
 ### Use Go Mod
 
@@ -65,7 +65,7 @@ baseTx := types.BaseTx{
 result, err := client.Bank.Send(to, coins, baseTx)
 ```
 
-**Note**: If you use the relevant API for sending transactions, you should implement the `KeyDAO` interface. 
+**Note**: If you use the relevant API for sending transactions, you should implement the `KeyDAO` interface.
 
 ### KeyDAO
 
@@ -74,29 +74,31 @@ result, err := client.Bank.Send(to, coins, baseTx)
 ```go
 // KeyInfo saves the basic information of the key
 type KeyInfo struct {
-	Name         string `json:"name"`
-	PubKey       []byte `json:"pubkey"`
-	PrivKeyArmor string `json:"priv_key_armor"`
-	Algo         string `json:"algo"`
+    Name         string `json:"name"`
+    PubKey       []byte `json:"pubkey"`
+    PrivKeyArmor string `json:"priv_key_armor"`
+    Algo         string `json:"algo"`
 }
 
 type KeyDAO interface {
-	// Write will use user password to encrypt data and save to file, the file name is user name
-	Write(name, password string, store KeyInfo) error
+    // Write will use user password to encrypt data and save to file, the file name is user name
+    Write(name, password string, store KeyInfo) error
 
-	// Read will read encrypted data from file and decrypt with user password
-	Read(name, password string) (KeyInfo, error)
+    // Read will read encrypted data from file and decrypt with user password
+    Read(name, password string) (KeyInfo, error)
 
-	// Delete will delete user data and use user password to verify permissions
-	Delete(name, password string) error
+    // Delete will delete user data and use user password to verify permissions
+    Delete(name, password string) error
 
-	// Has returns whether the specified user name exists
-	Has(name string) bool
+    // Has returns whether the specified user name exists
+    Has(name string) bool
 }
 ```
+
 There are three different ways to implement the keyDAO interface in the SDK:
- - Based on levelDB(`LevelDBDAO`)
- - Based on local file system(`FileDAO`)
- - Based on memory(`MemoryDAO`)
- 
- Located under package `types/store`
+
+- Based on levelDB(`LevelDBDAO`)
+- Based on local file system(`FileDAO`)
+- Based on memory(`MemoryDAO`)
+
+Located under package `types/store`

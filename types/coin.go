@@ -48,10 +48,7 @@ func validate(denom string, amount Int) error {
 
 // IsValid returns true if the Coin has a non-negative amount and the denom is vaild.
 func (coin Coin) IsValid() bool {
-	if err := validate(coin.Denom, coin.Amount); err != nil {
-		return false
-	}
-	return true
+	return validate(coin.Denom, coin.Amount) == nil
 }
 
 // IsZero returns if this represents no money
@@ -127,7 +124,7 @@ func (coin Coin) IsNegative() bool {
 	return coin.Amount.Sign() == -1
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Coins
 
 // Coins is a set of Coin, one per currency
@@ -557,7 +554,7 @@ func removeZeroCoins(coins Coins) Coins {
 	return coins[:i]
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Sort interface
 
 //nolint
@@ -573,7 +570,7 @@ func (coins Coins) Sort() Coins {
 	return coins
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Parsing
 
 var (

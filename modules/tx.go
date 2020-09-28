@@ -144,13 +144,11 @@ func (base baseClient) broadcastTxCommit(tx []byte) (sdk.ResultTx, sdk.Error) {
 	}
 
 	if !res.CheckTx.IsOK() {
-		return sdk.ResultTx{}, sdk.GetError(res.CheckTx.Codespace,
-			res.CheckTx.Code, res.CheckTx.Log)
+		return sdk.ResultTx{}, sdk.GetError(res.CheckTx.Codespace, res.CheckTx.Code, res.CheckTx.Log)
 	}
 
 	if !res.DeliverTx.IsOK() {
-		return sdk.ResultTx{}, sdk.GetError(res.DeliverTx.Codespace,
-			res.DeliverTx.Code, res.DeliverTx.Log)
+		return sdk.ResultTx{}, sdk.GetError(res.DeliverTx.Codespace, res.DeliverTx.Code, res.DeliverTx.Log)
 	}
 
 	return sdk.ResultTx{
@@ -175,9 +173,7 @@ func (base baseClient) broadcastTxSync(tx []byte) (sdk.ResultTx, sdk.Error) {
 			res.Code, res.Log)
 	}
 
-	return sdk.ResultTx{
-		Hash: res.Hash.String(),
-	}, nil
+	return sdk.ResultTx{Hash: res.Hash.String()}, nil
 }
 
 // BroadcastTxAsync broadcasts transaction bytes to a Tendermint node
@@ -188,9 +184,7 @@ func (base baseClient) broadcastTxAsync(tx []byte) (sdk.ResultTx, sdk.Error) {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	return sdk.ResultTx{
-		Hash: res.Hash.String(),
-	}, nil
+	return sdk.ResultTx{Hash: res.Hash.String()}, nil
 }
 
 func (base baseClient) getResultBlocks(resTxs []*ctypes.ResultTx) (map[int64]*ctypes.ResultBlock, error) {
@@ -209,7 +203,6 @@ func (base baseClient) getResultBlocks(resTxs []*ctypes.ResultTx) (map[int64]*ct
 }
 
 func (base baseClient) parseTxResult(res *ctypes.ResultTx, resBlock *ctypes.ResultBlock) (sdk.ResultQueryTx, error) {
-
 	var tx sdk.Tx
 	var err error
 
@@ -241,6 +234,5 @@ func parseQueryResponse(bz []byte) (sdk.SimulationResponse, error) {
 	if err := jsonpb.Unmarshal(strings.NewReader(string(bz)), &simRes); err != nil {
 		return sdk.SimulationResponse{}, err
 	}
-
 	return simRes, nil
 }

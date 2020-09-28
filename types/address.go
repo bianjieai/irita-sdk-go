@@ -339,10 +339,5 @@ func GetPubKeyFromBech32(pkt Bech32PubKeyType, pubkeyStr string) (TmPubKey, erro
 		return nil, err
 	}
 
-	pk, err := PubKeyFromBytes(bz)
-	if err != nil {
-		return nil, err
-	}
-
-	return pk, nil
+	return PubKeyFromBytes(bz)
 }

@@ -167,7 +167,7 @@ type tokenFees struct {
 }
 
 func (t tokenFees) Convert() interface{} {
-	return QueryFeesResponse{
+	return tokenFees{
 		Exist:    t.Exist,
 		IssueFee: t.IssueFee,
 		MintFee:  t.MintFee,

@@ -5,11 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/bianjieai/irita-sdk-go/modules/auth"
-
 	"github.com/bianjieai/irita-sdk-go/codec"
 	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
-
+	"github.com/bianjieai/irita-sdk-go/modules/auth"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	utils "github.com/bianjieai/irita-sdk-go/utils"
 )
@@ -50,7 +48,7 @@ func (b bankClient) RegisterInterfaceTypes(registry codectypes.InterfaceRegistry
 // QueryAccount return account information specified address
 func (b bankClient) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
 	conn, err := b.GenConn()
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}

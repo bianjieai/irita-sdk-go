@@ -569,7 +569,7 @@ func removeZeroDecCoins(coins DecCoins) DecCoins {
 	return coins[:i]
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Sorting
 
 var _ sort.Interface = Coins{}
