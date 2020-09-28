@@ -20,13 +20,8 @@ const (
 	nodeURI  = "tcp://localhost:26657"
 	grpcAddr = "localhost:9090"
 	chainID  = "test"
-	// mode     = types.Commit
-	// fee      = "4point"
-	// gas      = 200000
-	// algo     = "sm2"
-	// level    = "info"
-	charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	addr    = "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz"
+	charset  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	addr     = "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz"
 )
 
 var (

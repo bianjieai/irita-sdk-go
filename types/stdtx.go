@@ -167,18 +167,6 @@ func (tx StdTx) ValidateBasic() error {
 	return nil
 }
 
-// func countSubKeys(pub crypto.PubKey) int {
-// 	v, ok := pub.(multisig.PubKeyMultisigThreshold)
-// 	if !ok {
-// 		return 1
-// 	}
-// 	numKeys := 0
-// 	for _, subkey := range v.PubKeys {
-// 		numKeys += countSubKeys(subkey)
-// 	}
-// 	return numKeys
-// }
-
 // GetSigners returns the addresses that must sign the transaction.
 // Addresses are returned in a deterministic order.
 // They are accumulated from the GetSigners method for each Msg
