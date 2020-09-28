@@ -33,7 +33,11 @@ func init() {
 
 // NewMsgSend - construct arbitrary multi-in, multi-out send msg.
 func NewMsgSend(fromAddr, toAddr sdk.AccAddress, amount sdk.Coins) MsgSend {
-	return MsgSend{FromAddress: fromAddr, ToAddress: toAddr, Amount: amount}
+	return MsgSend{
+		FromAddress: fromAddr,
+		ToAddress:   toAddr,
+		Amount:      amount,
+	}
 }
 
 func (msg MsgSend) Route() string {
@@ -147,11 +151,10 @@ func (in Input) ValidateBasic() error {
 
 // NewInput - create a transaction input, used with MsgSend
 func NewInput(addr sdk.AccAddress, coins sdk.Coins) Input {
-	input := Input{
+	return Input{
 		Address: addr,
 		Coins:   coins,
 	}
-	return input
 }
 
 // ValidateBasic - validate transaction output
@@ -170,11 +173,10 @@ func (out Output) ValidateBasic() error {
 
 // NewOutput - create a transaction output, used with MsgSend
 func NewOutput(addr sdk.AccAddress, coins sdk.Coins) Output {
-	output := Output{
+	return Output{
 		Address: addr,
 		Coins:   coins,
 	}
-	return output
 }
 
 func registerCodec(cdc *codec.LegacyAmino) {

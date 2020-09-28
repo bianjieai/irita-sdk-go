@@ -221,7 +221,7 @@ func (msg MsgRespondService) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Provider}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgUpdateServiceBinding) Route() string { return ModuleName }
 
@@ -264,7 +264,7 @@ func (msg MsgUpdateServiceBinding) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Owner}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgSetWithdrawAddress) Route() string { return ModuleName }
 
@@ -299,7 +299,7 @@ func (msg MsgSetWithdrawAddress) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Owner}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgDisableServiceBinding) Route() string { return ModuleName }
 
@@ -338,7 +338,7 @@ func (msg MsgDisableServiceBinding) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Owner}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgEnableServiceBinding) Route() string { return ModuleName }
 
@@ -381,7 +381,7 @@ func (msg MsgEnableServiceBinding) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Owner}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgRefundServiceDeposit) Route() string { return ModuleName }
 
@@ -420,7 +420,7 @@ func (msg MsgRefundServiceDeposit) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Owner}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgPauseRequestContext) Route() string { return ModuleName }
 
@@ -450,7 +450,7 @@ func (msg MsgPauseRequestContext) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Consumer}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgStartRequestContext) Route() string { return ModuleName }
 
@@ -480,7 +480,7 @@ func (msg MsgStartRequestContext) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Consumer}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgKillRequestContext) Route() string { return ModuleName }
 
@@ -511,7 +511,7 @@ func (msg MsgKillRequestContext) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Consumer}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgUpdateRequestContext) Route() string { return ModuleName }
 
@@ -542,7 +542,7 @@ func (msg MsgUpdateRequestContext) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Consumer}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgWithdrawEarnedFees) Route() string { return ModuleName }
 
@@ -580,7 +580,7 @@ func (msg MsgWithdrawEarnedFees) GetSigners() []sdk.AccAddress {
 //==========================================for QueryWithResponse==========================================
 
 func (r ServiceDefinition) Convert() interface{} {
-	return QueryServiceDefinitionResponse{
+	return ServiceDefinition{
 		Name:              r.Name,
 		Description:       r.Description,
 		Tags:              r.Tags,

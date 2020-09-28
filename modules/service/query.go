@@ -111,10 +111,8 @@ func (s serviceClient) queryRequestByTxQuery(requestID string) (Request, error) 
 // queryResponseByTxQuery will query for a single request via a direct txs tags query.
 func (s serviceClient) queryResponseByTxQuery(requestID string) (Response, error) {
 	builder := sdk.NewEventQueryBuilder().
-		AddCondition(sdk.NewCond(sdk.EventTypeMessage,
-			sdk.AttributeKeyAction).EQ("respond_service")).
-		AddCondition(sdk.NewCond(sdk.EventTypeMessage,
-			sdk.AttributeKeyAction).EQ(attributeKeyRequestID))
+		AddCondition(sdk.NewCond(sdk.EventTypeMessage, sdk.AttributeKeyAction).EQ("respond_service")).
+		AddCondition(sdk.NewCond(sdk.EventTypeMessage, sdk.AttributeKeyAction).EQ(attributeKeyRequestID))
 
 	result, err := s.QueryTxs(builder, 1, 1)
 	if err != nil {

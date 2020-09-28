@@ -145,7 +145,7 @@ func (nc nftClient) QuerySupply(denom, creator string) (uint64, sdk.Error) {
 	}
 
 	conn, err := nc.GenConn()
-	defer conn.Close()
+	defer func() { conn.Close() }()
 	if err != nil {
 		return 0, sdk.Wrap(err)
 	}
@@ -172,7 +172,7 @@ func (nc nftClient) QueryOwner(creator, denom string) (QueryOwnerResp, sdk.Error
 	}
 
 	conn, err := nc.GenConn()
-	defer conn.Close()
+	defer func() { conn.Close() }()
 	if err != nil {
 		return QueryOwnerResp{}, sdk.Wrap(err)
 	}
@@ -194,7 +194,7 @@ func (nc nftClient) QueryCollection(denom string) (QueryCollectionResp, sdk.Erro
 	}
 
 	conn, err := nc.GenConn()
-	defer conn.Close()
+	defer func() { conn.Close() }()
 	if err != nil {
 		return QueryCollectionResp{}, sdk.Wrap(err)
 	}
@@ -211,12 +211,14 @@ func (nc nftClient) QueryCollection(denom string) (QueryCollectionResp, sdk.Erro
 
 func (nc nftClient) QueryDenoms() ([]QueryDenomResp, sdk.Error) {
 	conn, err := nc.GenConn()
-	defer conn.Close()
+	defer func() { conn.Close() }()
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
 
-	res, err := NewQueryClient(conn).Denoms(context.Background(), &QueryDenomsRequest{})
+	res, err := NewQueryClient(conn).Denoms(
+		context.Background(), &QueryDenomsRequest{},
+	)
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
@@ -229,7 +231,7 @@ func (nc nftClient) QueryDenoms() ([]QueryDenomResp, sdk.Error) {
 
 func (nc nftClient) QueryDenom(denom string) (QueryDenomResp, sdk.Error) {
 	conn, err := nc.GenConn()
-	defer conn.Close()
+	defer func() { conn.Close() }()
 	if err != nil {
 		return QueryDenomResp{}, sdk.Wrap(err)
 	}
@@ -254,7 +256,7 @@ func (nc nftClient) QueryNFT(denom, tokenID string) (QueryNFTResp, sdk.Error) {
 	}
 
 	conn, err := nc.GenConn()
-	defer conn.Close()
+	defer func() { conn.Close() }()
 	if err != nil {
 		return QueryNFTResp{}, sdk.Wrap(err)
 	}
