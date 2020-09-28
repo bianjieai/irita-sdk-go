@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/bianjieai/irita-sdk-go/modules/auth"
-
 	"github.com/bianjieai/irita-sdk-go/codec"
 	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
 	"github.com/bianjieai/irita-sdk-go/modules/auth"
