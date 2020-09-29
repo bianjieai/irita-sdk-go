@@ -3,7 +3,6 @@ package record
 import (
 	"fmt"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -18,15 +17,7 @@ var (
 	_ sdk.Msg = &MsgCreateRecord{}
 
 	recordKey = []byte{0x01} // record key
-
-	amino = codec.NewLegacyAmino()
-
-	ModuleCdc = codec.NewAminoCodec(amino)
 )
-
-func init() {
-	registerCodec(amino)
-}
 
 // Route implements Msg.
 func (msg MsgCreateRecord) Route() string { return ModuleName }
@@ -81,8 +72,4 @@ func (this Record) Convert() interface{} {
 // GetRecordKey returns record key bytes
 func GetRecordKey(recordID []byte) []byte {
 	return append(recordKey, recordID...)
-}
-
-func registerCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(MsgCreateRecord{}, "irismod/record/MsgCreateRecord", nil)
 }

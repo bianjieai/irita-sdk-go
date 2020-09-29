@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -15,25 +14,15 @@ const (
 
 var (
 	_ sdk.Msg = &MsgSend{}
-
-	amino = codec.NewLegacyAmino()
-
-	// ModuleCdc references the global bank module codec. Note, the codec should
-	// ONLY be used in certain instances of tests and for JSON encoding as Amino is
-	// still used for that purpose.
-	//
-	// The actual codec used for serialization should be provided to bank and
-	// defined at the application level.
-	ModuleCdc = codec.NewAminoCodec(amino)
 )
-
-func init() {
-	registerCodec(amino)
-}
 
 // NewMsgSend - construct arbitrary multi-in, multi-out send msg.
 func NewMsgSend(fromAddr, toAddr sdk.AccAddress, amount sdk.Coins) MsgSend {
-	return MsgSend{FromAddress: fromAddr, ToAddress: toAddr, Amount: amount}
+	return MsgSend{
+		FromAddress: fromAddr,
+		ToAddress:   toAddr,
+		Amount:      amount,
+	}
 }
 
 func (msg MsgSend) Route() string {
@@ -147,11 +136,10 @@ func (in Input) ValidateBasic() error {
 
 // NewInput - create a transaction input, used with MsgSend
 func NewInput(addr sdk.AccAddress, coins sdk.Coins) Input {
-	input := Input{
+	return Input{
 		Address: addr,
 		Coins:   coins,
 	}
-	return input
 }
 
 // ValidateBasic - validate transaction output
@@ -170,14 +158,8 @@ func (out Output) ValidateBasic() error {
 
 // NewOutput - create a transaction output, used with MsgSend
 func NewOutput(addr sdk.AccAddress, coins sdk.Coins) Output {
-	output := Output{
+	return Output{
 		Address: addr,
 		Coins:   coins,
 	}
-	return output
-}
-
-func registerCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(MsgSend{}, "cosmos-sdk/MsgSend", nil)
-	cdc.RegisterConcrete(MsgMultiSend{}, "cosmos-sdk/MsgMultiSend", nil)
 }

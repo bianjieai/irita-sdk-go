@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/modules/token"
-
 	"github.com/tendermint/tendermint/libs/log"
 
+	"github.com/bianjieai/irita-sdk-go/codec"
+	"github.com/bianjieai/irita-sdk-go/modules/token"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/utils/cache"
 )
@@ -34,17 +33,16 @@ func (l tokenQuery) QueryToken(denom string) (sdk.Token, error) {
 		return sdk.Token{}, sdk.Wrap(err)
 	}
 
-	request := &token.QueryTokenRequest{
-		Denom: denom,
-	}
-	response, err := token.NewQueryClient(conn).Token(context.Background(), request)
+	response, err := token.NewQueryClient(conn).Token(
+		context.Background(),
+		&token.QueryTokenRequest{Denom: denom},
+	)
 	if err != nil {
 		return sdk.Token{}, sdk.Wrap(err)
 	}
 
 	var srcToken token.TokenInterface
-	err = l.cdc.UnpackAny(response.Token, &srcToken)
-	if err != nil {
+	if err = l.cdc.UnpackAny(response.Token, &srcToken); err != nil {
 		return sdk.Token{}, sdk.Wrap(err)
 	}
 	token := srcToken.(*token.Token).Convert().(sdk.Token)

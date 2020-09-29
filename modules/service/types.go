@@ -6,15 +6,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
 const (
-	// ModuleName define module name
 	ModuleName = "service"
 
-	eventTypeNewBatchRequest         = "new_batch_request"
 	eventTypeNewBatchRequestProvider = "new_batch_request_provider"
 	attributeKeyRequests             = "requests"
 	attributeKeyRequestID            = "request_id"
@@ -23,7 +20,6 @@ const (
 	attributeKeyProvider             = "provider"
 
 	requestIDLen = 58
-	contextIDLen = 40
 )
 
 var (
@@ -41,9 +37,6 @@ var (
 	_ sdk.Msg = &MsgKillRequestContext{}
 	_ sdk.Msg = &MsgUpdateRequestContext{}
 	_ sdk.Msg = &MsgWithdrawEarnedFees{}
-
-	amino     = codec.NewLegacyAmino()
-	ModuleCdc = codec.NewAminoCodec(amino)
 
 	RequestContextStateToStringMap = map[RequestContextState]string{
 		RUNNING:   "running",
@@ -65,10 +58,6 @@ var (
 		"completed": BATCHCOMPLETED,
 	}
 )
-
-func init() {
-	registerCodec(amino)
-}
 
 func (msg MsgDefineService) Route() string { return ModuleName }
 
@@ -221,7 +210,7 @@ func (msg MsgRespondService) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Provider}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgUpdateServiceBinding) Route() string { return ModuleName }
 
@@ -264,7 +253,7 @@ func (msg MsgUpdateServiceBinding) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Owner}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgSetWithdrawAddress) Route() string { return ModuleName }
 
@@ -299,7 +288,7 @@ func (msg MsgSetWithdrawAddress) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Owner}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgDisableServiceBinding) Route() string { return ModuleName }
 
@@ -338,7 +327,7 @@ func (msg MsgDisableServiceBinding) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Owner}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgEnableServiceBinding) Route() string { return ModuleName }
 
@@ -381,7 +370,7 @@ func (msg MsgEnableServiceBinding) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Owner}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgRefundServiceDeposit) Route() string { return ModuleName }
 
@@ -420,7 +409,7 @@ func (msg MsgRefundServiceDeposit) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Owner}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgPauseRequestContext) Route() string { return ModuleName }
 
@@ -450,7 +439,7 @@ func (msg MsgPauseRequestContext) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Consumer}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgStartRequestContext) Route() string { return ModuleName }
 
@@ -480,7 +469,7 @@ func (msg MsgStartRequestContext) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Consumer}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgKillRequestContext) Route() string { return ModuleName }
 
@@ -511,7 +500,7 @@ func (msg MsgKillRequestContext) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Consumer}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgUpdateRequestContext) Route() string { return ModuleName }
 
@@ -542,7 +531,7 @@ func (msg MsgUpdateRequestContext) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Consumer}
 }
 
-//______________________________________________________________________
+// ______________________________________________________________________
 
 func (msg MsgWithdrawEarnedFees) Route() string { return ModuleName }
 
@@ -577,31 +566,14 @@ func (msg MsgWithdrawEarnedFees) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Owner}
 }
 
-//==========================================for QueryWithResponse==========================================
+// ==========================================for QueryWithResponse==========================================
 
 func (r ServiceDefinition) Convert() interface{} {
-	return QueryServiceDefinitionResponse{
-		Name:              r.Name,
-		Description:       r.Description,
-		Tags:              r.Tags,
-		Author:            r.Author,
-		AuthorDescription: r.AuthorDescription,
-		Schemas:           r.Schemas,
-	}
+	return QueryServiceDefinitionResponse(r)
 }
 
 func (b ServiceBinding) Convert() interface{} {
-	return QueryServiceBindingResponse{
-		ServiceName:  b.ServiceName,
-		Provider:     b.Provider,
-		Deposit:      b.Deposit,
-		Pricing:      b.Pricing,
-		QoS:          b.QoS,
-		Available:    b.Available,
-		DisabledTime: b.DisabledTime,
-		Owner:        b.Owner,
-	}
-
+	return QueryServiceBindingResponse(b)
 }
 
 type serviceBindings []*ServiceBinding
@@ -637,11 +609,11 @@ func (r Request) Convert() interface{} {
 type requests []*Request
 
 func (rs requests) Convert() interface{} {
-	requests := make([]QueryServiceRequestResponse, len(rs))
+	reqs := make([]QueryServiceRequestResponse, len(rs))
 	for i, request := range rs {
-		requests[i] = request.Convert().(QueryServiceRequestResponse)
+		reqs[i] = request.Convert().(QueryServiceRequestResponse)
 	}
-	return requests
+	return reqs
 }
 
 func (r Response) Empty() bool {
@@ -662,11 +634,11 @@ func (r Response) Convert() interface{} {
 type responses []*Response
 
 func (rs responses) Convert() interface{} {
-	responses := make([]QueryServiceResponseResponse, len(rs))
+	resps := make([]QueryServiceResponseResponse, len(rs))
 	for i, response := range rs {
-		responses[i] = response.Convert().(QueryServiceResponseResponse)
+		resps[i] = response.Convert().(QueryServiceResponseResponse)
 	}
-	return responses
+	return resps
 }
 
 func RequestContextStateFromString(str string) (RequestContextState, error) {
@@ -772,27 +744,4 @@ func (p Params) Convert() interface{} {
 		TxSizeLimit:          p.TxSizeLimit,
 		BaseDenom:            p.BaseDenom,
 	}
-}
-
-func registerCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(MsgDefineService{}, "irismod/service/MsgDefineService", nil)
-	cdc.RegisterConcrete(MsgBindService{}, "irismod/service/MsgBindService", nil)
-	cdc.RegisterConcrete(MsgUpdateServiceBinding{}, "irismod/service/MsgUpdateServiceBinding", nil)
-	cdc.RegisterConcrete(MsgSetWithdrawAddress{}, "irismod/service/MsgSetWithdrawAddress", nil)
-	cdc.RegisterConcrete(MsgDisableServiceBinding{}, "irismod/service/MsgDisableServiceBinding", nil)
-	cdc.RegisterConcrete(MsgEnableServiceBinding{}, "irismod/service/MsgEnableServiceBinding", nil)
-	cdc.RegisterConcrete(MsgRefundServiceDeposit{}, "irismod/service/MsgRefundServiceDeposit", nil)
-	cdc.RegisterConcrete(MsgCallService{}, "irismod/service/MsgCallService", nil)
-	cdc.RegisterConcrete(MsgRespondService{}, "irismod/service/MsgRespondService", nil)
-	cdc.RegisterConcrete(MsgPauseRequestContext{}, "irismod/service/MsgPauseRequestContext", nil)
-	cdc.RegisterConcrete(MsgStartRequestContext{}, "irismod/service/MsgStartRequestContext", nil)
-	cdc.RegisterConcrete(MsgKillRequestContext{}, "irismod/service/MsgKillRequestContext", nil)
-	cdc.RegisterConcrete(MsgUpdateRequestContext{}, "irismod/service/MsgUpdateRequestContext", nil)
-	cdc.RegisterConcrete(MsgWithdrawEarnedFees{}, "irismod/service/MsgWithdrawEarnedFees", nil)
-
-	cdc.RegisterConcrete(ServiceDefinition{}, "irismod/service/ServiceDefinition", nil)
-	cdc.RegisterConcrete(ServiceBinding{}, "irismod/service/ServiceBinding", nil)
-	cdc.RegisterConcrete(RequestContext{}, "irismod/service/RequestContext", nil)
-	cdc.RegisterConcrete(Request{}, "irismod/service/Request", nil)
-	cdc.RegisterConcrete(Response{}, "irismod/service/Response", nil)
 }

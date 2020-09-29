@@ -1,4 +1,4 @@
-package token
+package nft
 
 import (
 	"github.com/bianjieai/irita-sdk-go/codec"
@@ -20,10 +20,10 @@ func init() {
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations(
 		(*sdk.Msg)(nil),
-		&MsgIssueToken{},
-		&MsgEditToken{},
-		&MsgMintToken{},
-		&MsgTransferTokenOwner{},
+		&MsgIssueDenom{},
+		&MsgMintNFT{},
+		&MsgEditNFT{},
+		&MsgTransferNFT{},
+		&MsgBurnNFT{},
 	)
-	registry.RegisterInterface("irismod.token.TokenI", (*TokenInterface)(nil), &Token{})
 }

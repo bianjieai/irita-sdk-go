@@ -2,7 +2,10 @@ package service
 
 import (
 	"context"
+	"encoding/binary"
+	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"strings"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
@@ -27,28 +30,8 @@ func (s serviceClient) Name() string {
 	return ModuleName
 }
 
-func (s serviceClient) RegisterCodec(cdc *codec.LegacyAmino) {
-	registerCodec(cdc)
-}
-
 func (s serviceClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
-	registry.RegisterImplementations(
-		(*sdk.Msg)(nil),
-		&MsgDefineService{},
-		&MsgBindService{},
-		&MsgUpdateServiceBinding{},
-		&MsgSetWithdrawAddress{},
-		&MsgDisableServiceBinding{},
-		&MsgEnableServiceBinding{},
-		&MsgRefundServiceDeposit{},
-		&MsgCallService{},
-		&MsgRespondService{},
-		&MsgPauseRequestContext{},
-		&MsgStartRequestContext{},
-		&MsgKillRequestContext{},
-		&MsgUpdateRequestContext{},
-		&MsgWithdrawEarnedFees{},
-	)
+	RegisterInterfaces(registry)
 }
 
 //DefineService is responsible for creating a new service definition
@@ -244,12 +227,13 @@ func (s serviceClient) SubscribeServiceResponse(reqCtxID string,
 		return subscription, sdk.Wrapf("reqCtxID %s should not be empty", reqCtxID)
 	}
 
-	builder := sdk.NewEventQueryBuilder().
-		AddCondition(sdk.NewCond(sdk.EventTypeMessage, attributeKeyRequestContextID).
-			EQ(sdk.EventValue(reqCtxID)))
+	builder := sdk.NewEventQueryBuilder().AddCondition(
+		sdk.NewCond(sdk.EventTypeMessage, attributeKeyRequestContextID).EQ(sdk.EventValue(reqCtxID)),
+	)
 
 	return s.SubscribeTx(builder, func(tx sdk.EventDataTx) {
-		s.Logger().Debug("consumer received response transaction sent by provider",
+		s.Logger().Debug(
+			"consumer received response transaction sent by provider",
 			"tx_hash", tx.Hash,
 			"height", tx.Height,
 			"reqCtxID", reqCtxID,
@@ -259,7 +243,8 @@ func (s serviceClient) SubscribeServiceResponse(reqCtxID string,
 			if ok {
 				reqCtxID2, _, _, _, err := splitRequestID(msg.RequestId.String())
 				if err != nil {
-					s.Logger().Error("invalid requestID",
+					s.Logger().Error(
+						"invalid requestID",
 						"requestID", msg.RequestId.String(),
 						"errMsg", err.Error(),
 					)
@@ -275,6 +260,24 @@ func (s serviceClient) SubscribeServiceResponse(reqCtxID string,
 			_ = s.Unsubscribe(subscription)
 		}
 	})
+}
+
+// SplitRequestID splits the given contextID to contextID, batchCounter, requestHeight, batchRequestIndex
+func splitRequestID(reqID string) (sdk.HexBytes, uint64, int64, int16, error) {
+	requestID, err := hex.DecodeString(reqID)
+	if err != nil {
+		return nil, 0, 0, 0, errors.New("invalid request id")
+	}
+
+	if len(requestID) != requestIDLen {
+		return nil, 0, 0, 0, errors.New("invalid request id")
+	}
+
+	reqCtxID := requestID[0:40]
+	batchCounter := binary.BigEndian.Uint64(requestID[40:48])
+	requestHeight := int64(binary.BigEndian.Uint64(requestID[48:56]))
+	batchRequestIndex := int16(binary.BigEndian.Uint16(requestID[56:]))
+	return reqCtxID, batchCounter, requestHeight, batchRequestIndex, nil
 }
 
 // SetWithdrawAddress sets a new withdrawal address for the specified service binding
@@ -421,18 +424,16 @@ func (s serviceClient) SubscribeServiceRequest(serviceName string,
 		return sdk.Subscription{}, sdk.Wrap(e)
 	}
 
-	builder := sdk.NewEventQueryBuilder().
-		AddCondition(sdk.NewCond(eventTypeNewBatchRequestProvider, attributeKeyServiceName).
-			EQ(sdk.EventValue(serviceName))).
-		AddCondition(sdk.NewCond(eventTypeNewBatchRequestProvider, attributeKeyProvider).
-			EQ(sdk.EventValue(provider.String())))
+	builder := sdk.NewEventQueryBuilder().AddCondition(
+		sdk.NewCond(eventTypeNewBatchRequestProvider, attributeKeyServiceName).EQ(sdk.EventValue(serviceName)),
+	).AddCondition(
+		sdk.NewCond(eventTypeNewBatchRequestProvider, attributeKeyProvider).EQ(sdk.EventValue(provider.String())),
+	)
 
 	return s.SubscribeNewBlock(builder, func(block sdk.EventDataNewBlock) {
 		msgs := s.GenServiceResponseMsgs(block.ResultEndBlock.Events, serviceName, provider, callback)
 		if _, err = s.SendBatch(msgs, baseTx); err != nil {
-			s.Logger().Error("provider respond failed",
-				"errMsg", err.Error(),
-			)
+			s.Logger().Error("provider respond failed", "errMsg", err.Error())
 		}
 	})
 }
@@ -440,14 +441,15 @@ func (s serviceClient) SubscribeServiceRequest(serviceName string,
 // QueryDefinition return a service definition of the specified name
 func (s serviceClient) QueryServiceDefinition(serviceName string) (QueryServiceDefinitionResponse, sdk.Error) {
 	conn, err := s.GenConn()
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return QueryServiceDefinitionResponse{}, sdk.Wrap(err)
 	}
 
-	resp, err := NewQueryClient(conn).Definition(context.Background(), &QueryDefinitionRequest{
-		ServiceName: serviceName,
-	})
+	resp, err := NewQueryClient(conn).Definition(
+		context.Background(),
+		&QueryDefinitionRequest{ServiceName: serviceName},
+	)
 	if err != nil {
 		return QueryServiceDefinitionResponse{}, sdk.Wrap(err)
 	}
@@ -458,15 +460,18 @@ func (s serviceClient) QueryServiceDefinition(serviceName string) (QueryServiceD
 // QueryBinding return the specified service binding
 func (s serviceClient) QueryServiceBinding(serviceName string, provider sdk.AccAddress) (QueryServiceBindingResponse, sdk.Error) {
 	conn, err := s.GenConn()
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return QueryServiceBindingResponse{}, sdk.Wrap(err)
 	}
 
-	resp, err := NewQueryClient(conn).Binding(context.Background(), &QueryBindingRequest{
-		ServiceName: serviceName,
-		Provider:    provider,
-	})
+	resp, err := NewQueryClient(conn).Binding(
+		context.Background(),
+		&QueryBindingRequest{
+			ServiceName: serviceName,
+			Provider:    provider,
+		},
+	)
 	if err != nil {
 		return QueryServiceBindingResponse{}, sdk.Wrap(err)
 	}
@@ -477,14 +482,15 @@ func (s serviceClient) QueryServiceBinding(serviceName string, provider sdk.AccA
 // QueryBindings returns all bindings of the specified service
 func (s serviceClient) QueryServiceBindings(serviceName string) ([]QueryServiceBindingResponse, sdk.Error) {
 	conn, err := s.GenConn()
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
 
-	resp, err := NewQueryClient(conn).Bindings(context.Background(), &QueryBindingsRequest{
-		ServiceName: serviceName,
-	})
+	resp, err := NewQueryClient(conn).Bindings(
+		context.Background(),
+		&QueryBindingsRequest{ServiceName: serviceName},
+	)
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
@@ -495,14 +501,15 @@ func (s serviceClient) QueryServiceBindings(serviceName string) ([]QueryServiceB
 // QueryRequest returns  the active request of the specified requestID
 func (s serviceClient) QueryServiceRequest(requestID string) (QueryServiceRequestResponse, sdk.Error) {
 	conn, err := s.GenConn()
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return QueryServiceRequestResponse{}, sdk.Wrap(err)
 	}
 
-	resp, err := NewQueryClient(conn).Request(context.Background(), &QueryRequestRequest{
-		RequestId: sdk.MustHexBytesFrom(requestID),
-	})
+	resp, err := NewQueryClient(conn).Request(
+		context.Background(),
+		&QueryRequestRequest{RequestId: sdk.MustHexBytesFrom(requestID)},
+	)
 	if err != nil {
 		return QueryServiceRequestResponse{}, sdk.Wrap(err)
 	}
@@ -513,15 +520,15 @@ func (s serviceClient) QueryServiceRequest(requestID string) (QueryServiceReques
 // QueryRequest returns all the active requests of the specified service binding
 func (s serviceClient) QueryServiceRequests(serviceName string, provider sdk.AccAddress) ([]QueryServiceRequestResponse, sdk.Error) {
 	conn, err := s.GenConn()
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
 
-	resp, err := NewQueryClient(conn).Requests(context.Background(), &QueryRequestsRequest{
-		ServiceName: serviceName,
-		Provider:    provider,
-	})
+	resp, err := NewQueryClient(conn).Requests(
+		context.Background(),
+		&QueryRequestsRequest{ServiceName: serviceName, Provider: provider},
+	)
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
@@ -532,15 +539,18 @@ func (s serviceClient) QueryServiceRequests(serviceName string, provider sdk.Acc
 // QueryRequestsByReqCtx returns all requests of the specified request context ID and batch counter
 func (s serviceClient) QueryRequestsByReqCtx(reqCtxID string, batchCounter uint64) ([]QueryServiceRequestResponse, sdk.Error) {
 	conn, err := s.GenConn()
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
 
-	resp, err := NewQueryClient(conn).RequestsByReqCtx(context.Background(), &QueryRequestsByReqCtxRequest{
-		RequestContextId: sdk.MustHexBytesFrom(reqCtxID),
-		BatchCounter:     batchCounter,
-	})
+	resp, err := NewQueryClient(conn).RequestsByReqCtx(
+		context.Background(),
+		&QueryRequestsByReqCtxRequest{
+			RequestContextId: sdk.MustHexBytesFrom(reqCtxID),
+			BatchCounter:     batchCounter,
+		},
+	)
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
@@ -551,15 +561,15 @@ func (s serviceClient) QueryRequestsByReqCtx(reqCtxID string, batchCounter uint6
 // QueryResponse returns a response with the speicified request ID
 func (s serviceClient) QueryServiceResponse(requestID string) (QueryServiceResponseResponse, sdk.Error) {
 	conn, err := s.GenConn()
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return QueryServiceResponseResponse{}, sdk.Wrap(err)
 	}
 
-	resp, err := NewQueryClient(conn).Response(context.Background(), &QueryResponseRequest{
-		RequestId: sdk.MustHexBytesFrom(requestID),
-	})
-
+	resp, err := NewQueryClient(conn).Response(
+		context.Background(),
+		&QueryResponseRequest{RequestId: sdk.MustHexBytesFrom(requestID)},
+	)
 	if err != nil {
 		return QueryServiceResponseResponse{}, sdk.Wrap(err)
 	}
@@ -570,15 +580,18 @@ func (s serviceClient) QueryServiceResponse(requestID string) (QueryServiceRespo
 // QueryResponses returns all responses of the specified request context and batch counter
 func (s serviceClient) QueryServiceResponses(reqCtxID string, batchCounter uint64) ([]QueryServiceResponseResponse, sdk.Error) {
 	conn, err := s.GenConn()
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
 
-	resp, err := NewQueryClient(conn).Responses(context.Background(), &QueryResponsesRequest{
-		RequestContextId: sdk.MustHexBytesFrom(reqCtxID),
-		BatchCounter:     batchCounter,
-	})
+	resp, err := NewQueryClient(conn).Responses(
+		context.Background(),
+		&QueryResponsesRequest{
+			RequestContextId: sdk.MustHexBytesFrom(reqCtxID),
+			BatchCounter:     batchCounter,
+		},
+	)
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
@@ -589,14 +602,15 @@ func (s serviceClient) QueryServiceResponses(reqCtxID string, batchCounter uint6
 // QueryRequestContext return the specified request context
 func (s serviceClient) QueryRequestContext(reqCtxID string) (QueryRequestContextResp, sdk.Error) {
 	conn, err := s.GenConn()
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return QueryRequestContextResp{}, sdk.Wrap(err)
 	}
 
-	resp, err := NewQueryClient(conn).RequestContext(context.Background(), &QueryRequestContextRequest{
-		RequestContextId: sdk.MustHexBytesFrom(reqCtxID),
-	})
+	resp, err := NewQueryClient(conn).RequestContext(
+		context.Background(),
+		&QueryRequestContextRequest{RequestContextId: sdk.MustHexBytesFrom(reqCtxID)},
+	)
 	if err != nil {
 		return QueryRequestContextResp{}, sdk.Wrap(err)
 	}
@@ -612,14 +626,15 @@ func (s serviceClient) QueryFees(provider string) (sdk.Coins, sdk.Error) {
 	}
 
 	conn, err := s.GenConn()
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
 
-	res, err := NewQueryClient(conn).EarnedFees(context.Background(), &QueryEarnedFeesRequest{
-		Provider: address,
-	})
+	res, err := NewQueryClient(conn).EarnedFees(
+		context.Background(),
+		&QueryEarnedFeesRequest{Provider: address},
+	)
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
@@ -627,11 +642,21 @@ func (s serviceClient) QueryFees(provider string) (sdk.Coins, sdk.Error) {
 }
 
 func (s serviceClient) QueryParams() (QueryParamsResp, sdk.Error) {
-	var param Params
-	if err := s.BaseClient.QueryParams(ModuleName, &param); err != nil {
-		return QueryParamsResp{}, err
+	conn, err := s.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return QueryParamsResp{}, sdk.Wrap(err)
 	}
-	return param.Convert().(QueryParamsResp), nil
+
+	res, err := NewQueryClient(conn).Params(
+		context.Background(),
+		&QueryParamsRequest{},
+	)
+	if err != nil {
+		return QueryParamsResp{}, sdk.Wrap(err)
+	}
+
+	return res.Params.Convert().(QueryParamsResp), nil
 }
 
 func (s serviceClient) GenServiceResponseMsgs(events sdk.StringEvents, serviceName string,
@@ -650,7 +675,8 @@ func (s serviceClient) GenServiceResponseMsgs(events sdk.StringEvents, serviceNa
 			reqIDsStr := attributes.GetValue(attributeKeyRequests)
 			var idsTemp []string
 			if err := json.Unmarshal([]byte(reqIDsStr), &idsTemp); err != nil {
-				s.Logger().Error("service request don't exist",
+				s.Logger().Error(
+					"service request don't exist",
 					attributeKeyRequestID, reqIDsStr,
 					attributeKeyServiceName, serviceName,
 					attributeKeyProvider, provider.String(),
@@ -665,7 +691,8 @@ func (s serviceClient) GenServiceResponseMsgs(events sdk.StringEvents, serviceNa
 	for _, reqID := range ids {
 		request, err := s.QueryServiceRequest(reqID)
 		if err != nil {
-			s.Logger().Error("service request don't exist",
+			s.Logger().Error(
+				"service request don't exist",
 				attributeKeyRequestID, reqID,
 				attributeKeyServiceName, serviceName,
 				attributeKeyProvider, provider.String(),

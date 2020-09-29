@@ -91,7 +91,7 @@ func (client *IRITAClient) RegisterModule(ms ...types.Module) {
 			panic(fmt.Sprintf("%s has register", m.Name()))
 		}
 
-		m.RegisterCodec(client.encodingConfig.Amino)
+		// m.RegisterCodec(client.encodingConfig.Amino)
 		m.RegisterInterfaceTypes(client.encodingConfig.InterfaceRegistry)
 		client.moduleManager[m.Name()] = m
 	}

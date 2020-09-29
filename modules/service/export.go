@@ -9,54 +9,32 @@ import (
 // Tx defines a set of transaction interfaces in the service module
 type Tx interface {
 	DefineService(request DefineServiceRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
-
 	BindService(request BindServiceRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
-
 	InvokeService(request InvokeServiceRequest, baseTx sdk.BaseTx) (requestContextID string, err sdk.Error)
-
 	SetWithdrawAddress(withdrawAddress string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
-
 	UpdateServiceBinding(request UpdateServiceBindingRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
-
 	DisableServiceBinding(serviceName, provider string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
-
-	EnableServiceBinding(serviceName, provider string,
-		deposit sdk.DecCoins, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
-
+	EnableServiceBinding(serviceName, provider string, deposit sdk.DecCoins, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 	RefundServiceDeposit(serviceName, provider string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
-
 	PauseRequestContext(requestContextID string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
-
 	StartRequestContext(requestContextID string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
-
 	KillRequestContext(requestContextID string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
-
 	UpdateRequestContext(request UpdateRequestContextRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
-
 	WithdrawEarnedFees(provider string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
-
-	SubscribeServiceRequest(serviceName string,
-		callback RespondCallback,
-		baseTx sdk.BaseTx) (sdk.Subscription, sdk.Error)
-
-	SubscribeServiceResponse(reqCtxID string,
-		callback InvokeCallback) (sdk.Subscription, sdk.Error)
+	SubscribeServiceRequest(serviceName string, callback RespondCallback, baseTx sdk.BaseTx) (sdk.Subscription, sdk.Error)
+	SubscribeServiceResponse(reqCtxID string, callback InvokeCallback) (sdk.Subscription, sdk.Error)
 }
 
 // Query defines a set of query interfaces in the service module
 type Query interface {
 	QueryServiceDefinition(serviceName string) (QueryServiceDefinitionResponse, sdk.Error)
-
 	QueryServiceBinding(serviceName string, provider sdk.AccAddress) (QueryServiceBindingResponse, sdk.Error)
 	QueryServiceBindings(serviceName string) ([]QueryServiceBindingResponse, sdk.Error)
-
 	QueryServiceRequest(requestID string) (QueryServiceRequestResponse, sdk.Error)
 	QueryServiceRequests(serviceName string, provider sdk.AccAddress) ([]QueryServiceRequestResponse, sdk.Error)
 	QueryRequestsByReqCtx(requestContextID string, batchCounter uint64) ([]QueryServiceRequestResponse, sdk.Error)
-
 	QueryServiceResponse(requestID string) (QueryServiceResponseResponse, sdk.Error)
 	QueryServiceResponses(requestContextID string, batchCounter uint64) ([]QueryServiceResponseResponse, sdk.Error)
-
 	QueryRequestContext(requestContextID string) (QueryRequestContextResp, sdk.Error)
 	QueryFees(provider string) (sdk.Coins, sdk.Error)
 	QueryParams() (QueryParamsResp, sdk.Error)
@@ -137,7 +115,7 @@ type UpdateServiceBindingRequest struct {
 	ServiceName string       `json:"service_name"`
 	Deposit     sdk.DecCoins `json:"deposit"`
 	Pricing     string       `json:"pricing"`
-	QoS         uint64       `json:"Qos"`
+	QoS         uint64       `json:"qos"`
 	Provider    string       `json:"provider"`
 }
 
@@ -147,10 +125,11 @@ type QueryServiceBindingResponse struct {
 	Provider     sdk.AccAddress `json:"provider"`
 	Deposit      sdk.Coins      `json:"deposit"`
 	Pricing      string         `json:"pricing"`
-	QoS          uint64         `json:"Qos"`
-	Owner        sdk.AccAddress `json:"owner"`
+	QoS          uint64         `json:"qos"`
+	Options      string         `json:"options"`
 	Available    bool           `json:"available"`
 	DisabledTime time.Time      `json:"disabled_time"`
+	Owner        sdk.AccAddress `json:"owner"`
 }
 
 // InvokeServiceRequest defines the request parameters of the service call

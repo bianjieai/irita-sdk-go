@@ -28,10 +28,6 @@ func (t tokenClient) Name() string {
 	return ModuleName
 }
 
-func (t tokenClient) RegisterCodec(cdc *codec.LegacyAmino) {
-	RegisterLegacyAminoCodec(cdc)
-}
-
 func (t tokenClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
 	RegisterInterfaces(registry)
 }
@@ -160,7 +156,7 @@ func (t tokenClient) QueryTokens(owner string) (sdk.Tokens, error) {
 
 func (t tokenClient) QueryFees(symbol string) (QueryFeesResp, error) {
 	conn, err := t.GenConn()
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return QueryFeesResp{}, sdk.Wrap(err)
 	}
@@ -178,9 +174,19 @@ func (t tokenClient) QueryFees(symbol string) (QueryFeesResp, error) {
 }
 
 func (t tokenClient) QueryParams() (QueryParamsResp, error) {
-	var param Params
-	if err := t.BaseClient.QueryParams(ModuleName, &param); err != nil {
-		return QueryParamsResp{}, err
+	conn, err := t.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return QueryParamsResp{}, sdk.Wrap(err)
 	}
-	return param.Convert().(QueryParamsResp), nil
+
+	res, err := NewQueryClient(conn).Params(
+		context.Background(),
+		&QueryParamsRequest{},
+	)
+	if err != nil {
+		return QueryParamsResp{}, sdk.Wrap(err)
+	}
+
+	return res.Params.Convert().(QueryParamsResp), nil
 }

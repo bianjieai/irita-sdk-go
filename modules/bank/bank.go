@@ -6,8 +6,7 @@ import (
 	"strings"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
-	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
-	"github.com/bianjieai/irita-sdk-go/modules/auth"
+	"github.com/bianjieai/irita-sdk-go/codec/types"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	utils "github.com/bianjieai/irita-sdk-go/utils"
 )
@@ -28,21 +27,8 @@ func (b bankClient) Name() string {
 	return ModuleName
 }
 
-func (b bankClient) RegisterCodec(cdc *codec.LegacyAmino) {
-	registerCodec(cdc)
-}
-
-func (b bankClient) RegisterInterfaceTypes(registry codectypes.InterfaceRegistry) {
-	registry.RegisterImplementations(
-		(*sdk.Msg)(nil),
-		&MsgSend{},
-		&MsgMultiSend{},
-	)
-
-	registry.RegisterImplementations(
-		(*auth.Account)(nil),
-		&auth.BaseAccount{},
-	)
+func (b bankClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
+	RegisterInterfaces(registry)
 }
 
 // QueryAccount return account information specified address
@@ -76,7 +62,7 @@ func (b bankClient) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
 	return account, nil
 }
 
-//Send is responsible for transferring tokens from `From` to `to` account
+// Send is responsible for transferring tokens from `From` to `to` account
 func (b bankClient) Send(to string, amount sdk.DecCoins, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
 	sender, err := b.QueryAddress(baseTx.From, baseTx.Password)
 	if err != nil {
@@ -162,7 +148,7 @@ func (b bankClient) SendBatch(sender sdk.AccAddress,
 	return b.BaseClient.SendBatch(msgs, baseTx)
 }
 
-//SubscribeSendTx Subscribe MsgSend event and return subscription
+// SubscribeSendTx Subscribe MsgSend event and return subscription
 func (b bankClient) SubscribeSendTx(from, to string, callback EventMsgSendCallback) sdk.Subscription {
 	var builder = sdk.NewEventQueryBuilder()
 

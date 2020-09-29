@@ -5,7 +5,6 @@ import (
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
-
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -25,15 +24,8 @@ func (r recordClient) Name() string {
 	return ModuleName
 }
 
-func (r recordClient) RegisterCodec(cdc *codec.LegacyAmino) {
-	registerCodec(cdc)
-}
-
 func (r recordClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
-	registry.RegisterImplementations(
-		(*sdk.Msg)(nil),
-		&MsgCreateRecord{},
-	)
+	RegisterInterfaces(registry)
 }
 
 func (r recordClient) CreateRecord(request CreateRecordRequest, baseTx sdk.BaseTx) (string, sdk.Error) {

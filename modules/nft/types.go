@@ -3,7 +3,6 @@ package nft
 import (
 	"strings"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -17,15 +16,7 @@ var (
 	_ sdk.Msg = &MsgEditNFT{}
 	_ sdk.Msg = &MsgMintNFT{}
 	_ sdk.Msg = &MsgBurnNFT{}
-
-	amino = codec.NewLegacyAmino()
-
-	ModuleCdc = codec.NewAminoCodec(amino)
 )
-
-func init() {
-	registerCodec(amino)
-}
 
 func (m MsgIssueDenom) Route() string {
 	return ModuleName
@@ -209,13 +200,64 @@ func (m MsgBurnNFT) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{m.Sender}
 }
 
-func registerCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(MsgIssueDenom{}, "irismod/nft/MsgIssueDenom", nil)
-	cdc.RegisterConcrete(MsgMintNFT{}, "irismod/nft/MsgMintNFT", nil)
-	cdc.RegisterConcrete(MsgTransferNFT{}, "irismod/nft/MsgTransferNFT", nil)
-	cdc.RegisterConcrete(MsgEditNFT{}, "irismod/nft/MsgEditNFT", nil)
-	cdc.RegisterConcrete(MsgBurnNFT{}, "irismod/nft/MsgBurnNFT", nil)
+func (o Owner) Convert() interface{} {
+	var idcs []IDC
+	for _, idc := range o.IDCollections {
+		idcs = append(idcs, IDC{
+			Denom:    idc.Denom,
+			TokenIDs: idc.Ids,
+		})
+	}
+	return QueryOwnerResp{
+		Address: o.Address.String(),
+		IDCs:    idcs,
+	}
+}
 
-	cdc.RegisterInterface((*nft)(nil), nil)
-	cdc.RegisterConcrete(BaseNFT{}, "irismod/nft/BaseNFT", nil)
+func (this BaseNFT) Convert() interface{} {
+	return QueryNFTResp{
+		ID:      this.Id,
+		Name:    this.Name,
+		URI:     this.URI,
+		Data:    this.Data,
+		Creator: this.Owner.String(),
+	}
+}
+
+type NFTs []BaseNFT
+
+func (this Denom) Convert() interface{} {
+	return QueryDenomResp{
+		ID:      this.Id,
+		Name:    this.Name,
+		Schema:  this.Schema,
+		Creator: this.Creator.String(),
+	}
+}
+
+type denoms []Denom
+
+func (this denoms) Convert() interface{} {
+	var denoms []QueryDenomResp
+	for _, denom := range this {
+		denoms = append(denoms, denom.Convert().(QueryDenomResp))
+	}
+	return denoms
+}
+
+func (c Collection) Convert() interface{} {
+	var nfts []QueryNFTResp
+	for _, nft := range c.NFTs {
+		nfts = append(nfts, QueryNFTResp{
+			ID:      nft.Id,
+			Name:    nft.Name,
+			URI:     nft.URI,
+			Data:    nft.Data,
+			Creator: nft.Owner.String(),
+		})
+	}
+	return QueryCollectionResp{
+		Denom: c.Denom.Convert().(QueryDenomResp),
+		NFTs:  nfts,
+	}
 }

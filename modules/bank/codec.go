@@ -1,9 +1,10 @@
-package token
+package bank
 
 import (
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
 	cryptocodec "github.com/bianjieai/irita-sdk-go/crypto/codec"
+	"github.com/bianjieai/irita-sdk-go/modules/auth"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -20,10 +21,12 @@ func init() {
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations(
 		(*sdk.Msg)(nil),
-		&MsgIssueToken{},
-		&MsgEditToken{},
-		&MsgMintToken{},
-		&MsgTransferTokenOwner{},
+		&MsgSend{},
+		&MsgMultiSend{},
 	)
-	registry.RegisterInterface("irismod.token.TokenI", (*TokenInterface)(nil), &Token{})
+
+	registry.RegisterImplementations(
+		(*auth.Account)(nil),
+		&auth.BaseAccount{},
+	)
 }
