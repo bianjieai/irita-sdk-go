@@ -63,7 +63,6 @@ type BaseClient interface {
 	TxManager
 	TokenManager
 	KeyManager
-	TmClient
 	Queries
 	TokenConvert
 	TmClient

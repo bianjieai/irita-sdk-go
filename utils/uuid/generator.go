@@ -223,8 +223,8 @@ func (g *rfc4122Generator) getEpoch() uint64 {
 // Returns UUID based on hashing of namespace UUID and name.
 func newFromHash(h hash.Hash, ns UUID, name string) UUID {
 	u := UUID{}
-	h.Write(ns[:])
-	h.Write([]byte(name))
+	_, _ = h.Write(ns[:])
+	_, _ = h.Write([]byte(name))
 	copy(u[:], h.Sum(nil))
 
 	return u
