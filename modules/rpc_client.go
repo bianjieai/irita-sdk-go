@@ -105,7 +105,7 @@ func (r rpcClient) SubscribeAny(query string, handler sdk.EventHandler) (subscri
 		return subscription, sdk.Wrap(e)
 	}
 
-	r.Info("subscribe event", "query", subscription.Query, "subscriber", subscription.ID)
+	r.Info("subscribe event", "query", query, "subscriber", subscription.ID)
 
 	subscription = sdk.Subscription{
 		Ctx:   ctx,

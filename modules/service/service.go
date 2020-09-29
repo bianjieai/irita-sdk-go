@@ -422,11 +422,11 @@ func (s serviceClient) SubscribeServiceRequest(serviceName string,
 	}
 
 	builder := sdk.NewEventQueryBuilder().
+		AddCondition(sdk.NewCond(eventTypeNewBatchRequestProvider, attributeKeyServiceName).
+			EQ(sdk.EventValue(serviceName))).
 		AddCondition(sdk.NewCond(eventTypeNewBatchRequestProvider, attributeKeyProvider).
-			EQ(sdk.EventValue(provider.String()))). //TODO
-		AddCondition(sdk.NewCond(eventTypeNewBatchRequest, attributeKeyServiceName).
-			EQ(sdk.EventValue(serviceName)),
-		)
+			EQ(sdk.EventValue(provider.String())))
+
 	return s.SubscribeNewBlock(builder, func(block sdk.EventDataNewBlock) {
 		msgs := s.GenServiceResponseMsgs(block.ResultEndBlock.Events, serviceName, provider, callback)
 		if _, err = s.SendBatch(msgs, baseTx); err != nil {

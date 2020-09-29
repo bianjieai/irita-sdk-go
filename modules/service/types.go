@@ -795,6 +795,4 @@ func registerCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(RequestContext{}, "irismod/service/RequestContext", nil)
 	cdc.RegisterConcrete(Request{}, "irismod/service/Request", nil)
 	cdc.RegisterConcrete(Response{}, "irismod/service/Response", nil)
-
-	cdc.RegisterConcrete(&Params{}, "irismod/service/Params", nil)
 }
