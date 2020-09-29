@@ -22,11 +22,13 @@ type rpcClient struct {
 	txDecoder sdk.TxDecoder
 }
 
-func NewRPCClient(remote string,
+func NewRPCClient(
+	remote string,
 	cdc *codec.LegacyAmino,
 	txDecoder sdk.TxDecoder,
 	logger log.Logger,
-	timeout uint) sdk.TmClient {
+	timeout uint,
+) sdk.TmClient {
 	client, err := rpchttp.NewWithTimeout(remote, "/websocket", timeout)
 	if err != nil {
 		panic(err)
@@ -43,8 +45,7 @@ func NewRPCClient(remote string,
 
 // =============================================================================
 // SubscribeNewBlock implement WSClient interface
-func (r rpcClient) SubscribeNewBlock(builder *sdk.EventQueryBuilder,
-	handler sdk.EventNewBlockHandler) (sdk.Subscription, sdk.Error) {
+func (r rpcClient) SubscribeNewBlock(builder *sdk.EventQueryBuilder, handler sdk.EventNewBlockHandler) (sdk.Subscription, sdk.Error) {
 	if builder == nil {
 		builder = sdk.NewEventQueryBuilder()
 	}

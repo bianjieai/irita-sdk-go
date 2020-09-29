@@ -13,15 +13,10 @@ import (
 // If the passed JSON isn't valid it will return an error.
 func SortJSON(toSortJSON []byte) ([]byte, error) {
 	var c interface{}
-	err := json.Unmarshal(toSortJSON, &c)
-	if err != nil {
+	if err := json.Unmarshal(toSortJSON, &c); err != nil {
 		return nil, err
 	}
-	js, err := json.Marshal(c)
-	if err != nil {
-		return nil, err
-	}
-	return js, nil
+	return json.Marshal(c)
 }
 
 // MustSortJSON is like SortJSON but panic if an error occurs, e.g., if
