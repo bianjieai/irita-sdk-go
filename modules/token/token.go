@@ -28,10 +28,6 @@ func (t tokenClient) Name() string {
 	return ModuleName
 }
 
-func (t tokenClient) RegisterCodec(cdc *codec.LegacyAmino) {
-	RegisterLegacyAminoCodec(cdc)
-}
-
 func (t tokenClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
 	RegisterInterfaces(registry)
 }

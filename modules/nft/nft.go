@@ -25,10 +25,6 @@ func (nc nftClient) Name() string {
 	return ModuleName
 }
 
-func (nc nftClient) RegisterCodec(cdc *codec.LegacyAmino) {
-	RegisterLegacyAminoCodec(cdc)
-}
-
 func (nc nftClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
 	RegisterInterfaces(registry)
 }

@@ -3,7 +3,6 @@ package types
 import (
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
 	cdctypes "github.com/bianjieai/irita-sdk-go/codec/types"
 )
 
@@ -20,7 +19,6 @@ type SplitAble interface {
 
 type Module interface {
 	Name() string
-	RegisterCodec(cdc *codec.LegacyAmino)
 	RegisterInterfaceTypes(registry cdctypes.InterfaceRegistry)
 }
 

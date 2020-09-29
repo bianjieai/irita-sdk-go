@@ -13,17 +13,8 @@ var (
 )
 
 func init() {
-	RegisterLegacyAminoCodec(amino)
 	cryptocodec.RegisterCrypto(amino)
 	amino.Seal()
-}
-
-func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterInterface((*RecordI)(nil), nil)
-
-	cdc.RegisterConcrete(&Record{}, "irismod/record/Record", nil)
-
-	cdc.RegisterConcrete(&MsgCreateRecord{}, "irismod/record/MsgCreateRecord", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {

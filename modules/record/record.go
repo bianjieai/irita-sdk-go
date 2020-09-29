@@ -24,10 +24,6 @@ func (r recordClient) Name() string {
 	return ModuleName
 }
 
-func (r recordClient) RegisterCodec(cdc *codec.LegacyAmino) {
-	RegisterLegacyAminoCodec(cdc)
-}
-
 func (r recordClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
 	RegisterInterfaces(registry)
 }

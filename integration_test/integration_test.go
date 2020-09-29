@@ -80,9 +80,11 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 }
 
 func (s *IntegrationTestSuite) initAccount() {
-	_, err := s.Key.Import(s.Account().Name,
+	_, err := s.Key.Import(
+		s.Account().Name,
 		s.Account().Password,
-		string(getPrivKeyArmor()))
+		string(getPrivKeyArmor()),
+	)
 	if err != nil {
 		panic(err)
 	}

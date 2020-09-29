@@ -30,10 +30,6 @@ func (s serviceClient) Name() string {
 	return ModuleName
 }
 
-func (s serviceClient) RegisterCodec(cdc *codec.LegacyAmino) {
-	RegisterLegacyAminoCodec(cdc)
-}
-
 func (s serviceClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
 	RegisterInterfaces(registry)
 }

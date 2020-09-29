@@ -27,10 +27,6 @@ func (b bankClient) Name() string {
 	return ModuleName
 }
 
-func (b bankClient) RegisterCodec(cdc *codec.LegacyAmino) {
-	RegisterLegacyAminoCodec(cdc)
-}
-
 func (b bankClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
 	RegisterInterfaces(registry)
 }
