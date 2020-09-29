@@ -429,9 +429,9 @@ func (s serviceClient) SubscribeServiceRequest(serviceName string,
 	}
 
 	builder := sdk.NewEventQueryBuilder().AddCondition(
-		sdk.NewCond(eventTypeNewBatchRequestProvider, attributeKeyProvider).EQ(sdk.EventValue(provider.String())),
+		sdk.NewCond(eventTypeNewBatchRequestProvider, attributeKeyServiceName).EQ(sdk.EventValue(serviceName)),
 	).AddCondition(
-		sdk.NewCond(eventTypeNewBatchRequest, attributeKeyServiceName).EQ(sdk.EventValue(serviceName)),
+		sdk.NewCond(eventTypeNewBatchRequestProvider, attributeKeyProvider).EQ(sdk.EventValue(provider.String())),
 	)
 
 	return s.SubscribeNewBlock(builder, func(block sdk.EventDataNewBlock) {
