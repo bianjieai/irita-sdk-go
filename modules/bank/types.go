@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -15,21 +14,7 @@ const (
 
 var (
 	_ sdk.Msg = &MsgSend{}
-
-	amino = codec.NewLegacyAmino()
-
-	// ModuleCdc references the global bank module codec. Note, the codec should
-	// ONLY be used in certain instances of tests and for JSON encoding as Amino is
-	// still used for that purpose.
-	//
-	// The actual codec used for serialization should be provided to bank and
-	// defined at the application level.
-	ModuleCdc = codec.NewAminoCodec(amino)
 )
-
-func init() {
-	registerCodec(amino)
-}
 
 // NewMsgSend - construct arbitrary multi-in, multi-out send msg.
 func NewMsgSend(fromAddr, toAddr sdk.AccAddress, amount sdk.Coins) MsgSend {
@@ -177,9 +162,4 @@ func NewOutput(addr sdk.AccAddress, coins sdk.Coins) Output {
 		Address: addr,
 		Coins:   coins,
 	}
-}
-
-func registerCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(MsgSend{}, "cosmos-sdk/MsgSend", nil)
-	cdc.RegisterConcrete(MsgMultiSend{}, "cosmos-sdk/MsgMultiSend", nil)
 }

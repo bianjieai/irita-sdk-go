@@ -159,21 +159,6 @@ func (msg MsgMintToken) ValidateBasic() error {
 	return nil
 }
 
-// tokenFees is for the token fees query output
-type tokenFees struct {
-	Exist    bool     `json:"exist"`     // indicate if the token has existed
-	IssueFee sdk.Coin `json:"issue_fee"` // issue fee
-	MintFee  sdk.Coin `json:"mint_fee"`  // mint fee
-}
-
-func (t tokenFees) Convert() interface{} {
-	return tokenFees{
-		Exist:    t.Exist,
-		IssueFee: t.IssueFee,
-		MintFee:  t.MintFee,
-	}
-}
-
 type Bool string
 
 func (b Bool) ToBool() bool {
@@ -308,7 +293,7 @@ func (p Params) Convert() interface{} {
 }
 
 func (t QueryFeesResponse) Convert() interface{} {
-	return QueryFeesResp{
+	return QueryFeesResponse{
 		Exist:    t.Exist,
 		IssueFee: t.IssueFee,
 		MintFee:  t.MintFee,

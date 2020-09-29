@@ -18,15 +18,6 @@ func (o Owner) Convert() interface{} {
 	}
 }
 
-type nft interface {
-	GetID() string
-	GetOwner() sdk.AccAddress
-	GetURI() string
-	GetName() string
-	GetData() string
-	Convert() interface{}
-}
-
 // GetID returns the ID of the token
 func (this BaseNFT) GetID() string { return this.Id }
 
@@ -73,11 +64,6 @@ func (this denoms) Convert() interface{} {
 	return denoms
 }
 
-// QueryCollectionResp of non fungible tokens
-type collection struct {
-	Denom Denom `json:"denom" yaml:"denom"` // name of the collection; not exported to clients
-	NFTs  NFTs  `json:"nfts" yaml:"nfts"`   // NFTs that belong to a collection
-}
 
 func (c Collection) Convert() interface{} {
 	var nfts []QueryNFTResp

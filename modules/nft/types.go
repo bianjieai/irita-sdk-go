@@ -3,7 +3,6 @@ package nft
 import (
 	"strings"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -17,15 +16,8 @@ var (
 	_ sdk.Msg = &MsgEditNFT{}
 	_ sdk.Msg = &MsgMintNFT{}
 	_ sdk.Msg = &MsgBurnNFT{}
-
-	amino = codec.NewLegacyAmino()
-
-	ModuleCdc = codec.NewAminoCodec(amino)
 )
 
-func init() {
-	registerCodec(amino)
-}
 
 func (m MsgIssueDenom) Route() string {
 	return ModuleName
@@ -207,15 +199,4 @@ func (m MsgBurnNFT) GetSignBytes() []byte {
 
 func (m MsgBurnNFT) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{m.Sender}
-}
-
-func registerCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(MsgIssueDenom{}, "irismod/nft/MsgIssueDenom", nil)
-	cdc.RegisterConcrete(MsgMintNFT{}, "irismod/nft/MsgMintNFT", nil)
-	cdc.RegisterConcrete(MsgTransferNFT{}, "irismod/nft/MsgTransferNFT", nil)
-	cdc.RegisterConcrete(MsgEditNFT{}, "irismod/nft/MsgEditNFT", nil)
-	cdc.RegisterConcrete(MsgBurnNFT{}, "irismod/nft/MsgBurnNFT", nil)
-
-	cdc.RegisterInterface((*nft)(nil), nil)
-	cdc.RegisterConcrete(BaseNFT{}, "irismod/nft/BaseNFT", nil)
 }

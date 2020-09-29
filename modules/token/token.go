@@ -160,7 +160,7 @@ func (t tokenClient) QueryTokens(owner string) (sdk.Tokens, error) {
 
 func (t tokenClient) QueryFees(symbol string) (QueryFeesResp, error) {
 	conn, err := t.GenConn()
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return QueryFeesResp{}, sdk.Wrap(err)
 	}

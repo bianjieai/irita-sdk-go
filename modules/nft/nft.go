@@ -26,18 +26,11 @@ func (nc nftClient) Name() string {
 }
 
 func (nc nftClient) RegisterCodec(cdc *codec.LegacyAmino) {
-	registerCodec(cdc)
+	RegisterLegacyAminoCodec(cdc)
 }
 
 func (nc nftClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
-	registry.RegisterImplementations(
-		(*sdk.Msg)(nil),
-		&MsgIssueDenom{},
-		&MsgMintNFT{},
-		&MsgEditNFT{},
-		&MsgTransferNFT{},
-		&MsgBurnNFT{},
-	)
+	RegisterInterfaces(registry)
 }
 
 func (nc nftClient) IssueDenom(request IssueDenomRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
@@ -145,15 +138,18 @@ func (nc nftClient) QuerySupply(denom, creator string) (uint64, sdk.Error) {
 	}
 
 	conn, err := nc.GenConn()
-	defer func() { conn.Close() }()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return 0, sdk.Wrap(err)
 	}
 
-	res, err := NewQueryClient(conn).Supply(context.Background(), &QuerySupplyRequest{
-		Owner: address,
-		Denom: denom,
-	})
+	res, err := NewQueryClient(conn).Supply(
+		context.Background(),
+		&QuerySupplyRequest{
+			Owner: address,
+			Denom: denom,
+		},
+	)
 	if err != nil {
 		return 0, sdk.Wrap(err)
 	}
@@ -172,15 +168,18 @@ func (nc nftClient) QueryOwner(creator, denom string) (QueryOwnerResp, sdk.Error
 	}
 
 	conn, err := nc.GenConn()
-	defer func() { conn.Close() }()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return QueryOwnerResp{}, sdk.Wrap(err)
 	}
 
-	res, err := NewQueryClient(conn).Owner(context.Background(), &QueryOwnerRequest{
-		Owner: address,
-		Denom: denom,
-	})
+	res, err := NewQueryClient(conn).Owner(
+		context.Background(),
+		&QueryOwnerRequest{
+			Owner: address,
+			Denom: denom,
+		},
+	)
 	if err != nil {
 		return QueryOwnerResp{}, sdk.Wrap(err)
 	}
@@ -194,14 +193,15 @@ func (nc nftClient) QueryCollection(denom string) (QueryCollectionResp, sdk.Erro
 	}
 
 	conn, err := nc.GenConn()
-	defer func() { conn.Close() }()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return QueryCollectionResp{}, sdk.Wrap(err)
 	}
 
-	res, err := NewQueryClient(conn).Collection(context.Background(), &QueryCollectionRequest{
-		Denom: denom,
-	})
+	res, err := NewQueryClient(conn).Collection(
+		context.Background(),
+		&QueryCollectionRequest{Denom: denom},
+	)
 	if err != nil {
 		return QueryCollectionResp{}, sdk.Wrap(err)
 	}
@@ -211,34 +211,33 @@ func (nc nftClient) QueryCollection(denom string) (QueryCollectionResp, sdk.Erro
 
 func (nc nftClient) QueryDenoms() ([]QueryDenomResp, sdk.Error) {
 	conn, err := nc.GenConn()
-	defer func() { conn.Close() }()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
 
 	res, err := NewQueryClient(conn).Denoms(
-		context.Background(), &QueryDenomsRequest{},
+		context.Background(),
+		&QueryDenomsRequest{},
 	)
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
 
-	var denoms denoms
-	denoms = res.Denoms
-
-	return denoms.Convert().([]QueryDenomResp), nil
+	return denoms(res.Denoms).Convert().([]QueryDenomResp), nil
 }
 
 func (nc nftClient) QueryDenom(denom string) (QueryDenomResp, sdk.Error) {
 	conn, err := nc.GenConn()
-	defer func() { conn.Close() }()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return QueryDenomResp{}, sdk.Wrap(err)
 	}
 
-	res, err := NewQueryClient(conn).Denom(context.Background(), &QueryDenomRequest{
-		Denom: denom,
-	})
+	res, err := NewQueryClient(conn).Denom(
+		context.Background(),
+		&QueryDenomRequest{Denom: denom},
+	)
 	if err != nil {
 		return QueryDenomResp{}, sdk.Wrap(err)
 	}
@@ -256,15 +255,18 @@ func (nc nftClient) QueryNFT(denom, tokenID string) (QueryNFTResp, sdk.Error) {
 	}
 
 	conn, err := nc.GenConn()
-	defer func() { conn.Close() }()
+	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return QueryNFTResp{}, sdk.Wrap(err)
 	}
 
-	res, err := NewQueryClient(conn).NFT(context.Background(), &QueryNFTRequest{
-		Denom: denom,
-		Id:    tokenID,
-	})
+	res, err := NewQueryClient(conn).NFT(
+		context.Background(),
+		&QueryNFTRequest{
+			Denom: denom,
+			Id:    tokenID,
+		},
+	)
 	if err != nil {
 		return QueryNFTResp{}, sdk.Wrap(err)
 	}

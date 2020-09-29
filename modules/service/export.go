@@ -28,17 +28,13 @@ type Tx interface {
 // Query defines a set of query interfaces in the service module
 type Query interface {
 	QueryServiceDefinition(serviceName string) (QueryServiceDefinitionResponse, sdk.Error)
-
 	QueryServiceBinding(serviceName string, provider sdk.AccAddress) (QueryServiceBindingResponse, sdk.Error)
 	QueryServiceBindings(serviceName string) ([]QueryServiceBindingResponse, sdk.Error)
-
 	QueryServiceRequest(requestID string) (QueryServiceRequestResponse, sdk.Error)
 	QueryServiceRequests(serviceName string, provider sdk.AccAddress) ([]QueryServiceRequestResponse, sdk.Error)
 	QueryRequestsByReqCtx(requestContextID string, batchCounter uint64) ([]QueryServiceRequestResponse, sdk.Error)
-
 	QueryServiceResponse(requestID string) (QueryServiceResponseResponse, sdk.Error)
 	QueryServiceResponses(requestContextID string, batchCounter uint64) ([]QueryServiceResponseResponse, sdk.Error)
-
 	QueryRequestContext(requestContextID string) (QueryRequestContextResp, sdk.Error)
 	QueryFees(provider string) (sdk.Coins, sdk.Error)
 	QueryParams() (QueryParamsResp, sdk.Error)

@@ -25,14 +25,11 @@ func (r recordClient) Name() string {
 }
 
 func (r recordClient) RegisterCodec(cdc *codec.LegacyAmino) {
-	registerCodec(cdc)
+	RegisterLegacyAminoCodec(cdc)
 }
 
 func (r recordClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
-	registry.RegisterImplementations(
-		(*sdk.Msg)(nil),
-		&MsgCreateRecord{},
-	)
+	RegisterInterfaces(registry)
 }
 
 func (r recordClient) CreateRecord(request CreateRecordRequest, baseTx sdk.BaseTx) (string, sdk.Error) {
