@@ -115,7 +115,7 @@ type UpdateServiceBindingRequest struct {
 	ServiceName string       `json:"service_name"`
 	Deposit     sdk.DecCoins `json:"deposit"`
 	Pricing     string       `json:"pricing"`
-	QoS         uint64       `json:"Qos"`
+	QoS         uint64       `json:"qos"`
 	Provider    string       `json:"provider"`
 }
 
@@ -125,10 +125,11 @@ type QueryServiceBindingResponse struct {
 	Provider     sdk.AccAddress `json:"provider"`
 	Deposit      sdk.Coins      `json:"deposit"`
 	Pricing      string         `json:"pricing"`
-	QoS          uint64         `json:"Qos"`
-	Owner        sdk.AccAddress `json:"owner"`
+	QoS          uint64         `json:"qos"`
+	Options      string         `json:"options"`
 	Available    bool           `json:"available"`
 	DisabledTime time.Time      `json:"disabled_time"`
+	Owner        sdk.AccAddress `json:"owner"`
 }
 
 // InvokeServiceRequest defines the request parameters of the service call

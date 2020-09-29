@@ -293,9 +293,5 @@ func (p Params) Convert() interface{} {
 }
 
 func (t QueryFeesResponse) Convert() interface{} {
-	return QueryFeesResponse{
-		Exist:    t.Exist,
-		IssueFee: t.IssueFee,
-		MintFee:  t.MintFee,
-	}
+	return QueryFeesResp(t)
 }

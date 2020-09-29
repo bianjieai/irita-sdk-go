@@ -566,31 +566,14 @@ func (msg MsgWithdrawEarnedFees) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Owner}
 }
 
-//==========================================for QueryWithResponse==========================================
+// ==========================================for QueryWithResponse==========================================
 
 func (r ServiceDefinition) Convert() interface{} {
-	return ServiceDefinition{
-		Name:              r.Name,
-		Description:       r.Description,
-		Tags:              r.Tags,
-		Author:            r.Author,
-		AuthorDescription: r.AuthorDescription,
-		Schemas:           r.Schemas,
-	}
+	return QueryServiceDefinitionResponse(r)
 }
 
 func (b ServiceBinding) Convert() interface{} {
-	return QueryServiceBindingResponse{
-		ServiceName:  b.ServiceName,
-		Provider:     b.Provider,
-		Deposit:      b.Deposit,
-		Pricing:      b.Pricing,
-		QoS:          b.QoS,
-		Available:    b.Available,
-		DisabledTime: b.DisabledTime,
-		Owner:        b.Owner,
-	}
-
+	return QueryServiceBindingResponse(b)
 }
 
 type serviceBindings []*ServiceBinding
@@ -626,11 +609,11 @@ func (r Request) Convert() interface{} {
 type requests []*Request
 
 func (rs requests) Convert() interface{} {
-	requests := make([]QueryServiceRequestResponse, len(rs))
+	reqs := make([]QueryServiceRequestResponse, len(rs))
 	for i, request := range rs {
-		requests[i] = request.Convert().(QueryServiceRequestResponse)
+		reqs[i] = request.Convert().(QueryServiceRequestResponse)
 	}
-	return requests
+	return reqs
 }
 
 func (r Response) Empty() bool {
@@ -651,11 +634,11 @@ func (r Response) Convert() interface{} {
 type responses []*Response
 
 func (rs responses) Convert() interface{} {
-	responses := make([]QueryServiceResponseResponse, len(rs))
+	resps := make([]QueryServiceResponseResponse, len(rs))
 	for i, response := range rs {
-		responses[i] = response.Convert().(QueryServiceResponseResponse)
+		resps[i] = response.Convert().(QueryServiceResponseResponse)
 	}
-	return responses
+	return resps
 }
 
 func RequestContextStateFromString(str string) (RequestContextState, error) {
