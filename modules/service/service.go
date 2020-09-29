@@ -646,11 +646,21 @@ func (s serviceClient) QueryFees(provider string) (sdk.Coins, sdk.Error) {
 }
 
 func (s serviceClient) QueryParams() (QueryParamsResp, sdk.Error) {
-	var param Params
-	if err := s.BaseClient.QueryParams(ModuleName, &param); err != nil {
-		return QueryParamsResp{}, err
+	conn, err := s.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return QueryParamsResp{}, sdk.Wrap(err)
 	}
-	return param.Convert().(QueryParamsResp), nil
+
+	res, err := NewQueryClient(conn).Params(
+		context.Background(),
+		&QueryParamsRequest{},
+	)
+	if err != nil {
+		return QueryParamsResp{}, sdk.Wrap(err)
+	}
+
+	return res.Params.Convert().(QueryParamsResp), nil
 }
 
 func (s serviceClient) GenServiceResponseMsgs(events sdk.StringEvents, serviceName string,

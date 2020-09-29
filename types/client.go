@@ -17,7 +17,6 @@ type Queries interface {
 	StoreQuery
 	AccountQuery
 	TmQuery
-	ParamQuery
 }
 
 type GRPCClient interface {

@@ -41,12 +41,11 @@ type baseClient struct {
 
 	accountQuery
 	tokenQuery
-	paramsQuery
 }
 
-//NewBaseClient return the baseClient for every sub modules
+// NewBaseClient return the baseClient for every sub modules
 func NewBaseClient(cfg sdk.ClientConfig, encodingConfig sdk.EncodingConfig, logger log.Logger) sdk.BaseClient {
-	//create logger
+	// create logger
 	if logger == nil {
 		logger = sdklog.NewLogger(sdklog.Config{
 			Format: sdklog.FormatText,
@@ -87,15 +86,6 @@ func NewBaseClient(cfg sdk.ClientConfig, encodingConfig sdk.EncodingConfig, logg
 		Cache:      c,
 	}
 
-	base.paramsQuery = paramsQuery{
-		Queries:     base,
-		Logger:      base.Logger(),
-		Cache:       c,
-		cdc:         encodingConfig.Marshaler,
-		legacyAmino: encodingConfig.Amino,
-		expiration:  cacheExpirePeriod,
-	}
-
 	return &base
 }
 
@@ -132,7 +122,7 @@ func (base *baseClient) SendBatch(msgs sdk.Msgs, baseTx sdk.BaseTx) (rs []sdk.Re
 	defer sdk.CatchPanic(func(errMsg string) {
 		base.Logger().Error("broadcast msg failed", "errMsg", errMsg)
 	})
-	//validate msg
+	// validate msg
 	for _, m := range msgs {
 		if err := m.ValidateBasic(); err != nil {
 			return rs, sdk.Wrap(err)
@@ -140,7 +130,7 @@ func (base *baseClient) SendBatch(msgs sdk.Msgs, baseTx sdk.BaseTx) (rs []sdk.Re
 	}
 	base.Logger().Debug("validate msg success")
 
-	//lock the account
+	// lock the account
 	base.l.Lock(baseTx.From)
 	defer base.l.Unlock(baseTx.From)
 
@@ -214,7 +204,7 @@ func (base baseClient) Query(path string, data interface{}) ([]byte, error) {
 	}
 
 	opts := rpcclient.ABCIQueryOptions{
-		//Height: cliCtx.Height,
+		// Height: cliCtx.Height,
 		Prove: false,
 	}
 	result, err := base.ABCIQueryWithOptions(path, bz, opts)
@@ -230,9 +220,7 @@ func (base baseClient) Query(path string, data interface{}) ([]byte, error) {
 	return resp.Value, nil
 }
 
-func (base baseClient) QueryStore(
-	key sdk.HexBytes, storeName string, height int64, prove bool,
-) (res abci.ResponseQuery, err error) {
+func (base baseClient) QueryStore(key sdk.HexBytes, storeName string, height int64, prove bool) (res abci.ResponseQuery, err error) {
 	path := fmt.Sprintf("/store/%s/%s", storeName, "key")
 	opts := rpcclient.ABCIQueryOptions{
 		Prove:  prove,

@@ -178,9 +178,19 @@ func (t tokenClient) QueryFees(symbol string) (QueryFeesResp, error) {
 }
 
 func (t tokenClient) QueryParams() (QueryParamsResp, error) {
-	var param Params
-	if err := t.BaseClient.QueryParams(ModuleName, &param); err != nil {
-		return QueryParamsResp{}, err
+	conn, err := t.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return QueryParamsResp{}, sdk.Wrap(err)
 	}
-	return param.Convert().(QueryParamsResp), nil
+
+	res, err := NewQueryClient(conn).Params(
+		context.Background(),
+		&QueryParamsRequest{},
+	)
+	if err != nil {
+		return QueryParamsResp{}, sdk.Wrap(err)
+	}
+
+	return res.Params.Convert().(QueryParamsResp), nil
 }
