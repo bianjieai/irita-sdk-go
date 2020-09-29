@@ -10,10 +10,8 @@ import (
 )
 
 const (
-	// ModuleName define module name
 	ModuleName = "service"
 
-	eventTypeNewBatchRequest         = "new_batch_request"
 	eventTypeNewBatchRequestProvider = "new_batch_request_provider"
 	attributeKeyRequests             = "requests"
 	attributeKeyRequestID            = "request_id"
@@ -22,7 +20,6 @@ const (
 	attributeKeyProvider             = "provider"
 
 	requestIDLen = 58
-	// contextIDLen = 40
 )
 
 var (
