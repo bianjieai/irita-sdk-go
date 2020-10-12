@@ -143,12 +143,13 @@ func (k keyManager) Delete(name, password string) error {
 func (k keyManager) Find(name, password string) (tmcrypto.PubKey, types.AccAddress, error) {
 	info, err := k.keyDAO.Read(name, password)
 	if err != nil {
-		return nil, nil, fmt.Errorf("name %s not exist", name)
+
+		return nil, nil, types.WrapWithMessage(err,"name %s not exist", name)
 	}
 
 	pubKey, err := cryptoamino.PubKeyFromBytes(info.PubKey)
 	if err != nil {
-		return nil, nil, fmt.Errorf("name %s not exist", name)
+		return nil, nil, types.WrapWithMessage(err,"name %s not exist", name)
 	}
 
 	return pubKey, types.AccAddress(pubKey.Address().Bytes()), nil
