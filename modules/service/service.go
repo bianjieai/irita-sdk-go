@@ -221,6 +221,28 @@ func (s serviceClient) InvokeService(request InvokeServiceRequest, baseTx sdk.Ba
 	return reqCtxID, sdk.Wrap(err)
 }
 
+func (s serviceClient) InvokeServiceResponse(req InvokeServiceResponseRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
+	provider, err := s.QueryAddress(baseTx.From, baseTx.Password)
+	if err != nil {
+		return sdk.ResultTx{}, err
+	}
+
+	reqId := req.RequestId
+	_, err = s.QueryServiceRequest(reqId)
+	if err != nil {
+		return sdk.ResultTx{}, err
+	}
+
+	msg := &MsgRespondService{
+		RequestId: sdk.MustHexBytesFrom(reqId),
+		Provider:  provider,
+		Result:    req.Result,
+		Output:    req.Output,
+	}
+
+	return s.BuildAndSend([]sdk.Msg{msg}, baseTx)
+}
+
 func (s serviceClient) SubscribeServiceResponse(reqCtxID string,
 	callback InvokeCallback) (subscription sdk.Subscription, err sdk.Error) {
 	if len(reqCtxID) == 0 {

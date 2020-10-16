@@ -11,6 +11,7 @@ type Tx interface {
 	DefineService(request DefineServiceRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 	BindService(request BindServiceRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 	InvokeService(request InvokeServiceRequest, baseTx sdk.BaseTx) (requestContextID string, err sdk.Error)
+	InvokeServiceResponse(request InvokeServiceResponseRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 	SetWithdrawAddress(withdrawAddress string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 	UpdateServiceBinding(request UpdateServiceBindingRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 	DisableServiceBinding(serviceName, provider string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
@@ -144,6 +145,13 @@ type InvokeServiceRequest struct {
 	RepeatedFrequency uint64       `json:"repeated_frequency"`
 	RepeatedTotal     int64        `json:"repeated_total"`
 	Callback          InvokeCallback
+}
+
+// InvokeServiceResponseRequest defines the request parameters of the service response
+type InvokeServiceResponseRequest struct {
+	RequestId string `json:"request_id"`
+	Output    string `json:"output"`
+	Result    string `json:"result"`
 }
 
 // UpdateRequestContextRequest defines a message to update a request context
