@@ -61,6 +61,7 @@ func (nc nftClient) MintNFT(request MintNFTRequest, baseTx sdk.BaseTx) (sdk.Resu
 	msg := &MsgMintNFT{
 		Id:        request.ID,
 		Denom:     request.Denom,
+		Name:      request.Name,
 		URI:       request.URI,
 		Data:      request.Data,
 		Sender:    sender,
