@@ -25,7 +25,10 @@ func Unwrap(tx sdk.Tx) (*sdk.UnwrappedTx, error) {
 			return nil, err
 		}
 		signatures = append(signatures, sdk.UnwrappedSignature{
-			PubKey:   bech32PubKey,
+			PubKey: sdk.UnwrappedPubKey{
+				Type:  pubKey.Type(),
+				Value: bech32PubKey,
+			},
 			Sig:      txWrapper.tx.Signatures[i],
 			Sequence: txWrapper.tx.AuthInfo.SignerInfos[i].Sequence,
 		})

@@ -39,9 +39,14 @@ type (
 	}
 
 	UnwrappedSignature struct {
-		PubKey   string
+		PubKey   UnwrappedPubKey
 		Sig      []byte
 		Sequence uint64
+	}
+
+	UnwrappedPubKey struct {
+		Type  string
+		Value string
 	}
 
 	BroadcastMode string
