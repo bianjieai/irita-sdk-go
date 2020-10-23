@@ -18,9 +18,40 @@ const (
 	Commit BroadcastMode = "commit"
 )
 
-type BroadcastMode string
+type (
+	UnwrappedTx struct {
+		Body     UnwrappedTxBody
+		AuthInfo UnwrappedAuthInfo
+	}
 
-type Msgs []Msg
+	UnwrappedTxBody struct {
+		Msgs []Msg
+		// memo is any arbitrary memo to be added to the transaction
+		Memo string
+		// timeout is the block height after which this transaction will not
+		// be processed by the chain
+		TimeoutHeight uint64
+	}
+
+	UnwrappedAuthInfo struct {
+		Signatures []UnwrappedSignature
+		Fee        *StdFee
+	}
+
+	UnwrappedSignature struct {
+		PubKey   UnwrappedPubKey
+		Sig      []byte
+		Sequence uint64
+	}
+
+	UnwrappedPubKey struct {
+		Type  string
+		Value string
+	}
+
+	BroadcastMode string
+	Msgs          []Msg
+)
 
 func (m Msgs) Len() int {
 	return len(m)
@@ -220,11 +251,11 @@ type ResultTx struct {
 
 // ResultQueryTx is used to prepare info to display
 type ResultQueryTx struct {
-	Hash      string   `json:"hash"`
-	Height    int64    `json:"height"`
-	Tx        Tx       `json:"tx"`
-	Result    TxResult `json:"result"`
-	Timestamp string   `json:"timestamp"`
+	Hash      string      `json:"hash"`
+	Height    int64       `json:"height"`
+	Tx        UnwrappedTx `json:"tx"`
+	Result    TxResult    `json:"result"`
+	Timestamp string      `json:"timestamp"`
 }
 
 // ResultSearchTxs defines a structure for querying txs pageable

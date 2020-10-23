@@ -11,6 +11,7 @@ import (
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
 	sdk "github.com/bianjieai/irita-sdk-go/types"
+	typetx "github.com/bianjieai/irita-sdk-go/types/tx"
 )
 
 // QueryTx returns the tx info
@@ -206,14 +207,20 @@ func (base baseClient) parseTxResult(res *ctypes.ResultTx, resBlock *ctypes.Resu
 	var tx sdk.Tx
 	var err error
 
-	if tx, err = base.encodingConfig.TxConfig.TxDecoder()(res.Tx); err != nil {
+	decode := base.encodingConfig.TxConfig.TxDecoder()
+	if tx, err = decode(res.Tx); err != nil {
+		return sdk.ResultQueryTx{}, err
+	}
+
+	unwrappedTx, err := typetx.Unwrap(tx)
+	if err != nil {
 		return sdk.ResultQueryTx{}, err
 	}
 
 	return sdk.ResultQueryTx{
 		Hash:   res.Hash.String(),
 		Height: res.Height,
-		Tx:     tx,
+		Tx:     *unwrappedTx,
 		Result: sdk.TxResult{
 			Code:      res.TxResult.Code,
 			Log:       res.TxResult.Log,
