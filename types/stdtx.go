@@ -69,13 +69,6 @@ type StdFee struct {
 	Gas    uint64 `json:"gas"`
 }
 
-func NewStdFee(gas uint64, amount ...Coin) StdFee {
-	return StdFee{
-		Amount: amount,
-		Gas:    gas,
-	}
-}
-
 // Fee bytes for signing later
 func (fee StdFee) Bytes() []byte {
 	//if len(fee.Amount) == 0 {
@@ -230,13 +223,14 @@ func (tx StdTx) GetMemo() string { return tx.Memo }
 func (tx StdTx) GetSignatures() []StdSignature { return tx.Signatures }
 
 type BaseTx struct {
-	From     string        `json:"from"`
-	Password string        `json:"password"`
-	Gas      uint64        `json:"gas"`
-	Fee      DecCoins      `json:"fee"`
-	Memo     string        `json:"memo"`
-	Mode     BroadcastMode `json:"broadcast_mode"`
-	Simulate bool          `json:"simulate"`
+	From               string        `json:"from"`
+	Password           string        `json:"password"`
+	Gas                uint64        `json:"gas"`
+	Fee                DecCoins      `json:"fee"`
+	Memo               string        `json:"memo"`
+	Mode               BroadcastMode `json:"broadcast_mode"`
+	SimulateAndExecute bool          `json:"simulate_and_execute"`
+	GasAdjustment      float64       `json:"gas_adjustment"`
 }
 
 // ResultTx encapsulates the return result of the transaction. When the transaction fails,

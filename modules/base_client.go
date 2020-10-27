@@ -14,6 +14,7 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 
+	clienttx "github.com/bianjieai/irita-sdk-go/client/tx"
 	"github.com/bianjieai/irita-sdk-go/codec"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/types/tx"
@@ -111,7 +112,7 @@ func (base *baseClient) BuildAndSend(msg []sdk.Msg, baseTx sdk.BaseTx) (sdk.Resu
 	if err := base.ValidateTxSize(len(txByte), msg); err != nil {
 		return sdk.ResultTx{}, err
 	}
-	return base.broadcastTx(txByte, ctx.Mode(), baseTx.Simulate)
+	return base.broadcastTx(txByte, ctx.Mode())
 }
 
 func (base *baseClient) SendBatch(msgs sdk.Msgs, baseTx sdk.BaseTx) (rs []sdk.ResultTx, err sdk.Error) {
@@ -158,7 +159,7 @@ resize:
 			goto resize
 		}
 
-		res, err := base.broadcastTx(txByte, ctx.Mode(), baseTx.Simulate)
+		res, err := base.broadcastTx(txByte, ctx.Mode())
 		if err != nil {
 			if sdk.Code(err.Code()) == sdk.InvalidSequence {
 				base.Logger().Debug("wrong sequence,retrying ...", "address", ctx.Address(), "tryCnt", tryCnt)
@@ -239,15 +240,17 @@ func (base baseClient) QueryStore(key sdk.HexBytes, storeName string, height int
 	return resp, nil
 }
 
-func (base *baseClient) prepare(baseTx sdk.BaseTx) (*sdk.Factory, error) {
-	factory := sdk.NewFactory().
+func (base *baseClient) prepare(baseTx sdk.BaseTx) (*clienttx.Factory, error) {
+	factory := clienttx.NewFactory().
 		WithChainID(base.cfg.ChainID).
 		WithKeyManager(base.KeyManager).
 		WithMode(base.cfg.Mode).
-		WithSimulate(baseTx.Simulate).
+		WithSimulateAndExecute(baseTx.SimulateAndExecute).
 		WithGas(base.cfg.Gas).
+		WithGasAdjustment(base.cfg.GasAdjustment).
 		WithSignModeHandler(tx.MakeSignModeHandler(tx.DefaultSignModes)).
-		WithTxConfig(base.encodingConfig.TxConfig)
+		WithTxConfig(base.encodingConfig.TxConfig).
+		WithQueryFunc(base.QueryWithData)
 
 	addr, err := base.QueryAddress(baseTx.From, baseTx.Password)
 	if err != nil {
@@ -283,6 +286,10 @@ func (base *baseClient) prepare(baseTx sdk.BaseTx) (*sdk.Factory, error) {
 
 	if baseTx.Gas > 0 {
 		factory.WithGas(baseTx.Gas)
+	}
+
+	if baseTx.GasAdjustment > 0 {
+		factory.WithGasAdjustment(baseTx.GasAdjustment)
 	}
 
 	if len(baseTx.Memo) > 0 {
