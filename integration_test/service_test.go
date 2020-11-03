@@ -94,7 +94,7 @@ func (s IntegrationTestSuite) TestService() {
 	var sub2 sdk.Subscription
 	var exit = make(chan int)
 
-	requestContextID, err = s.Service.InvokeService(invocation, baseTx)
+	requestContextID, result, err = s.Service.InvokeService(invocation, baseTx)
 	require.NoError(s.T(), err)
 
 	sub2, err = s.Service.SubscribeServiceResponse(requestContextID, func(reqCtxID, reqID, responses string) {

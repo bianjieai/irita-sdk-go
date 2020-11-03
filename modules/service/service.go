@@ -167,24 +167,24 @@ func (s serviceClient) EnableServiceBinding(serviceName, provider string, deposi
 }
 
 //InvokeService is responsible for invoke a new service and callback `handler`
-func (s serviceClient) InvokeService(request InvokeServiceRequest, baseTx sdk.BaseTx) (string, sdk.Error) {
+func (s serviceClient) InvokeService(request InvokeServiceRequest, baseTx sdk.BaseTx) (string, sdk.ResultTx, sdk.Error) {
 	consumer, err := s.QueryAddress(baseTx.From, baseTx.Password)
 	if err != nil {
-		return "", sdk.Wrap(err)
+		return "", sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
 	var providers []sdk.AccAddress
 	for _, provider := range request.Providers {
 		p, err := sdk.AccAddressFromBech32(provider)
 		if err != nil {
-			return "", sdk.Wrapf("%s invalid address", p)
+			return "", sdk.ResultTx{}, sdk.Wrapf("%s invalid address", p)
 		}
 		providers = append(providers, p)
 	}
 
 	amt, err := s.ToMinCoin(request.ServiceFeeCap...)
 	if err != nil {
-		return "", sdk.Wrap(err)
+		return "", sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
 	msg := &MsgCallService{
@@ -205,20 +205,20 @@ func (s serviceClient) InvokeService(request InvokeServiceRequest, baseTx sdk.Ba
 
 	result, err := s.BuildAndSend([]sdk.Msg{msg}, baseTx)
 	if err != nil {
-		return "", sdk.Wrap(err)
+		return "", sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
 	reqCtxID, e := result.Events.GetValue(sdk.EventTypeMessage, attributeKeyRequestContextID)
 	if e != nil {
-		return reqCtxID, sdk.Wrap(e)
+		return reqCtxID, result, sdk.Wrap(e)
 	}
 
 	if request.Callback == nil {
-		return reqCtxID, nil
+		return reqCtxID, result, nil
 	}
 
 	_, err = s.SubscribeServiceResponse(reqCtxID, request.Callback)
-	return reqCtxID, sdk.Wrap(err)
+	return reqCtxID, result, sdk.Wrap(err)
 }
 
 func (s serviceClient) InvokeServiceResponse(req InvokeServiceResponseRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
