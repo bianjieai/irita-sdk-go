@@ -10,6 +10,7 @@ import (
 
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
+	clienttx "github.com/bianjieai/irita-sdk-go/client/tx"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	typetx "github.com/bianjieai/irita-sdk-go/types/tx"
 )
@@ -83,46 +84,22 @@ func (base baseClient) QueryBlock(height int64) (sdk.BlockDetail, error) {
 	}, nil
 }
 
-func (base baseClient) EstimateTxGas(txBytes []byte) (uint64, error) {
-	res, err := base.ABCIQuery("/app/simulate", txBytes)
+func (base *baseClient) buildTx(msgs []sdk.Msg, baseTx sdk.BaseTx) ([]byte, *clienttx.Factory, sdk.Error) {
+	factory, err := base.prepare(baseTx)
 	if err != nil {
-		return 0, err
+		return nil, factory, sdk.Wrap(err)
 	}
 
-	simRes, err := parseQueryResponse(res.Response.Value)
+	txByte, err := factory.BuildAndSign(baseTx.From, msgs)
 	if err != nil {
-		return 0, err
-	}
-
-	adjusted := adjustGasEstimate(simRes.GasUsed, base.cfg.GasAdjustment)
-	return adjusted, nil
-}
-
-func (base *baseClient) buildTx(msgs []sdk.Msg, baseTx sdk.BaseTx) ([]byte, *sdk.Factory, sdk.Error) {
-	builder, err := base.prepare(baseTx)
-	if err != nil {
-		return nil, builder, sdk.Wrap(err)
-	}
-
-	txByte, err := builder.BuildAndSign(baseTx.From, msgs)
-	if err != nil {
-		return nil, builder, sdk.Wrap(err)
+		return nil, factory, sdk.Wrap(err)
 	}
 
 	base.Logger().Debug("sign transaction success")
-	return txByte, builder, nil
+	return txByte, factory, nil
 }
 
-func (base baseClient) broadcastTx(txBytes []byte, mode sdk.BroadcastMode, simulate bool) (res sdk.ResultTx, err sdk.Error) {
-	if simulate {
-		estimateGas, err := base.EstimateTxGas(txBytes)
-		if err != nil {
-			return res, sdk.Wrap(err)
-		}
-		res.GasWanted = int64(estimateGas)
-		return res, nil
-	}
-
+func (base baseClient) broadcastTx(txBytes []byte, mode sdk.BroadcastMode) (res sdk.ResultTx, err sdk.Error) {
 	switch mode {
 	case sdk.Commit:
 		res, err = base.broadcastTxCommit(txBytes)
