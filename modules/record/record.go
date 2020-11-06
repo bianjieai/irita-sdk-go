@@ -72,16 +72,14 @@ func (r recordClient) QueryRecord(request QueryRecordReq) (QueryRecordResp, sdk.
 
 	result := record.Convert().(QueryRecordResp)
 
-	var proof []byte
 	if request.Prove {
-		proof = r.MustMarshalJSON(res.ProofOps)
+		result.Proof = sdk.ProofValue{
+			Proof: r.MustMarshalJSON(res.ProofOps),
+			Path:  []string{ModuleName, string(recordKey)},
+			Value: res.Value,
+		}
 	}
 
-	result.Proof = sdk.ProofValue{
-		Proof: proof,
-		Path:  []string{ModuleName, string(recordKey)},
-		Value: res.Value,
-	}
 	result.Height = res.Height
 	return result, nil
 }
