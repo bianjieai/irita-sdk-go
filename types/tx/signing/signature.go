@@ -3,6 +3,8 @@ package signing
 import (
 	"fmt"
 
+	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
+
 	"github.com/tendermint/tendermint/crypto"
 )
 
@@ -97,4 +99,22 @@ func SignatureDataFromProto(descData *SignatureDescriptor_Data) SignatureData {
 	default:
 		panic(fmt.Errorf("unexpected case %+v", descData))
 	}
+}
+
+// UnpackInterfaces implements the UnpackInterfaceMessages.UnpackInterfaces method
+func (sds *SignatureDescriptors) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	for _, sig := range sds.Signatures {
+		err := sig.UnpackInterfaces(unpacker)
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// UnpackInterfaces implements the UnpackInterfaceMessages.UnpackInterfaces method
+func (sd *SignatureDescriptor) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	return unpacker.UnpackAny(sd.PublicKey, new(crypto.PubKey))
 }

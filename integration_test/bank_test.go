@@ -18,18 +18,18 @@ func (s IntegrationTestSuite) TestBank() {
 			"TestQueryAccount",
 			queryAccount,
 		},
-		// {
-		// 	"TestSend",
-		// 	send,
-		// },
-		// {
-		// 	"TestMultiSend",
-		// 	multiSend,
-		// },
-		// {
-		// 	"TestSimulate",
-		// 	simulate,
-		// },
+		{
+			"TestSend",
+			send,
+		},
+		{
+			"TestMultiSend",
+			multiSend,
+		},
+		{
+			"TestSimulate",
+			simulate,
+		},
 	}
 
 	for _, t := range cases {

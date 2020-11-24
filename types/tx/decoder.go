@@ -62,7 +62,7 @@ func DefaultTxDecoder(cdc *codec.ProtoCodec) sdk.TxDecoder {
 func DefaultJSONTxDecoder(cdc *codec.ProtoCodec) sdk.TxDecoder {
 	return func(txBytes []byte) (sdk.Tx, error) {
 		var theTx Tx
-		if err := cdc.UnmarshalJSON(txBytes, &theTx);err != nil {
+		if err := cdc.UnmarshalJSON(txBytes, &theTx); err != nil {
 			return nil, err
 		}
 

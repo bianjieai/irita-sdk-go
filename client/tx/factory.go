@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/bianjieai/irita-sdk-go/crypto/keys/sm2"
+
 	sim "github.com/bianjieai/irita-sdk-go/client/grpc/simulate"
 	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
@@ -251,6 +253,7 @@ func (f *Factory) BuildSimTx(msgs ...sdk.Msg) ([]byte, error) {
 	// Create an empty signature literal as the ante handler will populate with a
 	// sentinel pubkey.
 	sig := signing.SignatureV2{
+		PubKey: &sm2.PubKey{},
 		Data: &signing.SingleSignatureData{
 			SignMode: f.signMode,
 		},
@@ -285,7 +288,7 @@ func (f *Factory) CalculateGas(msgs ...sdk.Msg,
 		return sim.SimulateResponse{}, 0, err
 	}
 
-	bz, _, err := f.queryFunc("/cosmos.base.simulateAndExecute.v1beta1.SimulateService/SimulateAndExecute", txBytes)
+	bz, _, err := f.queryFunc("/cosmos.tx.v1beta1.Service/Simulate", txBytes)
 	if err != nil {
 		return sim.SimulateResponse{}, 0, err
 	}

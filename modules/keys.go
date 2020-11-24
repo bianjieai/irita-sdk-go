@@ -7,6 +7,9 @@ import (
 
 	"github.com/bianjieai/irita-sdk-go/crypto"
 	cryptoamino "github.com/bianjieai/irita-sdk-go/crypto/codec"
+	"github.com/bianjieai/irita-sdk-go/crypto/keys/secp256k1"
+	"github.com/bianjieai/irita-sdk-go/crypto/keys/sm2"
+	codectypes "github.com/bianjieai/irita-sdk-go/crypto/types"
 	"github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/types/store"
 )
@@ -32,7 +35,7 @@ func (k keyManager) Sign(name, password string, data []byte) ([]byte, tmcrypto.P
 		return nil, nil, err
 	}
 
-	return signByte, km.ExportPubKey(), nil
+	return signByte, FromTmPubKey(info.Algo, km.ExportPubKey()), nil
 }
 
 func (k keyManager) Insert(name, password string) (string, string, error) {
@@ -151,6 +154,17 @@ func (k keyManager) Find(name, password string) (tmcrypto.PubKey, types.AccAddre
 	if err != nil {
 		return nil, nil, types.WrapWithMessage(err, "name %s not exist", name)
 	}
+	return FromTmPubKey(info.Algo, pubKey), types.AccAddress(pubKey.Address().Bytes()), nil
+}
 
-	return pubKey, types.AccAddress(pubKey.Address().Bytes()), nil
+func FromTmPubKey(algo string, pubKey tmcrypto.PubKey) codectypes.PubKey {
+	var pubkey codectypes.PubKey
+	pubkeyBytes := pubKey.Bytes()
+	switch algo {
+	case "sm2":
+		pubkey = &sm2.PubKey{Key: pubkeyBytes}
+	case "secp256k1":
+		pubkey = &secp256k1.PubKey{Key: pubkeyBytes}
+	}
+	return pubkey
 }

@@ -28,4 +28,3 @@ type (
 type IntoTmPubKey interface {
 	AsTmPubKey() tmcrypto.PubKey
 }
-

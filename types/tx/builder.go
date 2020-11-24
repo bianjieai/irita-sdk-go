@@ -2,6 +2,9 @@ package tx
 
 import (
 	"fmt"
+
+	cryptotypes "github.com/bianjieai/irita-sdk-go/crypto/types"
+
 	"github.com/gogo/protobuf/proto"
 
 	"github.com/tendermint/tendermint/crypto"
@@ -93,11 +96,11 @@ func (w *wrapper) GetSigners() []sdk.AccAddress {
 	return w.tx.GetSigners()
 }
 
-func (w *wrapper) GetPubKeys() []crypto.PubKey {
+func (w *wrapper) GetPubKeys(anyUnpacker codectypes.AnyUnpacker) []crypto.PubKey {
 	signerInfos := w.tx.AuthInfo.SignerInfos
-	pks := make([]crypto.PubKey, len(signerInfos))
+	pks := make([]crypto.PubKey, 0, len(signerInfos))
 
-	for i, si := range signerInfos {
+	for _, si := range signerInfos {
 		// NOTE: it is okay to leave this nil if there is no PubKey in the SignerInfo.
 		// PubKey's can be left unset in SignerInfo.
 		if si.PublicKey == nil {
@@ -106,10 +109,14 @@ func (w *wrapper) GetPubKeys() []crypto.PubKey {
 
 		pk, ok := si.PublicKey.GetCachedValue().(crypto.PubKey)
 		if ok {
-			pks[i] = pk
+			pks = append(pks, pk)
+		} else {
+			var pubkey cryptotypes.PubKey
+			if err := anyUnpacker.UnpackAny(si.PublicKey, &pubkey); err == nil {
+				pks = append(pks, pubkey)
+			}
 		}
 	}
-
 	return pks
 }
 
