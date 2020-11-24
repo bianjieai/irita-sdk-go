@@ -30,7 +30,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// SimulateRequest is the request type for the SimulateServiceService.SimulateAndExecute
+// SimulateRequest is the request type for the SimulateServiceService.Simulate
 // RPC method.
 type SimulateRequest struct {
 	// tx is the transaction to simulate.
@@ -195,7 +195,7 @@ func NewSimulateServiceClient(cc grpc1.ClientConn) SimulateServiceClient {
 
 func (c *simulateServiceClient) Simulate(ctx context.Context, in *SimulateRequest, opts ...grpc.CallOption) (*SimulateResponse, error) {
 	out := new(SimulateResponse)
-	err := c.cc.Invoke(ctx, "/cosmos.base.simulate.v1beta1.SimulateService/SimulateAndExecute", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/cosmos.base.simulate.v1beta1.SimulateService/Simulate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -213,7 +213,7 @@ type UnimplementedSimulateServiceServer struct {
 }
 
 func (*UnimplementedSimulateServiceServer) Simulate(ctx context.Context, req *SimulateRequest) (*SimulateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SimulateAndExecute not implemented")
+	return nil, status.Errorf(codes.Unimplemented, "method Simulate not implemented")
 }
 
 func RegisterSimulateServiceServer(s grpc1.Server, srv SimulateServiceServer) {
@@ -230,7 +230,7 @@ func _SimulateService_Simulate_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cosmos.base.simulate.v1beta1.SimulateService/SimulateAndExecute",
+		FullMethod: "/cosmos.base.simulate.v1beta1.SimulateService/Simulate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(SimulateServiceServer).Simulate(ctx, req.(*SimulateRequest))
@@ -243,7 +243,7 @@ var _SimulateService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*SimulateServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SimulateAndExecute",
+			MethodName: "Simulate",
 			Handler:    _SimulateService_Simulate_Handler,
 		},
 	},

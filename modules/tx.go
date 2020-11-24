@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"context"
 	"encoding/hex"
 	"errors"
 	"strings"
@@ -22,7 +23,7 @@ func (base baseClient) QueryTx(hash string) (sdk.ResultQueryTx, error) {
 		return sdk.ResultQueryTx{}, err
 	}
 
-	res, err := base.Tx(tx, true)
+	res, err := base.Tx(context.Background(),tx, true)
 	if err != nil {
 		return sdk.ResultQueryTx{}, err
 	}
@@ -41,7 +42,7 @@ func (base baseClient) QueryTxs(builder *sdk.EventQueryBuilder, page, size int) 
 		return sdk.ResultSearchTxs{}, errors.New("must declare at least one tag to search")
 	}
 
-	res, err := base.TxSearch(query, true, &page, &size, "asc")
+	res, err := base.TxSearch(context.Background(),query, true, &page, &size, "asc")
 	if err != nil {
 		return sdk.ResultSearchTxs{}, err
 	}
@@ -67,12 +68,12 @@ func (base baseClient) QueryTxs(builder *sdk.EventQueryBuilder, page, size int) 
 }
 
 func (base baseClient) QueryBlock(height int64) (sdk.BlockDetail, error) {
-	block, err := base.Block(&height)
+	block, err := base.Block(context.Background(),&height)
 	if err != nil {
 		return sdk.BlockDetail{}, err
 	}
 
-	blockResult, err := base.BlockResults(&height)
+	blockResult, err := base.BlockResults(context.Background(),&height)
 	if err != nil {
 		return sdk.BlockDetail{}, err
 	}
@@ -116,7 +117,7 @@ func (base baseClient) broadcastTx(txBytes []byte, mode sdk.BroadcastMode) (res 
 // broadcastTxCommit broadcasts transaction bytes to a Tendermint node
 // and waits for a commit.
 func (base baseClient) broadcastTxCommit(tx []byte) (sdk.ResultTx, sdk.Error) {
-	res, err := base.BroadcastTxCommit(tx)
+	res, err := base.BroadcastTxCommit(context.Background(),tx)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
@@ -141,7 +142,7 @@ func (base baseClient) broadcastTxCommit(tx []byte) (sdk.ResultTx, sdk.Error) {
 // BroadcastTxSync broadcasts transaction bytes to a Tendermint node
 // synchronously.
 func (base baseClient) broadcastTxSync(tx []byte) (sdk.ResultTx, sdk.Error) {
-	res, err := base.BroadcastTxSync(tx)
+	res, err := base.BroadcastTxSync(context.Background(),tx)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
@@ -157,7 +158,7 @@ func (base baseClient) broadcastTxSync(tx []byte) (sdk.ResultTx, sdk.Error) {
 // BroadcastTxAsync broadcasts transaction bytes to a Tendermint node
 // asynchronously.
 func (base baseClient) broadcastTxAsync(tx []byte) (sdk.ResultTx, sdk.Error) {
-	res, err := base.BroadcastTxAsync(tx)
+	res, err := base.BroadcastTxAsync(context.Background(),tx)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
@@ -169,7 +170,7 @@ func (base baseClient) getResultBlocks(resTxs []*ctypes.ResultTx) (map[int64]*ct
 	resBlocks := make(map[int64]*ctypes.ResultBlock)
 	for _, resTx := range resTxs {
 		if _, ok := resBlocks[resTx.Height]; !ok {
-			resBlock, err := base.Block(&resTx.Height)
+			resBlock, err := base.Block(context.Background(),&resTx.Height)
 			if err != nil {
 				return nil, err
 			}

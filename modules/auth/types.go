@@ -6,7 +6,7 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	cryptocodec "github.com/bianjieai/irita-sdk-go/crypto/codec"
+	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -20,7 +20,7 @@ type Account interface {
 	GetAddress() sdk.AccAddress
 	SetAddress(sdk.AccAddress) error // errors if already set.
 
-	GetPubKey() crypto.PubKey // can return nil.
+	GetPubKey(unpacker codectypes.AnyUnpacker) (crypto.PubKey,error)
 	SetPubKey(crypto.PubKey) error
 
 	GetAccountNumber() uint64
@@ -34,7 +34,8 @@ var _ Account = (*BaseAccount)(nil)
 
 // GetAddress Implements sdk.Account.
 func (acc BaseAccount) GetAddress() sdk.AccAddress {
-	return acc.Address
+	addr, _ := sdk.AccAddressFromBech32(acc.Address)
+	return addr
 }
 
 // SetAddress Implements sdk.Account.
@@ -42,27 +43,31 @@ func (acc *BaseAccount) SetAddress(addr sdk.AccAddress) error {
 	if len(acc.Address) != 0 {
 		return errors.New("cannot override BaseAccount address")
 	}
-	acc.Address = addr
+
+	acc.Address = addr.String()
 	return nil
 }
 
 // GetPubKey - Implements sdk.Account.
-func (acc BaseAccount) GetPubKey() (pk crypto.PubKey) {
-	if len(acc.PubKey) == 0 {
-		return nil
+func (acc BaseAccount) GetPubKey(unpacker codectypes.AnyUnpacker) (pk crypto.PubKey,err error) {
+	if acc.PubKey == nil {
+		return nil,nil
 	}
 
-	pk, _ = cryptocodec.PubKeyFromBytes(acc.PubKey)
-	return pk
+	var pubKey crypto.PubKey
+	if err = unpacker.UnpackAny(acc.PubKey, &pubKey);err != nil {
+		return nil,err
+	}
+	return pubKey,nil
 }
 
 // SetPubKey - Implements sdk.Account.
 func (acc *BaseAccount) SetPubKey(pubKey crypto.PubKey) error {
-	if pubKey == nil {
-		acc.PubKey = nil
-	} else {
-		acc.PubKey = pubKey.Bytes()
+	any, err := codectypes.PackAny(pubKey)
+	if err != nil {
+		return err
 	}
+	acc.PubKey = any
 	return nil
 }
 
@@ -95,25 +100,9 @@ func (acc BaseAccount) String() string {
 
 // Convert return a sdk.BaseAccount
 func (acc *BaseAccount) Convert() interface{} {
-	account := sdk.BaseAccount{
-		Address:       acc.Address,
+	return sdk.BaseAccount{
+		Address:       sdk.MustAccAddressFromBech32(acc.Address),
 		AccountNumber: acc.AccountNumber,
 		Sequence:      acc.Sequence,
 	}
-
-	var pkStr string
-	if acc.PubKey == nil {
-		return account
-	}
-
-	var pk crypto.PubKey
-	pk, _ = cryptocodec.PubKeyFromBytes(acc.PubKey)
-
-	pkStr, err := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, pk)
-	if err != nil {
-		panic(err)
-	}
-
-	account.PubKey = pkStr
-	return account
 }

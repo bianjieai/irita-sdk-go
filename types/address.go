@@ -30,6 +30,15 @@ func AccAddressFromBech32(address string) (AccAddress, Error) {
 	return AccAddress(bz), nil
 }
 
+func ValidateAccAddress(address string) Error {
+	bech32PrefixAccAddr := GetAddrPrefixCfg().GetBech32AccountAddrPrefix()
+	_, err := bech32.GetFromBech32(address, bech32PrefixAccAddr)
+	if err != nil {
+		return Wrap(err)
+	}
+	return nil
+}
+
 func MustAccAddressFromBech32(address string) AccAddress {
 	addr, err := AccAddressFromBech32(address)
 	if err != nil {

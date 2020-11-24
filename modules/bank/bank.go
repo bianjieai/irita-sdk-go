@@ -2,7 +2,6 @@ package bank
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
@@ -39,18 +38,17 @@ func (b bankClient) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
+	if err := sdk.ValidateAccAddress(address);err != nil {
+		return sdk.BaseAccount{}, sdk.Wrap(err)
+	}
+
 	account, err := b.BaseClient.QueryAccount(address)
 	if err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
-	addr, err := sdk.AccAddressFromBech32(address)
-	if err != nil {
-		return sdk.BaseAccount{}, sdk.Wrap(err)
-	}
-
 	request := &QueryAllBalancesRequest{
-		Address:    addr,
+		Address:    address,
 		Pagination: nil,
 	}
 	balances, err := NewQueryClient(conn).AllBalances(context.Background(), request)
@@ -64,6 +62,10 @@ func (b bankClient) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
 
 // Send is responsible for transferring tokens from `From` to `to` account
 func (b bankClient) Send(to string, amount sdk.DecCoins, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
+	if err := sdk.ValidateAccAddress(to);err != nil {
+		return sdk.ResultTx{}, sdk.Wrap(err)
+	}
+
 	sender, err := b.QueryAddress(baseTx.From, baseTx.Password)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrapf("%s not found", baseTx.From)
@@ -74,12 +76,7 @@ func (b bankClient) Send(to string, amount sdk.DecCoins, baseTx sdk.BaseTx) (sdk
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	outAddr, err := sdk.AccAddressFromBech32(to)
-	if err != nil {
-		return sdk.ResultTx{}, sdk.Wrapf(fmt.Sprintf("%s invalid address", to))
-	}
-
-	msg := NewMsgSend(sender, outAddr, amt)
+	msg := NewMsgSend(sender.String(), to, amt)
 	return b.BuildAndSend([]sdk.Msg{&msg}, baseTx)
 }
 
@@ -96,18 +93,17 @@ func (b bankClient) MultiSend(request MultiSendRequest, baseTx sdk.BaseTx) (resT
 	var inputs = make([]Input, len(request.Receipts))
 	var outputs = make([]Output, len(request.Receipts))
 	for i, receipt := range request.Receipts {
+		if err := sdk.ValidateAccAddress(receipt.Address);err != nil {
+			return nil, sdk.Wrap(err)
+		}
+
 		amt, err := b.ToMinCoin(receipt.Amount...)
 		if err != nil {
 			return nil, sdk.Wrap(err)
 		}
 
-		outAddr, e := sdk.AccAddressFromBech32(receipt.Address)
-		if e != nil {
-			return nil, sdk.Wrapf(fmt.Sprintf("%s invalid address", receipt.Address))
-		}
-
-		inputs[i] = NewInput(sender, amt)
-		outputs[i] = NewOutput(outAddr, amt)
+		inputs[i] = NewInput(sender.String(), amt)
+		outputs[i] = NewOutput(receipt.Address, amt)
 	}
 
 	msg := NewMsgMultiSend(inputs, outputs)
@@ -130,18 +126,17 @@ func (b bankClient) SendBatch(sender sdk.AccAddress,
 		var inputs = make([]Input, len(req.Receipts))
 		var outputs = make([]Output, len(req.Receipts))
 		for i, receipt := range req.Receipts {
+			if err := sdk.ValidateAccAddress(receipt.Address);err != nil {
+				return nil, sdk.Wrap(err)
+			}
+
 			amt, err := b.ToMinCoin(receipt.Amount...)
 			if err != nil {
 				return nil, sdk.Wrap(err)
 			}
 
-			outAddr, e := sdk.AccAddressFromBech32(receipt.Address)
-			if e != nil {
-				return nil, sdk.Wrapf(fmt.Sprintf("%s invalid address", receipt.Address))
-			}
-
-			inputs[i] = NewInput(sender, amt)
-			outputs[i] = NewOutput(outAddr, amt)
+			inputs[i] = NewInput(sender.String(), amt)
+			outputs[i] = NewOutput(receipt.Address, amt)
 		}
 		msgs = append(msgs, NewMsgMultiSend(inputs, outputs))
 	}
@@ -169,8 +164,8 @@ func (b bankClient) SubscribeSendTx(from, to string, callback EventMsgSendCallba
 				callback(EventDataMsgSend{
 					Height: data.Height,
 					Hash:   data.Hash,
-					From:   value.FromAddress.String(),
-					To:     value.ToAddress.String(),
+					From:   value.FromAddress,
+					To:     value.ToAddress,
 					Amount: value.Amount,
 				})
 			}

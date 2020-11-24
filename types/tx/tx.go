@@ -19,7 +19,7 @@ func Unwrap(tx sdk.Tx) (*sdk.UnwrappedTx, error) {
 	}
 
 	var signatures []sdk.UnwrappedSignature
-	for i, pubKey := range txWrapper.pubKeys {
+	for i, pubKey := range txWrapper.GetPubKeys() {
 		bech32PubKey, err := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, pubKey)
 		if err != nil {
 			return nil, err

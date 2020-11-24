@@ -105,7 +105,7 @@ func makeEncodingConfig() types.EncodingConfig {
 	amino := codec.NewLegacyAmino()
 	interfaceRegistry := cdctypes.NewInterfaceRegistry()
 	marshaler := codec.NewProtoCodec(interfaceRegistry)
-	txCfg := txtypes.NewTxConfig(marshaler, types.DefaultPublicKeyCodec{}, txtypes.DefaultSignModes)
+	txCfg := txtypes.NewTxConfig(marshaler,txtypes.DefaultSignModes)
 
 	encodingConfig := types.EncodingConfig{
 		InterfaceRegistry: interfaceRegistry,
@@ -129,4 +129,5 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterInterface("cosmos.v1beta1.Msg", (*types.Msg)(nil))
 	txtypes.RegisterInterfaces(registry)
+	cryptocodec.RegisterInterfaces(registry)
 }

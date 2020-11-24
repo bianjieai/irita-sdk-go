@@ -26,7 +26,7 @@ message SendEnabled {
 message Input {
   option (gogoproto.equal) = true;
 
-  bytes    address                        = 1 [(gogoproto.casttype) = "github.com/bianjieai/irita-sdk-go/types.AccAddress"];
+  string    address                        = 1;
   repeated cosmos.base.v1beta1.Coin coins = 2
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/bianjieai/irita-sdk-go/types.Coins"];
 }
@@ -35,7 +35,7 @@ message Input {
 message Output {
   option (gogoproto.equal) = true;
 
-  bytes    address                        = 1 [(gogoproto.casttype) = "github.com/bianjieai/irita-sdk-go/types.AccAddress"];
+  string    address                        = 1;
   repeated cosmos.base.v1beta1.Coin coins = 2
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/bianjieai/irita-sdk-go/types.Coins"];
 }

@@ -17,7 +17,7 @@ var (
 )
 
 // NewMsgSend - construct arbitrary multi-in, multi-out send msg.
-func NewMsgSend(fromAddr, toAddr sdk.AccAddress, amount sdk.Coins) MsgSend {
+func NewMsgSend(fromAddr, toAddr string, amount sdk.Coins) MsgSend {
 	return MsgSend{
 		FromAddress: fromAddr,
 		ToAddress:   toAddr,
@@ -34,10 +34,10 @@ func (msg MsgSend) Type() string {
 }
 
 func (msg MsgSend) ValidateBasic() error {
-	if msg.FromAddress.Empty() {
+	if len(msg.FromAddress) ==0  {
 		return errors.New("missing sender address")
 	}
-	if msg.ToAddress.Empty() {
+	if len(msg.ToAddress) == 0 {
 		return errors.New("missing recipient address")
 	}
 	if !msg.Amount.IsValid() {
@@ -58,7 +58,7 @@ func (msg MsgSend) GetSignBytes() []byte {
 }
 
 func (msg MsgSend) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.FromAddress}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.FromAddress)}
 }
 
 // NewMsgSend - construct arbitrary multi-in, multi-out send msg.
@@ -115,7 +115,7 @@ func (msg MsgMultiSend) GetSignBytes() []byte {
 func (msg MsgMultiSend) GetSigners() []sdk.AccAddress {
 	addrs := make([]sdk.AccAddress, len(msg.Inputs))
 	for i, in := range msg.Inputs {
-		addrs[i] = in.Address
+		addrs[i] = sdk.MustAccAddressFromBech32(in.Address)
 	}
 	return addrs
 }
@@ -123,7 +123,7 @@ func (msg MsgMultiSend) GetSigners() []sdk.AccAddress {
 // ValidateBasic - validate transaction input
 func (in Input) ValidateBasic() error {
 	if len(in.Address) == 0 {
-		return fmt.Errorf("account %s is invalid", in.Address.String())
+		return fmt.Errorf("account %s is invalid", in.Address)
 	}
 	if in.Coins.Empty() {
 		return errors.New("empty input coins")
@@ -135,7 +135,7 @@ func (in Input) ValidateBasic() error {
 }
 
 // NewInput - create a transaction input, used with MsgSend
-func NewInput(addr sdk.AccAddress, coins sdk.Coins) Input {
+func NewInput(addr string, coins sdk.Coins) Input {
 	return Input{
 		Address: addr,
 		Coins:   coins,
@@ -145,7 +145,7 @@ func NewInput(addr sdk.AccAddress, coins sdk.Coins) Input {
 // ValidateBasic - validate transaction output
 func (out Output) ValidateBasic() error {
 	if len(out.Address) == 0 {
-		return fmt.Errorf("account %s is invalid", out.Address.String())
+		return fmt.Errorf("account %s is invalid", out.Address)
 	}
 	if out.Coins.Empty() {
 		return errors.New("empty input coins")
@@ -157,7 +157,7 @@ func (out Output) ValidateBasic() error {
 }
 
 // NewOutput - create a transaction output, used with MsgSend
-func NewOutput(addr sdk.AccAddress, coins sdk.Coins) Output {
+func NewOutput(addr string, coins sdk.Coins) Output {
 	return Output{
 		Address: addr,
 		Coins:   coins,
