@@ -4,13 +4,11 @@ import (
 	"fmt"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/crypto/types"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	signingtypes "github.com/bianjieai/irita-sdk-go/types/tx/signing"
 )
 
 type config struct {
-	pubkeyCodec types.PublicKeyCodec
 	handler     sdk.SignModeHandler
 	decoder     sdk.TxDecoder
 	encoder     sdk.TxEncoder
@@ -21,20 +19,19 @@ type config struct {
 
 // NewTxConfig returns a new protobuf TxConfig using the provided ProtoCodec, PublicKeyCodec and sign modes. The
 // first enabled sign mode will become the default sign mode.
-func NewTxConfig(protoCodec *codec.ProtoCodec, pubkeyCodec types.PublicKeyCodec, enabledSignModes []signingtypes.SignMode) sdk.TxConfig {
+func NewTxConfig(protoCodec *codec.ProtoCodec, enabledSignModes []signingtypes.SignMode) sdk.TxConfig {
 	return &config{
-		pubkeyCodec: pubkeyCodec,
 		handler:     MakeSignModeHandler(enabledSignModes),
-		decoder:     DefaultTxDecoder(protoCodec, pubkeyCodec),
+		decoder:     DefaultTxDecoder(protoCodec),
 		encoder:     DefaultTxEncoder(),
-		jsonDecoder: DefaultJSONTxDecoder(protoCodec, pubkeyCodec),
-		jsonEncoder: DefaultJSONTxEncoder(),
+		jsonDecoder: DefaultJSONTxDecoder(protoCodec),
+		jsonEncoder: DefaultJSONTxEncoder(protoCodec),
 		protoCodec:  protoCodec,
 	}
 }
 
 func (g config) NewTxBuilder() sdk.TxBuilder {
-	return newBuilder(g.pubkeyCodec)
+	return newBuilder()
 }
 
 // WrapTxBuilder returns a builder from provided transaction

@@ -1,7 +1,8 @@
 syntax = "proto3";
 package cosmos.tx.signing.v1beta1;
 
-import "cosmos/base/crypto/v1beta1/crypto.proto";
+import "cosmos/crypto/multisig/v1beta1/multisig.proto";
+import "google/protobuf/any.proto";
 
 option go_package = "github.com/bianjieai/irita-sdk-go/types/tx/signing";
 
@@ -34,7 +35,7 @@ message SignatureDescriptors {
 // itself. It is primarily used for coordinating signatures between clients.
 message SignatureDescriptor {
   // public_key is the public key of the signer
-  cosmos.base.crypto.v1beta1.PublicKey public_key = 1;
+  google.protobuf.Any public_key = 1;
 
   Data data = 2;
 
@@ -66,7 +67,7 @@ message SignatureDescriptor {
     // Multi is the signature data for a multisig public key
     message Multi {
       // bitarray specifies which keys within the multisig are signing
-      cosmos.base.crypto.v1beta1.CompactBitArray bitarray = 1;
+      cosmos.crypto.multisig.v1beta1.CompactBitArray bitarray = 1;
 
       // signatures is the signatures of the multi-signature
       repeated Data signatures = 2;

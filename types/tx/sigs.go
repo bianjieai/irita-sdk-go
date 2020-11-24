@@ -3,6 +3,8 @@ package tx
 import (
 	"fmt"
 
+	"github.com/tendermint/tendermint/crypto"
+
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/crypto/types"
 	"github.com/bianjieai/irita-sdk-go/types/tx/signing"
@@ -107,36 +109,34 @@ func (g config) MarshalSignatureJSON(sigs []signing.SignatureV2) ([]byte, error)
 	descs := make([]*signing.SignatureDescriptor, len(sigs))
 
 	for i, sig := range sigs {
-		publicKey, err := g.pubkeyCodec.Encode(sig.PubKey)
+		descData := signing.SignatureDataToProto(sig.Data)
+
+		any, err := PubKeyToAny(sig.PubKey)
 		if err != nil {
 			return nil, err
 		}
 
-		descData := signing.SignatureDataToProto(sig.Data)
-
 		descs[i] = &signing.SignatureDescriptor{
-			PublicKey: publicKey,
+			PublicKey: any,
 			Data:      descData,
 		}
 	}
 
 	toJSON := &signing.SignatureDescriptors{Signatures: descs}
 
-	return codec.ProtoMarshalJSON(toJSON)
+	return codec.ProtoMarshalJSON(toJSON, nil)
 }
 
 func (g config) UnmarshalSignatureJSON(bz []byte) ([]signing.SignatureV2, error) {
 	var sigDescs signing.SignatureDescriptors
-	if err := g.protoCodec.UnmarshalJSON(bz, &sigDescs); err != nil {
+	err := g.protoCodec.UnmarshalJSON(bz, &sigDescs)
+	if err != nil {
 		return nil, err
 	}
 
 	sigs := make([]signing.SignatureV2, len(sigDescs.Signatures))
 	for i, desc := range sigDescs.Signatures {
-		pubKey, err := g.pubkeyCodec.Decode(desc.PublicKey)
-		if err != nil {
-			return nil, err
-		}
+		pubKey, _ := desc.PublicKey.GetCachedValue().(crypto.PubKey)
 
 		data := signing.SignatureDataFromProto(desc.Data)
 

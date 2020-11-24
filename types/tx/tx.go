@@ -3,10 +3,12 @@ package tx
 import (
 	"fmt"
 
+	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
+
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
-func Unwrap(tx sdk.Tx) (*sdk.UnwrappedTx, error) {
+func Unwrap(anyUnpacker codectypes.AnyUnpacker, tx sdk.Tx) (*sdk.UnwrappedTx, error) {
 	txWrapper, ok := tx.(*wrapper)
 	if !ok {
 		return nil, fmt.Errorf("expected %T, got %T", &wrapper{}, tx)
@@ -19,7 +21,7 @@ func Unwrap(tx sdk.Tx) (*sdk.UnwrappedTx, error) {
 	}
 
 	var signatures []sdk.UnwrappedSignature
-	for i, pubKey := range txWrapper.pubKeys {
+	for i, pubKey := range txWrapper.GetPubKeys(anyUnpacker) {
 		bech32PubKey, err := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, pubKey)
 		if err != nil {
 			return nil, err

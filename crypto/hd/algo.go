@@ -3,8 +3,9 @@ package hd
 import (
 	"fmt"
 
+	"github.com/bianjieai/irita-sdk-go/crypto/keys/sm2"
+
 	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/sm2"
 
 	"github.com/cosmos/go-bip39"
 
@@ -86,7 +87,7 @@ func (s secp256k1Algo) Generate() GenerateFn {
 	return func(bz []byte) crypto.PrivKey {
 		var bzArr [32]byte
 		copy(bzArr[:], bz)
-		return secp256k1.PrivKey(bzArr[:])
+		return &secp256k1.PrivKey{Key: bzArr[:]}
 	}
 }
 
@@ -118,6 +119,6 @@ func (s sm2Algo) Generate() GenerateFn {
 	return func(bz []byte) crypto.PrivKey {
 		var bzArr [sm2.PrivKeySize]byte
 		copy(bzArr[:], bz)
-		return sm2.PrivKeySm2(bzArr)
+		return &sm2.PrivKey{Key: bzArr[:]}
 	}
 }

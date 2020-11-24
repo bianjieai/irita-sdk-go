@@ -1,12 +1,15 @@
 package tx
 
 import (
+	"fmt"
+
+	cryptotypes "github.com/bianjieai/irita-sdk-go/crypto/types"
+
 	"github.com/gogo/protobuf/proto"
 
 	"github.com/tendermint/tendermint/crypto"
 
 	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
-	"github.com/bianjieai/irita-sdk-go/crypto/types"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/types/tx/signing"
 )
@@ -24,12 +27,6 @@ type wrapper struct {
 	// from the client using TxRaw if the tx was decoded from the wire
 	authInfoBz []byte
 
-	// pubKeys represents the cached crypto.PubKey's that were set either from tx decoding
-	// or decoded from AuthInfo when GetPubKey's was called
-	pubKeys []crypto.PubKey
-
-	pubkeyCodec types.PublicKeyCodec
-
 	txBodyHasUnknownNonCriticals bool
 }
 
@@ -44,13 +41,14 @@ type ExtensionOptionsTxBuilder interface {
 	SetNonCriticalExtensionOptions(...*codectypes.Any)
 }
 
-func newBuilder(pubkeyCodec types.PublicKeyCodec) *wrapper {
+func newBuilder() *wrapper {
 	return &wrapper{
 		tx: &Tx{
-			Body:     &TxBody{},
-			AuthInfo: &AuthInfo{Fee: &Fee{}},
+			Body: &TxBody{},
+			AuthInfo: &AuthInfo{
+				Fee: &Fee{},
+			},
 		},
-		pubkeyCodec: pubkeyCodec,
 	}
 }
 
@@ -98,26 +96,28 @@ func (w *wrapper) GetSigners() []sdk.AccAddress {
 	return w.tx.GetSigners()
 }
 
-func (w *wrapper) GetPubKeys() []crypto.PubKey {
-	if w.pubKeys == nil {
-		signerInfos := w.tx.AuthInfo.SignerInfos
-		pubKeys := make([]crypto.PubKey, len(signerInfos))
+func (w *wrapper) GetPubKeys(anyUnpacker codectypes.AnyUnpacker) []crypto.PubKey {
+	signerInfos := w.tx.AuthInfo.SignerInfos
+	pks := make([]crypto.PubKey, 0, len(signerInfos))
 
-		for i, si := range signerInfos {
-			var err error
-			pk := si.PublicKey
-			if pk != nil {
-				pubKeys[i], err = w.pubkeyCodec.Decode(si.PublicKey)
-				if err != nil {
-					panic(err)
-				}
-			}
+	for _, si := range signerInfos {
+		// NOTE: it is okay to leave this nil if there is no PubKey in the SignerInfo.
+		// PubKey's can be left unset in SignerInfo.
+		if si.PublicKey == nil {
+			continue
 		}
 
-		w.pubKeys = pubKeys
+		pk, ok := si.PublicKey.GetCachedValue().(crypto.PubKey)
+		if ok {
+			pks = append(pks, pk)
+		} else {
+			var pubkey cryptotypes.PubKey
+			if err := anyUnpacker.UnpackAny(si.PublicKey, &pubkey); err == nil {
+				pks = append(pks, pubkey)
+			}
+		}
 	}
-
-	return w.pubKeys
+	return pks
 }
 
 func (w *wrapper) GetGas() uint64 {
@@ -209,12 +209,12 @@ func (w *wrapper) SetSignatures(signatures ...signing.SignatureV2) error {
 	for i, sig := range signatures {
 		var modeInfo *ModeInfo
 		modeInfo, rawSigs[i] = SignatureDataToModeInfoAndSig(sig.Data)
-		pk, err := w.pubkeyCodec.Encode(sig.PubKey)
+		any, err := PubKeyToAny(sig.PubKey)
 		if err != nil {
 			return err
 		}
 		signerInfos[i] = &SignerInfo{
-			PublicKey: pk,
+			PublicKey: any,
 			ModeInfo:  modeInfo,
 			Sequence:  sig.Sequence,
 		}
@@ -230,8 +230,6 @@ func (w *wrapper) setSignerInfos(infos []*SignerInfo) {
 	w.tx.AuthInfo.SignerInfos = infos
 	// set authInfoBz to nil because the cached authInfoBz no longer matches tx.AuthInfo
 	w.authInfoBz = nil
-	// set cached pubKeys to nil because they no longer match tx.AuthInfo
-	w.pubKeys = nil
 }
 
 func (w *wrapper) setSignatures(sigs [][]byte) {
@@ -265,4 +263,13 @@ func (w *wrapper) SetExtensionOptions(extOpts ...*codectypes.Any) {
 func (w *wrapper) SetNonCriticalExtensionOptions(extOpts ...*codectypes.Any) {
 	w.tx.Body.NonCriticalExtensionOptions = extOpts
 	w.bodyBz = nil
+}
+
+// PubKeyToAny converts a crypto.PubKey to a proto Any.
+func PubKeyToAny(key crypto.PubKey) (*codectypes.Any, error) {
+	protoMsg, ok := key.(proto.Message)
+	if !ok {
+		return nil, fmt.Errorf("can't proto encode %T", protoMsg)
+	}
+	return codectypes.NewAnyWithValue(protoMsg)
 }

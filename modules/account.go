@@ -50,28 +50,40 @@ func (a accountQuery) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) 
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
-	addr, err := sdk.AccAddressFromBech32(address)
-	if err != nil {
+	if err := sdk.ValidateAccAddress(address); err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
 	request := &auth.QueryAccountRequest{
-		Address: addr,
+		Address: address,
 	}
 	response, err := auth.NewQueryClient(conn).Account(context.Background(), request)
 	if err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
-	var baseAccount auth.Account
-	if err := a.cdc.UnpackAny(response.Account, &baseAccount); err != nil {
+	var acc auth.Account
+	if err := a.cdc.UnpackAny(response.Account, &acc); err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
-	account := baseAccount.(*auth.BaseAccount).Convert().(sdk.BaseAccount)
+	baseAcc := acc.(*auth.BaseAccount)
+	account := baseAcc.Convert().(sdk.BaseAccount)
+
+	if baseAcc.PubKey != nil {
+		pubkey, err := baseAcc.GetPubKey(a.cdc)
+		if err != nil {
+			return sdk.BaseAccount{}, sdk.Wrap(err)
+		}
+
+		account.PubKey, err = sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, pubkey)
+		if err != nil {
+			return sdk.BaseAccount{}, sdk.Wrap(err)
+		}
+	}
 
 	breq := &bank.QueryAllBalancesRequest{
-		Address:    addr,
+		Address:    address,
 		Pagination: nil,
 	}
 	balances, err := bank.NewQueryClient(conn).AllBalances(context.Background(), breq)
