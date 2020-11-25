@@ -46,7 +46,7 @@ func (t tokenClient) IssueToken(req IssueTokenRequest, baseTx sdk.BaseTx) (sdk.R
 		InitialSupply: req.InitialSupply,
 		MaxSupply:     req.MaxSupply,
 		Mintable:      req.Mintable,
-		Owner:         owner,
+		Owner:         owner.String(),
 	}
 
 	return t.BuildAndSend([]sdk.Msg{msg}, baseTx)
@@ -63,7 +63,7 @@ func (t tokenClient) EditToken(req EditTokenRequest, baseTx sdk.BaseTx) (sdk.Res
 		Name:      req.Name,
 		MaxSupply: req.MaxSupply,
 		Mintable:  Bool(strconv.FormatBool(req.Mintable)),
-		Owner:     owner,
+		Owner:     owner.String(),
 	}
 
 	return t.BuildAndSend([]sdk.Msg{msg}, baseTx)
@@ -75,14 +75,13 @@ func (t tokenClient) TransferToken(to string, symbol string, baseTx sdk.BaseTx) 
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	dstOwner, err := sdk.AccAddressFromBech32(to)
-	if err != nil {
+	if err := sdk.ValidateAccAddress(to); err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
 	msg := &MsgTransferTokenOwner{
-		SrcOwner: owner,
-		DstOwner: dstOwner,
+		SrcOwner: owner.String(),
+		DstOwner: to,
 		Symbol:   symbol,
 	}
 	return t.BuildAndSend([]sdk.Msg{msg}, baseTx)
@@ -94,10 +93,12 @@ func (t tokenClient) MintToken(symbol string, amount uint64, to string, baseTx s
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	receipt := owner
-	if len(to) > 0 {
-		if receipt, err = sdk.AccAddressFromBech32(to); err != nil {
+	receipt := owner.String()
+	if len(to) != 0 {
+		if err := sdk.ValidateAccAddress(to); err != nil {
 			return sdk.ResultTx{}, sdk.Wrap(err)
+		} else {
+			receipt = to
 		}
 	}
 
@@ -105,7 +106,7 @@ func (t tokenClient) MintToken(symbol string, amount uint64, to string, baseTx s
 		Symbol: symbol,
 		Amount: amount,
 		To:     receipt,
-		Owner:  owner,
+		Owner:  owner.String(),
 	}
 	return t.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -115,13 +116,12 @@ func (t tokenClient) QueryToken(denom string) (sdk.Token, error) {
 }
 
 func (t tokenClient) QueryTokens(owner string) (sdk.Tokens, error) {
-	var ownerAddr sdk.AccAddress
+	var ownerAddr string
 	if len(owner) > 0 {
-		addr, e := sdk.AccAddressFromBech32(owner)
-		if e != nil {
-			return nil, sdk.Wrap(e)
+		if err := sdk.ValidateAccAddress(owner); err != nil {
+			return nil, sdk.Wrap(err)
 		}
-		ownerAddr = addr
+		ownerAddr = owner
 	}
 
 	conn, err := t.GenConn()

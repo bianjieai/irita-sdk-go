@@ -22,14 +22,14 @@ func (s IntegrationTestSuite) TestBank() {
 			"TestSend",
 			send,
 		},
-		{
-			"TestMultiSend",
-			multiSend,
-		},
-		{
-			"TestSimulate",
-			simulate,
-		},
+		// {
+		// 	"TestMultiSend",
+		// 	multiSend,
+		// },
+		// {
+		// 	"TestSimulate",
+		// 	simulate,
+		// },
 	}
 
 	for _, t := range cases {

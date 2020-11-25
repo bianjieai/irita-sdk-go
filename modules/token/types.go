@@ -26,8 +26,12 @@ func (msg MsgIssueToken) Type() string { return "issue_token" }
 
 // Implements Msg.
 func (msg MsgIssueToken) ValidateBasic() error {
-	if msg.Owner.Empty() {
+	if len(msg.Owner) ==0  {
 		return errors.New("owner must be not empty")
+	}
+
+	if err := sdk.ValidateAccAddress(msg.Owner);err != nil {
+		return sdk.Wrap(err)
 	}
 
 	if len(msg.Symbol) == 0 {
@@ -57,7 +61,7 @@ func (msg MsgIssueToken) GetSignBytes() []byte {
 
 // Implements Msg.
 func (msg MsgIssueToken) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Owner}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Owner)}
 }
 
 // GetSignBytes implements Msg
@@ -72,16 +76,24 @@ func (msg MsgTransferTokenOwner) GetSignBytes() []byte {
 
 // GetSigners implements Msg
 func (msg MsgTransferTokenOwner) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.SrcOwner}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.SrcOwner)}
 }
 
 func (msg MsgTransferTokenOwner) ValidateBasic() error {
-	if msg.SrcOwner.Empty() {
+	if len(msg.SrcOwner) ==0  {
 		return errors.New("srcOwner must be not empty")
 	}
 
-	if msg.DstOwner.Empty() {
+	if err := sdk.ValidateAccAddress(msg.SrcOwner);err != nil {
+		return sdk.Wrap(err)
+	}
+
+	if len(msg.DstOwner) ==0  {
 		return errors.New("dstOwner must be not empty")
+	}
+
+	if err := sdk.ValidateAccAddress(msg.DstOwner);err != nil {
+		return sdk.Wrap(err)
 	}
 
 	if len(msg.Symbol) == 0 {
@@ -103,8 +115,12 @@ func (msg MsgEditToken) Type() string { return "edit_token" }
 
 // ValidateBasic implements Msg
 func (msg MsgEditToken) ValidateBasic() error {
-	if msg.Owner.Empty() {
+	if len(msg.Owner) ==0  {
 		return errors.New("owner must be not empty")
+	}
+
+	if err := sdk.ValidateAccAddress(msg.Owner);err != nil {
+		return sdk.Wrap(err)
 	}
 
 	if len(msg.Symbol) == 0 {
@@ -125,7 +141,7 @@ func (msg MsgEditToken) GetSignBytes() []byte {
 
 // GetSigners implements Msg
 func (msg MsgEditToken) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Owner}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Owner)}
 }
 
 func (msg MsgMintToken) Route() string { return ModuleName }
@@ -144,13 +160,17 @@ func (msg MsgMintToken) GetSignBytes() []byte {
 
 // GetSigners implements Msg
 func (msg MsgMintToken) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Owner}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Owner)}
 }
 
 // ValidateBasic implements Msg
 func (msg MsgMintToken) ValidateBasic() error {
-	if msg.Owner.Empty() {
+	if len(msg.Owner) ==0  {
 		return errors.New("owner must be not empty")
+	}
+
+	if err := sdk.ValidateAccAddress(msg.Owner);err != nil {
+		return sdk.Wrap(err)
 	}
 
 	if len(msg.Symbol) == 0 {
@@ -238,7 +258,7 @@ func (t Token) GetMintable() bool {
 
 // GetOwner implements exported.TokenI
 func (t Token) GetOwner() sdk.AccAddress {
-	return t.Owner
+	return sdk.MustAccAddressFromBech32(t.Owner)
 }
 
 func (t Token) Convert() interface{} {
@@ -250,7 +270,7 @@ func (t Token) Convert() interface{} {
 		InitialSupply: t.InitialSupply,
 		MaxSupply:     t.MaxSupply,
 		Mintable:      t.Mintable,
-		Owner:         t.Owner.String(),
+		Owner:         t.Owner,
 	}
 }
 

@@ -39,8 +39,12 @@ func (msg MsgCreateRecord) ValidateBasic() error {
 	if len(msg.Contents) == 0 {
 		return fmt.Errorf("contents missing")
 	}
-	if msg.Creator.Empty() {
+	if len(msg.Creator) == 0 {
 		return fmt.Errorf("creator missing")
+	}
+
+	if err := sdk.ValidateAccAddress(msg.Creator) ;err != nil {
+		return sdk.Wrap(err)
 	}
 
 	for i, content := range msg.Contents {
@@ -56,15 +60,15 @@ func (msg MsgCreateRecord) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (msg MsgCreateRecord) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Creator}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Creator)}
 }
 
 func (this Record) Convert() interface{} {
 	return QueryRecordResp{
 		Record: Data{
-			TxHash:   this.TxHash.String(),
+			TxHash:   this.TxHash,
 			Contents: this.Contents,
-			Creator:  this.Creator.String(),
+			Creator:  this.Creator,
 		},
 	}
 }

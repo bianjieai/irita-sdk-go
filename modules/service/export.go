@@ -29,10 +29,10 @@ type Tx interface {
 // Query defines a set of query interfaces in the service module
 type Query interface {
 	QueryServiceDefinition(serviceName string) (QueryServiceDefinitionResponse, sdk.Error)
-	QueryServiceBinding(serviceName string, provider sdk.AccAddress) (QueryServiceBindingResponse, sdk.Error)
+	QueryServiceBinding(serviceName string, provider string) (QueryServiceBindingResponse, sdk.Error)
 	QueryServiceBindings(serviceName string) ([]QueryServiceBindingResponse, sdk.Error)
 	QueryServiceRequest(requestID string) (QueryServiceRequestResponse, sdk.Error)
-	QueryServiceRequests(serviceName string, provider sdk.AccAddress) ([]QueryServiceRequestResponse, sdk.Error)
+	QueryServiceRequests(serviceName string, provider string) ([]QueryServiceRequestResponse, sdk.Error)
 	QueryRequestsByReqCtx(requestContextID string, batchCounter uint64) ([]QueryServiceRequestResponse, sdk.Error)
 	QueryServiceResponse(requestID string) (QueryServiceResponseResponse, sdk.Error)
 	QueryServiceResponses(requestContextID string, batchCounter uint64) ([]QueryServiceResponseResponse, sdk.Error)
@@ -59,27 +59,27 @@ type Registry map[string]RespondCallback
 
 // Request defines a request which contains the detailed request data
 type QueryServiceRequestResponse struct {
-	ID                         string         `json:"id"`
-	ServiceName                string         `json:"service_name"`
-	Provider                   sdk.AccAddress `json:"provider"`
-	Consumer                   sdk.AccAddress `json:"consumer"`
-	Input                      string         `json:"input"`
-	ServiceFee                 sdk.Coins      `json:"service_fee"`
-	SuperMode                  bool           `json:"super_mode"`
-	RequestHeight              int64          `json:"request_height"`
-	ExpirationHeight           int64          `json:"expiration_height"`
-	RequestContextID           string         `json:"request_context_id"`
-	RequestContextBatchCounter uint64         `json:"request_context_batch_counter"`
+	ID                         string    `json:"id"`
+	ServiceName                string    `json:"service_name"`
+	Provider                   string    `json:"provider"`
+	Consumer                   string    `json:"consumer"`
+	Input                      string    `json:"input"`
+	ServiceFee                 sdk.Coins `json:"service_fee"`
+	SuperMode                  bool      `json:"super_mode"`
+	RequestHeight              int64     `json:"request_height"`
+	ExpirationHeight           int64     `json:"expiration_height"`
+	RequestContextID           string    `json:"request_context_id"`
+	RequestContextBatchCounter uint64    `json:"request_context_batch_counter"`
 }
 
 // Response defines a response
 type QueryServiceResponseResponse struct {
-	Provider                   sdk.AccAddress `json:"provider"`
-	Consumer                   sdk.AccAddress `json:"consumer"`
-	Output                     string         `json:"output"`
-	Result                     string         `json:"error"`
-	RequestContextID           string         `json:"request_context_id"`
-	RequestContextBatchCounter uint64         `json:"request_context_batch_counter"`
+	Provider                   string `json:"provider"`
+	Consumer                   string `json:"consumer"`
+	Output                     string `json:"output"`
+	Result                     string `json:"error"`
+	RequestContextID           string `json:"request_context_id"`
+	RequestContextBatchCounter uint64 `json:"request_context_batch_counter"`
 }
 
 // DefineServiceRequest defines the request parameters of the service definition
@@ -93,12 +93,12 @@ type DefineServiceRequest struct {
 
 // QueryServiceDefinitionResponse represents a service definition
 type QueryServiceDefinitionResponse struct {
-	Name              string         `json:"name"`
-	Description       string         `json:"description"`
-	Tags              []string       `json:"tags"`
-	Author            sdk.AccAddress `json:"author"`
-	AuthorDescription string         `json:"author_description"`
-	Schemas           string         `json:"schemas"`
+	Name              string   `json:"name"`
+	Description       string   `json:"description"`
+	Tags              []string `json:"tags"`
+	Author            string   `json:"author"`
+	AuthorDescription string   `json:"author_description"`
+	Schemas           string   `json:"schemas"`
 }
 
 // BindServiceRequest defines the request parameters of the service binding
@@ -122,15 +122,15 @@ type UpdateServiceBindingRequest struct {
 
 // QueryServiceBindingResponse defines a struct for service binding
 type QueryServiceBindingResponse struct {
-	ServiceName  string         `json:"service_name"`
-	Provider     sdk.AccAddress `json:"provider"`
-	Deposit      sdk.Coins      `json:"deposit"`
-	Pricing      string         `json:"pricing"`
-	QoS          uint64         `json:"qos"`
-	Options      string         `json:"options"`
-	Available    bool           `json:"available"`
-	DisabledTime time.Time      `json:"disabled_time"`
-	Owner        sdk.AccAddress `json:"owner"`
+	ServiceName  string    `json:"service_name"`
+	Provider     string    `json:"provider"`
+	Deposit      sdk.Coins `json:"deposit"`
+	Pricing      string    `json:"pricing"`
+	QoS          uint64    `json:"qos"`
+	Options      string    `json:"options"`
+	Available    bool      `json:"available"`
+	DisabledTime time.Time `json:"disabled_time"`
+	Owner        string    `json:"owner"`
 }
 
 // InvokeServiceRequest defines the request parameters of the service call
@@ -166,23 +166,23 @@ type UpdateRequestContextRequest struct {
 
 // QueryRequestContextResp defines a context which holds request-related data
 type QueryRequestContextResp struct {
-	ServiceName        string           `json:"service_name"`
-	Providers          []sdk.AccAddress `json:"providers"`
-	Consumer           sdk.AccAddress   `json:"consumer"`
-	Input              string           `json:"input"`
-	ServiceFeeCap      sdk.Coins        `json:"service_fee_cap"`
-	Timeout            int64            `json:"timeout"`
-	SuperMode          bool             `json:"super_mode"`
-	Repeated           bool             `json:"repeated"`
-	RepeatedFrequency  uint64           `json:"repeated_frequency"`
-	RepeatedTotal      int64            `json:"repeated_total"`
-	BatchCounter       uint64           `json:"batch_counter"`
-	BatchRequestCount  uint32           `json:"batch_request_count"`
-	BatchResponseCount uint32           `json:"batch_response_count"`
-	BatchState         string           `json:"batch_state"`
-	State              string           `json:"state"`
-	ResponseThreshold  uint32           `json:"response_threshold"`
-	ModuleName         string           `json:"module_name"`
+	ServiceName        string    `json:"service_name"`
+	Providers          []string  `json:"providers"`
+	Consumer           string    `json:"consumer"`
+	Input              string    `json:"input"`
+	ServiceFeeCap      sdk.Coins `json:"service_fee_cap"`
+	Timeout            int64     `json:"timeout"`
+	SuperMode          bool      `json:"super_mode"`
+	Repeated           bool      `json:"repeated"`
+	RepeatedFrequency  uint64    `json:"repeated_frequency"`
+	RepeatedTotal      int64     `json:"repeated_total"`
+	BatchCounter       uint64    `json:"batch_counter"`
+	BatchRequestCount  uint32    `json:"batch_request_count"`
+	BatchResponseCount uint32    `json:"batch_response_count"`
+	BatchState         string    `json:"batch_state"`
+	State              string    `json:"state"`
+	ResponseThreshold  uint32    `json:"response_threshold"`
+	ModuleName         string    `json:"module_name"`
 }
 
 type QueryParamsResp struct {

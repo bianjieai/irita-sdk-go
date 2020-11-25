@@ -69,6 +69,9 @@ func (msg MsgDefineService) ValidateBasic() error {
 	if len(msg.Author) == 0 {
 		return errors.New("author missing")
 	}
+	if err := sdk.ValidateAccAddress(msg.Author); err != nil {
+		return err
+	}
 
 	if len(msg.Name) == 0 {
 		return errors.New("author missing")
@@ -95,7 +98,7 @@ func (msg MsgDefineService) GetSignBytes() []byte {
 }
 
 func (msg MsgDefineService) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Author}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Author)}
 }
 
 func (msg MsgBindService) Type() string {
@@ -108,9 +111,15 @@ func (msg MsgBindService) ValidateBasic() error {
 	if len(msg.Owner) == 0 {
 		return errors.New("owner missing")
 	}
+	if err := sdk.ValidateAccAddress(msg.Owner); err != nil {
+		return err
+	}
 
 	if len(msg.Provider) == 0 {
 		return errors.New("provider missing")
+	}
+	if err := sdk.ValidateAccAddress(msg.Provider); err != nil {
+		return err
 	}
 
 	if len(msg.ServiceName) == 0 {
@@ -133,7 +142,7 @@ func (msg MsgBindService) GetSignBytes() []byte {
 }
 
 func (msg MsgBindService) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Owner}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Owner)}
 }
 
 func (msg MsgCallService) Route() string { return ModuleName }
@@ -146,8 +155,17 @@ func (msg MsgCallService) ValidateBasic() error {
 	if len(msg.Consumer) == 0 {
 		return errors.New("consumer missing")
 	}
+	if err := sdk.ValidateAccAddress(msg.Consumer); err != nil {
+		return err
+	}
+
 	if len(msg.Providers) == 0 {
 		return errors.New("providers missing")
+	}
+	for _, provider := range msg.Providers {
+		if err := sdk.ValidateAccAddress(provider); err != nil {
+			return err
+		}
 	}
 
 	if len(msg.ServiceName) == 0 {
@@ -170,7 +188,7 @@ func (msg MsgCallService) GetSignBytes() []byte {
 }
 
 func (msg MsgCallService) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Consumer}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Consumer)}
 }
 
 func (msg MsgRespondService) Route() string { return ModuleName }
@@ -182,6 +200,9 @@ func (msg MsgRespondService) Type() string {
 func (msg MsgRespondService) ValidateBasic() error {
 	if len(msg.Provider) == 0 {
 		return errors.New("provider missing")
+	}
+	if err := sdk.ValidateAccAddress(msg.Provider); err != nil {
+		return err
 	}
 
 	if len(msg.Result) == 0 {
@@ -207,7 +228,7 @@ func (msg MsgRespondService) GetSignBytes() []byte {
 }
 
 func (msg MsgRespondService) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Provider}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Provider)}
 }
 
 // ______________________________________________________________________
@@ -232,9 +253,15 @@ func (msg MsgUpdateServiceBinding) ValidateBasic() error {
 	if len(msg.Provider) == 0 {
 		return errors.New("provider missing")
 	}
+	if err := sdk.ValidateAccAddress(msg.Provider); err != nil {
+		return err
+	}
 
 	if len(msg.Owner) == 0 {
 		return errors.New("owner missing")
+	}
+	if err := sdk.ValidateAccAddress(msg.Owner); err != nil {
+		return err
 	}
 
 	if len(msg.ServiceName) == 0 {
@@ -250,7 +277,7 @@ func (msg MsgUpdateServiceBinding) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (msg MsgUpdateServiceBinding) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Owner}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Owner)}
 }
 
 // ______________________________________________________________________
@@ -275,6 +302,9 @@ func (msg MsgSetWithdrawAddress) ValidateBasic() error {
 	if len(msg.Owner) == 0 {
 		return errors.New("owner missing")
 	}
+	if err := sdk.ValidateAccAddress(msg.Owner); err != nil {
+		return err
+	}
 
 	if len(msg.WithdrawAddress) == 0 {
 		return errors.New("withdrawal address missing")
@@ -285,7 +315,7 @@ func (msg MsgSetWithdrawAddress) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (msg MsgSetWithdrawAddress) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Owner}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Owner)}
 }
 
 // ______________________________________________________________________
@@ -310,9 +340,15 @@ func (msg MsgDisableServiceBinding) ValidateBasic() error {
 	if len(msg.Provider) == 0 {
 		return errors.New("provider missing")
 	}
+	if err := sdk.ValidateAccAddress(msg.Provider); err != nil {
+		return err
+	}
 
 	if len(msg.Owner) == 0 {
 		return errors.New("owner missing")
+	}
+	if err := sdk.ValidateAccAddress(msg.Owner); err != nil {
+		return err
 	}
 
 	if len(msg.ServiceName) == 0 {
@@ -324,7 +360,7 @@ func (msg MsgDisableServiceBinding) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (msg MsgDisableServiceBinding) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Owner}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Owner)}
 }
 
 // ______________________________________________________________________
@@ -349,9 +385,15 @@ func (msg MsgEnableServiceBinding) ValidateBasic() error {
 	if len(msg.Provider) == 0 {
 		return errors.New("provider missing")
 	}
+	if err := sdk.ValidateAccAddress(msg.Provider); err != nil {
+		return err
+	}
 
 	if len(msg.Owner) == 0 {
 		return errors.New("owner missing")
+	}
+	if err := sdk.ValidateAccAddress(msg.Owner); err != nil {
+		return err
 	}
 
 	if len(msg.ServiceName) == 0 {
@@ -367,7 +409,7 @@ func (msg MsgEnableServiceBinding) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (msg MsgEnableServiceBinding) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Owner}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Owner)}
 }
 
 // ______________________________________________________________________
@@ -392,9 +434,15 @@ func (msg MsgRefundServiceDeposit) ValidateBasic() error {
 	if len(msg.Provider) == 0 {
 		return errors.New("provider missing")
 	}
+	if err := sdk.ValidateAccAddress(msg.Provider); err != nil {
+		return err
+	}
 
 	if len(msg.Owner) == 0 {
 		return errors.New("owner missing")
+	}
+	if err := sdk.ValidateAccAddress(msg.Owner); err != nil {
+		return err
 	}
 
 	if len(msg.ServiceName) == 0 {
@@ -406,7 +454,7 @@ func (msg MsgRefundServiceDeposit) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (msg MsgRefundServiceDeposit) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Owner}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Owner)}
 }
 
 // ______________________________________________________________________
@@ -431,12 +479,15 @@ func (msg MsgPauseRequestContext) ValidateBasic() error {
 	if len(msg.Consumer) == 0 {
 		return errors.New("consumer missing")
 	}
+	if err := sdk.ValidateAccAddress(msg.Consumer); err != nil {
+		return err
+	}
 	return nil
 }
 
 // GetSigners implements Msg.
 func (msg MsgPauseRequestContext) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Consumer}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Consumer)}
 }
 
 // ______________________________________________________________________
@@ -461,12 +512,15 @@ func (msg MsgStartRequestContext) ValidateBasic() error {
 	if len(msg.Consumer) == 0 {
 		return errors.New("consumer missing")
 	}
+	if err := sdk.ValidateAccAddress(msg.Consumer); err != nil {
+		return err
+	}
 	return nil
 }
 
 // GetSigners implements Msg.
 func (msg MsgStartRequestContext) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Consumer}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Consumer)}
 }
 
 // ______________________________________________________________________
@@ -491,13 +545,16 @@ func (msg MsgKillRequestContext) ValidateBasic() error {
 	if len(msg.Consumer) == 0 {
 		return errors.New("consumer missing")
 	}
+	if err := sdk.ValidateAccAddress(msg.Consumer); err != nil {
+		return err
+	}
 
 	return nil
 }
 
 // GetSigners implements Msg.
 func (msg MsgKillRequestContext) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Consumer}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Consumer)}
 }
 
 // ______________________________________________________________________
@@ -522,13 +579,16 @@ func (msg MsgUpdateRequestContext) ValidateBasic() error {
 	if len(msg.Consumer) == 0 {
 		return errors.New("consumer missing")
 	}
+	if err := sdk.ValidateAccAddress(msg.Consumer); err != nil {
+		return err
+	}
 
 	return nil
 }
 
 // GetSigners implements Msg.
 func (msg MsgUpdateRequestContext) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Consumer}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Consumer)}
 }
 
 // ______________________________________________________________________
@@ -553,9 +613,15 @@ func (msg MsgWithdrawEarnedFees) ValidateBasic() error {
 	if len(msg.Provider) == 0 {
 		return errors.New("provider missing")
 	}
+	if err := sdk.ValidateAccAddress(msg.Provider); err != nil {
+		return err
+	}
 
 	if len(msg.Owner) == 0 {
 		return errors.New("owner missing")
+	}
+	if err := sdk.ValidateAccAddress(msg.Owner); err != nil {
+		return err
 	}
 
 	return nil
@@ -563,17 +629,34 @@ func (msg MsgWithdrawEarnedFees) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (msg MsgWithdrawEarnedFees) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Owner}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(msg.Owner)}
 }
 
 // ==========================================for QueryWithResponse==========================================
 
 func (r ServiceDefinition) Convert() interface{} {
-	return QueryServiceDefinitionResponse(r)
+	return QueryServiceDefinitionResponse{
+		Name:              r.Name,
+		Description:       r.Description,
+		Tags:              r.Tags,
+		Author:            r.Author,
+		AuthorDescription: r.AuthorDescription,
+		Schemas:           r.Schemas,
+	}
 }
 
 func (b ServiceBinding) Convert() interface{} {
-	return QueryServiceBindingResponse(b)
+	return QueryServiceBindingResponse{
+		ServiceName:  b.ServiceName,
+		Provider:     b.Provider,
+		Deposit:      b.Deposit,
+		Pricing:      b.Pricing,
+		QoS:          b.QoS,
+		Options:      b.Options,
+		Available:    b.Available,
+		DisabledTime: b.DisabledTime,
+		Owner:        b.Owner,
+	}
 }
 
 type serviceBindings []*ServiceBinding
@@ -592,7 +675,7 @@ func (r Request) Empty() bool {
 
 func (r Request) Convert() interface{} {
 	return QueryServiceRequestResponse{
-		ID:                         r.Id.String(),
+		ID:                         r.Id,
 		ServiceName:                r.ServiceName,
 		Provider:                   r.Provider,
 		Consumer:                   r.Consumer,
@@ -601,7 +684,7 @@ func (r Request) Convert() interface{} {
 		SuperMode:                  r.SuperMode,
 		RequestHeight:              r.RequestHeight,
 		ExpirationHeight:           r.ExpirationHeight,
-		RequestContextID:           r.RequestContextId.String(),
+		RequestContextID:           r.RequestContextId,
 		RequestContextBatchCounter: r.RequestContextBatchCounter,
 	}
 }
@@ -626,7 +709,7 @@ func (r Response) Convert() interface{} {
 		Consumer:                   r.Consumer,
 		Output:                     r.Output,
 		Result:                     r.Result,
-		RequestContextID:           r.RequestContextId.String(),
+		RequestContextID:           r.RequestContextId,
 		RequestContextBatchCounter: r.RequestContextBatchCounter,
 	}
 }
@@ -648,10 +731,6 @@ func RequestContextStateFromString(str string) (RequestContextState, error) {
 	return RequestContextState(0xff), fmt.Errorf("'%s' is not a valid request context state", str)
 }
 
-func (state RequestContextState) String() string {
-	return RequestContextStateToStringMap[state]
-}
-
 // MarshalJSON returns the JSON representation
 func (state RequestContextState) MarshalJSON() ([]byte, error) {
 	return json2.Marshal(state.String())
@@ -662,10 +741,6 @@ func RequestContextBatchStateFromString(str string) (RequestContextBatchState, e
 		return state, nil
 	}
 	return RequestContextBatchState(0xff), fmt.Errorf("'%s' is not a valid request context batch state", str)
-}
-
-func (state RequestContextBatchState) String() string {
-	return RequestContextBatchStateToStringMap[state]
 }
 
 // MarshalJSON returns the JSON representation

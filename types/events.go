@@ -126,7 +126,9 @@ func toBytes(i interface{}) []byte {
 var (
 	TypeKey EventKey = "tm.event"
 
-	EventTypeMessage = "message"
+	EventTypeMessage         = "message"
+	EventTypeCreateContext   = "create_context"
+	EventTypeResponseService = "response_service"
 
 	AttributeKeyAction = "action"
 	AttributeKeyModule = "module"

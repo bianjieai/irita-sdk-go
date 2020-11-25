@@ -238,6 +238,7 @@ type BaseTx struct {
 type ResultTx struct {
 	GasWanted int64        `json:"gas_wanted"`
 	GasUsed   int64        `json:"gas_used"`
+	Data      []byte       `json:"data"`
 	Events    StringEvents `json:"events"`
 	Hash      string       `json:"hash"`
 	Height    int64        `json:"height"`
