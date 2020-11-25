@@ -57,7 +57,7 @@ func (s IntegrationTestSuite) TestService() {
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), result.Hash)
 
-	bindResp, err := s.Service.QueryServiceBinding(definition.ServiceName, s.Account().Address)
+	bindResp, err := s.Service.QueryServiceBinding(definition.ServiceName, s.Account().Address.String())
 	require.NoError(s.T(), err)
 	require.Equal(s.T(), binding.ServiceName, bindResp.ServiceName)
 	require.Equal(s.T(), s.Account().Address, bindResp.Provider)

@@ -36,7 +36,7 @@ func (r recordClient) CreateRecord(request CreateRecordRequest, baseTx sdk.BaseT
 
 	msg := &MsgCreateRecord{
 		Contents: request.Contents,
-		Creator:  creator,
+		Creator:  creator.String(),
 	}
 
 	res, err := r.BuildAndSend([]sdk.Msg{msg}, baseTx)
