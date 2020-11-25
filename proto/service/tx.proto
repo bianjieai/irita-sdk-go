@@ -81,6 +81,11 @@ message MsgCallService {
     int64 repeated_total = 10 [(gogoproto.moretags) = "yaml:\"repeated_total\""];
 }
 
+// MsgCallServiceResponse defines the Msg/CallService response type.
+message MsgCallServiceResponse {
+    string request_context_id = 1 [(gogoproto.moretags) = "yaml:\"request_context_id\""];
+}
+
 // MsgRespondService defines an SDK message to respond a service request.
 message MsgRespondService {
     string request_id = 1 [(gogoproto.moretags) = "yaml:\"request_id\""];

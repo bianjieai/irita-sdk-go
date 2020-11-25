@@ -42,7 +42,7 @@ func (s IntegrationTestSuite) TestService() {
 	require.EqualValues(s.T(), definition.Tags, defi.Tags)
 	require.Equal(s.T(), definition.AuthorDescription, defi.AuthorDescription)
 	require.Equal(s.T(), definition.Schemas, defi.Schemas)
-	require.Equal(s.T(), s.Account().Address, defi.Author)
+	require.Equal(s.T(), s.Account().Address.String(), defi.Author)
 
 	deposit, e := sdk.ParseDecCoins("20000point")
 	require.NoError(s.T(), e)
@@ -50,7 +50,7 @@ func (s IntegrationTestSuite) TestService() {
 		ServiceName: definition.ServiceName,
 		Deposit:     deposit,
 		Pricing:     pricing,
-		QoS:         1,
+		QoS:         10,
 		Options:     options,
 	}
 	result, err = s.Service.BindService(binding, baseTx)
@@ -60,7 +60,7 @@ func (s IntegrationTestSuite) TestService() {
 	bindResp, err := s.Service.QueryServiceBinding(definition.ServiceName, s.Account().Address.String())
 	require.NoError(s.T(), err)
 	require.Equal(s.T(), binding.ServiceName, bindResp.ServiceName)
-	require.Equal(s.T(), s.Account().Address, bindResp.Provider)
+	require.Equal(s.T(), s.Account().Address.String(), bindResp.Provider)
 	require.Equal(s.T(), binding.Pricing, bindResp.Pricing)
 
 	input := `{"header":{},"body":{"pair":"point-usdt"}}`
@@ -75,6 +75,7 @@ func (s IntegrationTestSuite) TestService() {
 	}
 	sub1, err = s.Service.SubscribeServiceRequest(definition.ServiceName, callback, baseTx)
 	require.NoError(s.T(), err)
+	s.Logger().Info("SubscribeServiceRequest", "condition", sub1.Query)
 
 	serviceFeeCap, e := sdk.ParseDecCoins("200point")
 	require.NoError(s.T(), e)
@@ -84,7 +85,7 @@ func (s IntegrationTestSuite) TestService() {
 		Providers:     []string{s.Account().Address.String()},
 		Input:         input,
 		ServiceFeeCap: serviceFeeCap,
-		Timeout:       3,
+		Timeout:       10,
 		SuperMode:     false,
 		Repeated:      true,
 		RepeatedTotal: -1,
@@ -96,6 +97,10 @@ func (s IntegrationTestSuite) TestService() {
 
 	requestContextID, result, err = s.Service.InvokeService(invocation, baseTx)
 	require.NoError(s.T(), err)
+	s.Logger().Info("InvokeService success",
+		"hash", result.Hash,
+		"requestContextID", requestContextID,
+	)
 
 	sub2, err = s.Service.SubscribeServiceResponse(requestContextID, func(reqCtxID, reqID, responses string) {
 		require.Equal(s.T(), reqCtxID, requestContextID)

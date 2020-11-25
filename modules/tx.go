@@ -133,6 +133,7 @@ func (base baseClient) broadcastTxCommit(tx []byte) (sdk.ResultTx, sdk.Error) {
 	return sdk.ResultTx{
 		GasWanted: res.DeliverTx.GasWanted,
 		GasUsed:   res.DeliverTx.GasUsed,
+		Data:      res.DeliverTx.Data,
 		Events:    sdk.StringifyEvents(res.DeliverTx.Events),
 		Hash:      res.Hash.String(),
 		Height:    res.Height,

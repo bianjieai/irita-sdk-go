@@ -207,7 +207,7 @@ func (s serviceClient) InvokeService(request InvokeServiceRequest, baseTx sdk.Ba
 		return "", sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	reqCtxID, e := result.Events.GetValue(sdk.EventTypeMessage, attributeKeyRequestContextID)
+	reqCtxID, e := result.Events.GetValue(sdk.EventTypeCreateContext, attributeKeyRequestContextID)
 	if e != nil {
 		return reqCtxID, result, sdk.Wrap(e)
 	}
@@ -249,7 +249,7 @@ func (s serviceClient) SubscribeServiceResponse(reqCtxID string,
 	}
 
 	builder := sdk.NewEventQueryBuilder().AddCondition(
-		sdk.NewCond(sdk.EventTypeMessage, attributeKeyRequestContextID).EQ(sdk.EventValue(reqCtxID)),
+		sdk.NewCond(sdk.EventTypeResponseService, attributeKeyRequestContextID).EQ(sdk.EventValue(reqCtxID)),
 	)
 
 	return s.SubscribeTx(builder, func(tx sdk.EventDataTx) {
@@ -445,6 +445,12 @@ func (s serviceClient) SubscribeServiceRequest(serviceName string,
 
 	return s.SubscribeNewBlock(builder, func(block sdk.EventDataNewBlock) {
 		msgs := s.GenServiceResponseMsgs(block.ResultEndBlock.Events, serviceName, provider, callback)
+		if msgs == nil || len(msgs) == 0 {
+			s.Logger().Error("no message created",
+				"serviceName", serviceName,
+				"provider", provider,
+			)
+		}
 		if _, err = s.SendBatch(msgs, baseTx); err != nil {
 			s.Logger().Error("provider respond failed", "errMsg", err.Error())
 		}
@@ -478,7 +484,7 @@ func (s serviceClient) QueryServiceBinding(serviceName string, provider string) 
 		return QueryServiceBindingResponse{}, sdk.Wrap(err)
 	}
 
-	if err := sdk.ValidateAccAddress(provider);err != nil {
+	if err := sdk.ValidateAccAddress(provider); err != nil {
 		return QueryServiceBindingResponse{}, sdk.Wrap(err)
 	}
 
@@ -542,7 +548,7 @@ func (s serviceClient) QueryServiceRequests(serviceName string, provider string)
 		return nil, sdk.Wrap(err)
 	}
 
-	if err := sdk.ValidateAccAddress(provider);err != nil {
+	if err := sdk.ValidateAccAddress(provider); err != nil {
 		return nil, sdk.Wrap(err)
 	}
 
@@ -641,7 +647,7 @@ func (s serviceClient) QueryRequestContext(reqCtxID string) (QueryRequestContext
 
 //QueryFees return the earned fees for a provider
 func (s serviceClient) QueryFees(provider string) (sdk.Coins, sdk.Error) {
-	if err := sdk.ValidateAccAddress(provider);err != nil {
+	if err := sdk.ValidateAccAddress(provider); err != nil {
 		return nil, sdk.Wrap(err)
 	}
 
