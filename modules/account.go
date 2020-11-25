@@ -50,7 +50,6 @@ func (a accountQuery) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) 
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
-
 	if err := sdk.ValidateAccAddress(address); err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
@@ -71,14 +70,16 @@ func (a accountQuery) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) 
 	baseAcc := acc.(*auth.BaseAccount)
 	account := baseAcc.Convert().(sdk.BaseAccount)
 
-	pubkey, err := baseAcc.GetPubKey(a.cdc)
-	if err != nil {
-		return sdk.BaseAccount{}, sdk.Wrap(err)
-	}
+	if baseAcc.PubKey != nil {
+		pubkey, err := baseAcc.GetPubKey(a.cdc)
+		if err != nil {
+			return sdk.BaseAccount{}, sdk.Wrap(err)
+		}
 
-	account.PubKey, err = sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, pubkey)
-	if err != nil {
-		return sdk.BaseAccount{}, sdk.Wrap(err)
+		account.PubKey, err = sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, pubkey)
+		if err != nil {
+			return sdk.BaseAccount{}, sdk.Wrap(err)
+		}
 	}
 
 	breq := &bank.QueryAllBalancesRequest{

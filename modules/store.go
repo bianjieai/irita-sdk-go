@@ -12,7 +12,7 @@ func (base baseClient) QueryWithData(path string, key []byte) ([]byte, int64, er
 		Prove: true,
 	}
 
-	result, err := base.ABCIQueryWithOptions(context.Background(),path, key, opts)
+	result, err := base.ABCIQueryWithOptions(context.Background(), path, key, opts)
 	if err != nil {
 		return nil, 0, err
 	}

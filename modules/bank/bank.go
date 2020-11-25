@@ -38,7 +38,7 @@ func (b bankClient) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
-	if err := sdk.ValidateAccAddress(address);err != nil {
+	if err := sdk.ValidateAccAddress(address); err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
@@ -62,7 +62,7 @@ func (b bankClient) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
 
 // Send is responsible for transferring tokens from `From` to `to` account
 func (b bankClient) Send(to string, amount sdk.DecCoins, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
-	if err := sdk.ValidateAccAddress(to);err != nil {
+	if err := sdk.ValidateAccAddress(to); err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
@@ -93,7 +93,7 @@ func (b bankClient) MultiSend(request MultiSendRequest, baseTx sdk.BaseTx) (resT
 	var inputs = make([]Input, len(request.Receipts))
 	var outputs = make([]Output, len(request.Receipts))
 	for i, receipt := range request.Receipts {
-		if err := sdk.ValidateAccAddress(receipt.Address);err != nil {
+		if err := sdk.ValidateAccAddress(receipt.Address); err != nil {
 			return nil, sdk.Wrap(err)
 		}
 
@@ -126,7 +126,7 @@ func (b bankClient) SendBatch(sender sdk.AccAddress,
 		var inputs = make([]Input, len(req.Receipts))
 		var outputs = make([]Output, len(req.Receipts))
 		for i, receipt := range req.Receipts {
-			if err := sdk.ValidateAccAddress(receipt.Address);err != nil {
+			if err := sdk.ValidateAccAddress(receipt.Address); err != nil {
 				return nil, sdk.Wrap(err)
 			}
 

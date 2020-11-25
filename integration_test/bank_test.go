@@ -18,10 +18,10 @@ func (s IntegrationTestSuite) TestBank() {
 			"TestQueryAccount",
 			queryAccount,
 		},
-		// {
-		// 	"TestSend",
-		// 	send,
-		// },
+		{
+			"TestSend",
+			send,
+		},
 		// {
 		// 	"TestMultiSend",
 		// 	multiSend,

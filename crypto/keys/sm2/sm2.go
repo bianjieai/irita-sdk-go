@@ -4,9 +4,10 @@ import (
 	"crypto/sha256"
 	"crypto/subtle"
 	"fmt"
-	"github.com/pkg/errors"
 	"io"
 	"math/big"
+
+	"github.com/pkg/errors"
 
 	"github.com/tjfoc/gmsm/sm2"
 

@@ -20,7 +20,7 @@ type Account interface {
 	GetAddress() sdk.AccAddress
 	SetAddress(sdk.AccAddress) error // errors if already set.
 
-	GetPubKey(unpacker codectypes.AnyUnpacker) (crypto.PubKey,error)
+	GetPubKey(unpacker codectypes.AnyUnpacker) (crypto.PubKey, error)
 	SetPubKey(crypto.PubKey) error
 
 	GetAccountNumber() uint64
@@ -49,16 +49,16 @@ func (acc *BaseAccount) SetAddress(addr sdk.AccAddress) error {
 }
 
 // GetPubKey - Implements sdk.Account.
-func (acc BaseAccount) GetPubKey(unpacker codectypes.AnyUnpacker) (pk crypto.PubKey,err error) {
+func (acc BaseAccount) GetPubKey(unpacker codectypes.AnyUnpacker) (pk crypto.PubKey, err error) {
 	if acc.PubKey == nil {
-		return nil,nil
+		return nil, nil
 	}
 
 	var pubKey crypto.PubKey
-	if err = unpacker.UnpackAny(acc.PubKey, &pubKey);err != nil {
-		return nil,err
+	if err = unpacker.UnpackAny(acc.PubKey, &pubKey); err != nil {
+		return nil, err
 	}
-	return pubKey,nil
+	return pubKey, nil
 }
 
 // SetPubKey - Implements sdk.Account.

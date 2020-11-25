@@ -4,11 +4,12 @@ import (
 	"crypto/ecdsa"
 	"encoding/base64"
 	"encoding/hex"
+	"math/big"
+	"testing"
+
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/crypto/keys/secp256k1"
 	cryptotypes "github.com/bianjieai/irita-sdk-go/crypto/types"
-	"math/big"
-	"testing"
 
 	btcSecp256k1 "github.com/btcsuite/btcd/btcec"
 	"github.com/btcsuite/btcutil/base58"

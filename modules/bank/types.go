@@ -34,7 +34,7 @@ func (msg MsgSend) Type() string {
 }
 
 func (msg MsgSend) ValidateBasic() error {
-	if len(msg.FromAddress) ==0  {
+	if len(msg.FromAddress) == 0 {
 		return errors.New("missing sender address")
 	}
 	if len(msg.ToAddress) == 0 {

@@ -115,7 +115,7 @@ func (pc *ProtoCodec) MarshalJSON(o proto.Message) ([]byte, error) {
 		return nil, fmt.Errorf("cannot protobuf JSON encode unsupported type: %T", o)
 	}
 
-	return ProtoMarshalJSON(m,pc.interfaceRegistry)
+	return ProtoMarshalJSON(m, pc.interfaceRegistry)
 }
 
 // MustMarshalJSON implements JSONMarshaler.MustMarshalJSON method,

@@ -19,7 +19,7 @@ type config struct {
 
 // NewTxConfig returns a new protobuf TxConfig using the provided ProtoCodec, PublicKeyCodec and sign modes. The
 // first enabled sign mode will become the default sign mode.
-func NewTxConfig(protoCodec *codec.ProtoCodec,enabledSignModes []signingtypes.SignMode) sdk.TxConfig {
+func NewTxConfig(protoCodec *codec.ProtoCodec, enabledSignModes []signingtypes.SignMode) sdk.TxConfig {
 	return &config{
 		handler:     MakeSignModeHandler(enabledSignModes),
 		decoder:     DefaultTxDecoder(protoCodec),

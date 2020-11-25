@@ -105,7 +105,7 @@ func makeEncodingConfig() types.EncodingConfig {
 	amino := codec.NewLegacyAmino()
 	interfaceRegistry := cdctypes.NewInterfaceRegistry()
 	marshaler := codec.NewProtoCodec(interfaceRegistry)
-	txCfg := txtypes.NewTxConfig(marshaler,txtypes.DefaultSignModes)
+	txCfg := txtypes.NewTxConfig(marshaler, txtypes.DefaultSignModes)
 
 	encodingConfig := types.EncodingConfig{
 		InterfaceRegistry: interfaceRegistry,
