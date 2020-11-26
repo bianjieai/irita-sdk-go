@@ -39,7 +39,7 @@ func (nc nftClient) IssueDenom(request IssueDenomRequest, baseTx sdk.BaseTx) (sd
 		Id:     request.ID,
 		Name:   request.Name,
 		Schema: request.Schema,
-		Sender: sender,
+		Sender: sender.String(),
 	}
 	return nc.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -50,21 +50,21 @@ func (nc nftClient) MintNFT(request MintNFTRequest, baseTx sdk.BaseTx) (sdk.Resu
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	var recipient = sender
+	var recipient = sender.String()
 	if len(request.Recipient) > 0 {
-		recipient, err = sdk.AccAddressFromBech32(request.Recipient)
-		if err != nil {
+		if err := sdk.ValidateAccAddress(request.Recipient); err != nil {
 			return sdk.ResultTx{}, sdk.Wrap(err)
 		}
+		recipient = request.Recipient
 	}
 
 	msg := &MsgMintNFT{
 		Id:        request.ID,
-		Denom:     request.Denom,
+		DenomId:   request.Denom,
 		Name:      request.Name,
 		URI:       request.URI,
 		Data:      request.Data,
-		Sender:    sender,
+		Sender:    sender.String(),
 		Recipient: recipient,
 	}
 	return nc.BuildAndSend([]sdk.Msg{msg}, baseTx)
@@ -77,12 +77,12 @@ func (nc nftClient) EditNFT(request EditNFTRequest, baseTx sdk.BaseTx) (sdk.Resu
 	}
 
 	msg := &MsgEditNFT{
-		Id:     request.ID,
-		Name:   request.Name,
-		Denom:  request.Denom,
-		URI:    request.URI,
-		Data:   request.Data,
-		Sender: sender,
+		Id:      request.ID,
+		Name:    request.Name,
+		DenomId: request.Denom,
+		URI:     request.URI,
+		Data:    request.Data,
+		Sender:  sender.String(),
 	}
 	return nc.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -93,19 +93,18 @@ func (nc nftClient) TransferNFT(request TransferNFTRequest, baseTx sdk.BaseTx) (
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	recipient, err := sdk.AccAddressFromBech32(request.Recipient)
-	if err != nil {
+	if err := sdk.ValidateAccAddress(request.Recipient); err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
 	msg := &MsgTransferNFT{
 		Id:        request.ID,
 		Name:      request.Name,
-		Denom:     request.Denom,
+		DenomId:   request.Denom,
 		URI:       request.URI,
 		Data:      request.Data,
-		Sender:    sender,
-		Recipient: recipient,
+		Sender:    sender.String(),
+		Recipient: request.Recipient,
 	}
 	return nc.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -117,9 +116,9 @@ func (nc nftClient) BurnNFT(request BurnNFTRequest, baseTx sdk.BaseTx) (sdk.Resu
 	}
 
 	msg := &MsgBurnNFT{
-		Sender: sender,
-		Id:     request.ID,
-		Denom:  request.Denom,
+		Sender:  sender.String(),
+		Id:      request.ID,
+		DenomId: request.Denom,
 	}
 	return nc.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -129,9 +128,8 @@ func (nc nftClient) QuerySupply(denom, creator string) (uint64, sdk.Error) {
 		return 0, sdk.Wrapf("denom is required")
 	}
 
-	address, err1 := sdk.AccAddressFromBech32(creator)
-	if err1 != nil {
-		return 0, sdk.Wrap(err1)
+	if err := sdk.ValidateAccAddress(creator); err != nil {
+		return 0, sdk.Wrap(err)
 	}
 
 	conn, err := nc.GenConn()
@@ -143,8 +141,8 @@ func (nc nftClient) QuerySupply(denom, creator string) (uint64, sdk.Error) {
 	res, err := NewQueryClient(conn).Supply(
 		context.Background(),
 		&QuerySupplyRequest{
-			Owner: address,
-			Denom: denom,
+			Owner:   creator,
+			DenomId: denom,
 		},
 	)
 	if err != nil {
@@ -159,9 +157,8 @@ func (nc nftClient) QueryOwner(creator, denom string) (QueryOwnerResp, sdk.Error
 		return QueryOwnerResp{}, sdk.Wrapf("denom is required")
 	}
 
-	address, err1 := sdk.AccAddressFromBech32(creator)
-	if err1 != nil {
-		return QueryOwnerResp{}, sdk.Wrap(err1)
+	if err := sdk.ValidateAccAddress(creator); err != nil {
+		return QueryOwnerResp{}, sdk.Wrap(err)
 	}
 
 	conn, err := nc.GenConn()
@@ -173,8 +170,8 @@ func (nc nftClient) QueryOwner(creator, denom string) (QueryOwnerResp, sdk.Error
 	res, err := NewQueryClient(conn).Owner(
 		context.Background(),
 		&QueryOwnerRequest{
-			Owner: address,
-			Denom: denom,
+			Owner:   creator,
+			DenomId: denom,
 		},
 	)
 	if err != nil {
@@ -197,7 +194,7 @@ func (nc nftClient) QueryCollection(denom string) (QueryCollectionResp, sdk.Erro
 
 	res, err := NewQueryClient(conn).Collection(
 		context.Background(),
-		&QueryCollectionRequest{Denom: denom},
+		&QueryCollectionRequest{DenomId: denom},
 	)
 	if err != nil {
 		return QueryCollectionResp{}, sdk.Wrap(err)
@@ -233,7 +230,7 @@ func (nc nftClient) QueryDenom(denom string) (QueryDenomResp, sdk.Error) {
 
 	res, err := NewQueryClient(conn).Denom(
 		context.Background(),
-		&QueryDenomRequest{Denom: denom},
+		&QueryDenomRequest{DenomId: denom},
 	)
 	if err != nil {
 		return QueryDenomResp{}, sdk.Wrap(err)
@@ -260,8 +257,8 @@ func (nc nftClient) QueryNFT(denom, tokenID string) (QueryNFTResp, sdk.Error) {
 	res, err := NewQueryClient(conn).NFT(
 		context.Background(),
 		&QueryNFTRequest{
-			Denom: denom,
-			Id:    tokenID,
+			DenomId: denom,
+			TokenId: tokenID,
 		},
 	)
 	if err != nil {

@@ -44,7 +44,7 @@ func (s serviceClient) DefineService(request DefineServiceRequest, baseTx sdk.Ba
 		Name:              request.ServiceName,
 		Description:       request.Description,
 		Tags:              request.Tags,
-		Author:            author,
+		Author:            author.String(),
 		AuthorDescription: request.AuthorDescription,
 		Schemas:           request.Schemas,
 	}
@@ -58,12 +58,12 @@ func (s serviceClient) BindService(request BindServiceRequest, baseTx sdk.BaseTx
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	var provider = owner
+	var provider = owner.String()
 	if len(request.Provider) > 0 {
-		provider, err = sdk.AccAddressFromBech32(request.Provider)
-		if err != nil {
+		if err := sdk.ValidateAccAddress(request.Provider); err != nil {
 			return sdk.ResultTx{}, sdk.Wrap(err)
 		}
+		provider = request.Provider
 	}
 
 	amt, err := s.ToMinCoin(request.Deposit...)
@@ -78,7 +78,7 @@ func (s serviceClient) BindService(request BindServiceRequest, baseTx sdk.BaseTx
 		Pricing:     request.Pricing,
 		QoS:         request.QoS,
 		Options:     request.Options,
-		Owner:       owner,
+		Owner:       owner.String(),
 	}
 	return s.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -90,12 +90,12 @@ func (s serviceClient) UpdateServiceBinding(request UpdateServiceBindingRequest,
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	var provider = owner
+	var provider = owner.String()
 	if len(request.Provider) > 0 {
-		provider, err = sdk.AccAddressFromBech32(request.Provider)
-		if err != nil {
+		if err := sdk.ValidateAccAddress(request.Provider); err != nil {
 			return sdk.ResultTx{}, sdk.Wrap(err)
 		}
+		provider = request.Provider
 	}
 
 	amt, err := s.ToMinCoin(request.Deposit...)
@@ -109,7 +109,7 @@ func (s serviceClient) UpdateServiceBinding(request UpdateServiceBindingRequest,
 		Deposit:     amt,
 		Pricing:     request.Pricing,
 		QoS:         request.QoS,
-		Owner:       owner,
+		Owner:       owner.String(),
 	}
 	return s.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -121,18 +121,18 @@ func (s serviceClient) DisableServiceBinding(serviceName, provider string, baseT
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	var providerAddr = owner
+	var providerAddr = owner.String()
 	if len(provider) > 0 {
-		providerAddr, err = sdk.AccAddressFromBech32(provider)
-		if err != nil {
+		if err := sdk.ValidateAccAddress(provider); err != nil {
 			return sdk.ResultTx{}, sdk.Wrap(err)
 		}
+		providerAddr = provider
 	}
 
 	msg := &MsgDisableServiceBinding{
 		ServiceName: serviceName,
 		Provider:    providerAddr,
-		Owner:       owner,
+		Owner:       owner.String(),
 	}
 	return s.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -144,12 +144,12 @@ func (s serviceClient) EnableServiceBinding(serviceName, provider string, deposi
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	var providerAddr = owner
+	var providerAddr = owner.String()
 	if len(provider) > 0 {
-		providerAddr, err = sdk.AccAddressFromBech32(provider)
-		if err != nil {
+		if err := sdk.ValidateAccAddress(provider); err != nil {
 			return sdk.ResultTx{}, sdk.Wrap(err)
 		}
+		providerAddr = provider
 	}
 
 	amt, err := s.ToMinCoin(deposit...)
@@ -161,7 +161,7 @@ func (s serviceClient) EnableServiceBinding(serviceName, provider string, deposi
 		ServiceName: serviceName,
 		Provider:    providerAddr,
 		Deposit:     amt,
-		Owner:       owner,
+		Owner:       owner.String(),
 	}
 	return s.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -173,13 +173,12 @@ func (s serviceClient) InvokeService(request InvokeServiceRequest, baseTx sdk.Ba
 		return "", sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	var providers []sdk.AccAddress
+	var providers []string
 	for _, provider := range request.Providers {
-		p, err := sdk.AccAddressFromBech32(provider)
-		if err != nil {
-			return "", sdk.ResultTx{}, sdk.Wrapf("%s invalid address", p)
+		if err := sdk.ValidateAccAddress(provider); err != nil {
+			return "", sdk.ResultTx{}, sdk.Wrap(err)
 		}
-		providers = append(providers, p)
+		providers = append(providers, provider)
 	}
 
 	amt, err := s.ToMinCoin(request.ServiceFeeCap...)
@@ -190,7 +189,7 @@ func (s serviceClient) InvokeService(request InvokeServiceRequest, baseTx sdk.Ba
 	msg := &MsgCallService{
 		ServiceName:       request.ServiceName,
 		Providers:         providers,
-		Consumer:          consumer,
+		Consumer:          consumer.String(),
 		Input:             request.Input,
 		ServiceFeeCap:     amt,
 		Timeout:           request.Timeout,
@@ -208,7 +207,7 @@ func (s serviceClient) InvokeService(request InvokeServiceRequest, baseTx sdk.Ba
 		return "", sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	reqCtxID, e := result.Events.GetValue(sdk.EventTypeMessage, attributeKeyRequestContextID)
+	reqCtxID, e := result.Events.GetValue(sdk.EventTypeCreateContext, attributeKeyRequestContextID)
 	if e != nil {
 		return reqCtxID, result, sdk.Wrap(e)
 	}
@@ -234,8 +233,8 @@ func (s serviceClient) InvokeServiceResponse(req InvokeServiceResponseRequest, b
 	}
 
 	msg := &MsgRespondService{
-		RequestId: sdk.MustHexBytesFrom(reqId),
-		Provider:  provider,
+		RequestId: reqId,
+		Provider:  provider.String(),
 		Result:    req.Result,
 		Output:    req.Output,
 	}
@@ -250,7 +249,7 @@ func (s serviceClient) SubscribeServiceResponse(reqCtxID string,
 	}
 
 	builder := sdk.NewEventQueryBuilder().AddCondition(
-		sdk.NewCond(sdk.EventTypeMessage, attributeKeyRequestContextID).EQ(sdk.EventValue(reqCtxID)),
+		sdk.NewCond(sdk.EventTypeResponseService, attributeKeyRequestContextID).EQ(sdk.EventValue(reqCtxID)),
 	)
 
 	return s.SubscribeTx(builder, func(tx sdk.EventDataTx) {
@@ -263,17 +262,17 @@ func (s serviceClient) SubscribeServiceResponse(reqCtxID string,
 		for _, msg := range tx.Tx.GetMsgs() {
 			msg, ok := msg.(*MsgRespondService)
 			if ok {
-				reqCtxID2, _, _, _, err := splitRequestID(msg.RequestId.String())
+				reqCtxID2, _, _, _, err := splitRequestID(msg.RequestId)
 				if err != nil {
 					s.Logger().Error(
 						"invalid requestID",
-						"requestID", msg.RequestId.String(),
+						"requestID", msg.RequestId,
 						"errMsg", err.Error(),
 					)
 					continue
 				}
 				if reqCtxID2.String() == strings.ToUpper(reqCtxID) {
-					callback(reqCtxID, msg.RequestId.String(), msg.Output)
+					callback(reqCtxID, msg.RequestId, msg.Output)
 				}
 			}
 		}
@@ -309,13 +308,12 @@ func (s serviceClient) SetWithdrawAddress(withdrawAddress string, baseTx sdk.Bas
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	withdrawAddr, err := sdk.AccAddressFromBech32(withdrawAddress)
-	if err != nil {
+	if err := sdk.ValidateAccAddress(withdrawAddress); err != nil {
 		return sdk.ResultTx{}, sdk.Wrapf("%s invalid address", withdrawAddress)
 	}
 	msg := &MsgSetWithdrawAddress{
-		Owner:           owner,
-		WithdrawAddress: withdrawAddr,
+		Owner:           owner.String(),
+		WithdrawAddress: withdrawAddress,
 	}
 	return s.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -327,18 +325,14 @@ func (s serviceClient) RefundServiceDeposit(serviceName, provider string, baseTx
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	var providerAddr sdk.AccAddress
-	if len(provider) > 0 {
-		providerAddr, err = sdk.AccAddressFromBech32(provider)
-		if err != nil {
-			return sdk.ResultTx{}, sdk.Wrap(err)
-		}
+	if err := sdk.ValidateAccAddress(provider); err != nil {
+		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
 	msg := &MsgRefundServiceDeposit{
 		ServiceName: serviceName,
-		Provider:    providerAddr,
-		Owner:       owner,
+		Provider:    provider,
+		Owner:       owner.String(),
 	}
 	return s.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -350,8 +344,8 @@ func (s serviceClient) StartRequestContext(requestContextID string, baseTx sdk.B
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 	msg := &MsgStartRequestContext{
-		RequestContextId: sdk.MustHexBytesFrom(requestContextID),
-		Consumer:         consumer,
+		RequestContextId: requestContextID,
+		Consumer:         consumer.String(),
 	}
 	return s.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -363,8 +357,8 @@ func (s serviceClient) PauseRequestContext(requestContextID string, baseTx sdk.B
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 	msg := &MsgPauseRequestContext{
-		RequestContextId: sdk.MustHexBytesFrom(requestContextID),
-		Consumer:         consumer,
+		RequestContextId: requestContextID,
+		Consumer:         consumer.String(),
 	}
 	return s.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -376,8 +370,8 @@ func (s serviceClient) KillRequestContext(requestContextID string, baseTx sdk.Ba
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 	msg := &MsgKillRequestContext{
-		RequestContextId: sdk.MustHexBytesFrom(requestContextID),
-		Consumer:         consumer,
+		RequestContextId: requestContextID,
+		Consumer:         consumer.String(),
 	}
 	return s.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -389,13 +383,10 @@ func (s serviceClient) UpdateRequestContext(request UpdateRequestContextRequest,
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	var providers []sdk.AccAddress
 	for _, provider := range request.Providers {
-		p, err := sdk.AccAddressFromBech32(provider)
-		if err != nil {
+		if err := sdk.ValidateAccAddress(provider); err != nil {
 			return sdk.ResultTx{}, sdk.Wrap(err)
 		}
-		providers = append(providers, p)
 	}
 
 	amt, err := s.ToMinCoin(request.ServiceFeeCap...)
@@ -404,13 +395,13 @@ func (s serviceClient) UpdateRequestContext(request UpdateRequestContextRequest,
 	}
 
 	msg := &MsgUpdateRequestContext{
-		RequestContextId:  sdk.MustHexBytesFrom(request.RequestContextID),
-		Providers:         providers,
+		RequestContextId:  request.RequestContextID,
+		Providers:         request.Providers,
 		ServiceFeeCap:     amt,
 		Timeout:           request.Timeout,
 		RepeatedFrequency: request.RepeatedFrequency,
 		RepeatedTotal:     request.RepeatedTotal,
-		Consumer:          consumer,
+		Consumer:          consumer.String(),
 	}
 	return s.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -422,16 +413,16 @@ func (s serviceClient) WithdrawEarnedFees(provider string, baseTx sdk.BaseTx) (s
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	var providerAddr = owner
+	var providerAddr = owner.String()
 	if len(provider) > 0 {
-		providerAddr, err = sdk.AccAddressFromBech32(provider)
-		if err != nil {
+		if err := sdk.ValidateAccAddress(provider); err != nil {
 			return sdk.ResultTx{}, sdk.Wrap(err)
 		}
+		providerAddr = provider
 	}
 
 	msg := &MsgWithdrawEarnedFees{
-		Owner:    owner,
+		Owner:    owner.String(),
 		Provider: providerAddr,
 	}
 	return s.BuildAndSend([]sdk.Msg{msg}, baseTx)
@@ -454,6 +445,12 @@ func (s serviceClient) SubscribeServiceRequest(serviceName string,
 
 	return s.SubscribeNewBlock(builder, func(block sdk.EventDataNewBlock) {
 		msgs := s.GenServiceResponseMsgs(block.ResultEndBlock.Events, serviceName, provider, callback)
+		if msgs == nil || len(msgs) == 0 {
+			s.Logger().Error("no message created",
+				"serviceName", serviceName,
+				"provider", provider,
+			)
+		}
 		if _, err = s.SendBatch(msgs, baseTx); err != nil {
 			s.Logger().Error("provider respond failed", "errMsg", err.Error())
 		}
@@ -480,10 +477,14 @@ func (s serviceClient) QueryServiceDefinition(serviceName string) (QueryServiceD
 }
 
 // QueryBinding return the specified service binding
-func (s serviceClient) QueryServiceBinding(serviceName string, provider sdk.AccAddress) (QueryServiceBindingResponse, sdk.Error) {
+func (s serviceClient) QueryServiceBinding(serviceName string, provider string) (QueryServiceBindingResponse, sdk.Error) {
 	conn, err := s.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
+		return QueryServiceBindingResponse{}, sdk.Wrap(err)
+	}
+
+	if err := sdk.ValidateAccAddress(provider); err != nil {
 		return QueryServiceBindingResponse{}, sdk.Wrap(err)
 	}
 
@@ -530,7 +531,7 @@ func (s serviceClient) QueryServiceRequest(requestID string) (QueryServiceReques
 
 	resp, err := NewQueryClient(conn).Request(
 		context.Background(),
-		&QueryRequestRequest{RequestId: sdk.MustHexBytesFrom(requestID)},
+		&QueryRequestRequest{RequestId: requestID},
 	)
 	if err != nil {
 		return QueryServiceRequestResponse{}, sdk.Wrap(err)
@@ -540,10 +541,14 @@ func (s serviceClient) QueryServiceRequest(requestID string) (QueryServiceReques
 }
 
 // QueryRequest returns all the active requests of the specified service binding
-func (s serviceClient) QueryServiceRequests(serviceName string, provider sdk.AccAddress) ([]QueryServiceRequestResponse, sdk.Error) {
+func (s serviceClient) QueryServiceRequests(serviceName string, provider string) ([]QueryServiceRequestResponse, sdk.Error) {
 	conn, err := s.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	if err := sdk.ValidateAccAddress(provider); err != nil {
 		return nil, sdk.Wrap(err)
 	}
 
@@ -569,7 +574,7 @@ func (s serviceClient) QueryRequestsByReqCtx(reqCtxID string, batchCounter uint6
 	resp, err := NewQueryClient(conn).RequestsByReqCtx(
 		context.Background(),
 		&QueryRequestsByReqCtxRequest{
-			RequestContextId: sdk.MustHexBytesFrom(reqCtxID),
+			RequestContextId: reqCtxID,
 			BatchCounter:     batchCounter,
 		},
 	)
@@ -590,7 +595,7 @@ func (s serviceClient) QueryServiceResponse(requestID string) (QueryServiceRespo
 
 	resp, err := NewQueryClient(conn).Response(
 		context.Background(),
-		&QueryResponseRequest{RequestId: sdk.MustHexBytesFrom(requestID)},
+		&QueryResponseRequest{RequestId: requestID},
 	)
 	if err != nil {
 		return QueryServiceResponseResponse{}, sdk.Wrap(err)
@@ -610,7 +615,7 @@ func (s serviceClient) QueryServiceResponses(reqCtxID string, batchCounter uint6
 	resp, err := NewQueryClient(conn).Responses(
 		context.Background(),
 		&QueryResponsesRequest{
-			RequestContextId: sdk.MustHexBytesFrom(reqCtxID),
+			RequestContextId: reqCtxID,
 			BatchCounter:     batchCounter,
 		},
 	)
@@ -631,7 +636,7 @@ func (s serviceClient) QueryRequestContext(reqCtxID string) (QueryRequestContext
 
 	resp, err := NewQueryClient(conn).RequestContext(
 		context.Background(),
-		&QueryRequestContextRequest{RequestContextId: sdk.MustHexBytesFrom(reqCtxID)},
+		&QueryRequestContextRequest{RequestContextId: reqCtxID},
 	)
 	if err != nil {
 		return QueryRequestContextResp{}, sdk.Wrap(err)
@@ -642,9 +647,8 @@ func (s serviceClient) QueryRequestContext(reqCtxID string) (QueryRequestContext
 
 //QueryFees return the earned fees for a provider
 func (s serviceClient) QueryFees(provider string) (sdk.Coins, sdk.Error) {
-	address, addressErr := sdk.AccAddressFromBech32(provider)
-	if addressErr != nil {
-		return nil, sdk.Wrap(addressErr)
+	if err := sdk.ValidateAccAddress(provider); err != nil {
+		return nil, sdk.Wrap(err)
 	}
 
 	conn, err := s.GenConn()
@@ -655,7 +659,7 @@ func (s serviceClient) QueryFees(provider string) (sdk.Coins, sdk.Error) {
 
 	res, err := NewQueryClient(conn).EarnedFees(
 		context.Background(),
-		&QueryEarnedFeesRequest{Provider: address},
+		&QueryEarnedFeesRequest{Provider: provider},
 	)
 	if err != nil {
 		return nil, sdk.Wrap(err)
@@ -723,11 +727,12 @@ func (s serviceClient) GenServiceResponseMsgs(events sdk.StringEvents, serviceNa
 			continue
 		}
 		//check again
-		if provider.Equals(request.Provider) && request.ServiceName == serviceName {
+		providerStr := provider.String()
+		if providerStr == request.Provider && request.ServiceName == serviceName {
 			output, result := handler(request.RequestContextID, reqID, request.Input)
 			msgs = append(msgs, &MsgRespondService{
-				RequestId: sdk.MustHexBytesFrom(reqID),
-				Provider:  provider,
+				RequestId: reqID,
+				Provider:  providerStr,
 				Output:    output,
 				Result:    result,
 			})

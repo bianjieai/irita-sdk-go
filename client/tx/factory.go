@@ -4,10 +4,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/sm2"
-
 	sim "github.com/bianjieai/irita-sdk-go/client/grpc/simulate"
 	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
+	"github.com/bianjieai/irita-sdk-go/crypto/keys/sm2"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/types/tx"
 	"github.com/bianjieai/irita-sdk-go/types/tx/signing"

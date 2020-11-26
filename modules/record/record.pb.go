@@ -4,12 +4,9 @@
 package record
 
 import (
-	bytes "bytes"
 	fmt "fmt"
-	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
-	github_com_tendermint_tendermint_libs_bytes "github.com/tendermint/tendermint/libs/bytes"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -26,45 +23,6 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// MsgCreateValidator defines an SDK message for creating a new validator.
-type MsgCreateRecord struct {
-	Contents []Content                                          `protobuf:"bytes,1,rep,name=contents,proto3" json:"contents"`
-	Creator  github_com_bianjieai_irita_sdk_go_types.AccAddress `protobuf:"bytes,2,opt,name=creator,proto3,casttype=github.com/bianjieai/irita-sdk-go/types.AccAddress" json:"creator,omitempty"`
-}
-
-func (m *MsgCreateRecord) Reset()         { *m = MsgCreateRecord{} }
-func (m *MsgCreateRecord) String() string { return proto.CompactTextString(m) }
-func (*MsgCreateRecord) ProtoMessage()    {}
-func (*MsgCreateRecord) Descriptor() ([]byte, []int) {
-	return fileDescriptor_197cabccbeb2a7b7, []int{0}
-}
-func (m *MsgCreateRecord) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgCreateRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgCreateRecord.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgCreateRecord) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreateRecord.Merge(m, src)
-}
-func (m *MsgCreateRecord) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgCreateRecord) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreateRecord.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgCreateRecord proto.InternalMessageInfo
-
 // Content defines the detailed information for a record.
 type Content struct {
 	Digest     string `protobuf:"bytes,1,opt,name=digest,proto3" json:"digest,omitempty"`
@@ -77,7 +35,7 @@ func (m *Content) Reset()         { *m = Content{} }
 func (m *Content) String() string { return proto.CompactTextString(m) }
 func (*Content) ProtoMessage()    {}
 func (*Content) Descriptor() ([]byte, []int) {
-	return fileDescriptor_197cabccbeb2a7b7, []int{1}
+	return fileDescriptor_197cabccbeb2a7b7, []int{0}
 }
 func (m *Content) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -107,16 +65,16 @@ func (m *Content) XXX_DiscardUnknown() {
 var xxx_messageInfo_Content proto.InternalMessageInfo
 
 type Record struct {
-	TxHash   github_com_tendermint_tendermint_libs_bytes.HexBytes `protobuf:"bytes,1,opt,name=tx_hash,json=txHash,proto3,casttype=github.com/tendermint/tendermint/libs/bytes.HexBytes" json:"tx_hash,omitempty" yaml:"tx_hash"`
-	Contents []Content                                            `protobuf:"bytes,2,rep,name=contents,proto3" json:"contents"`
-	Creator  github_com_bianjieai_irita_sdk_go_types.AccAddress   `protobuf:"bytes,3,opt,name=creator,proto3,casttype=github.com/bianjieai/irita-sdk-go/types.AccAddress" json:"creator,omitempty"`
+	TxHash   string    `protobuf:"bytes,1,opt,name=tx_hash,json=txHash,proto3" json:"tx_hash,omitempty" yaml:"tx_hash"`
+	Contents []Content `protobuf:"bytes,2,rep,name=contents,proto3" json:"contents"`
+	Creator  string    `protobuf:"bytes,3,opt,name=creator,proto3" json:"creator,omitempty"`
 }
 
 func (m *Record) Reset()         { *m = Record{} }
 func (m *Record) String() string { return proto.CompactTextString(m) }
 func (*Record) ProtoMessage()    {}
 func (*Record) Descriptor() ([]byte, []int) {
-	return fileDescriptor_197cabccbeb2a7b7, []int{2}
+	return fileDescriptor_197cabccbeb2a7b7, []int{1}
 }
 func (m *Record) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -146,7 +104,6 @@ func (m *Record) XXX_DiscardUnknown() {
 var xxx_messageInfo_Record proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgCreateRecord)(nil), "irismod.record.MsgCreateRecord")
 	proto.RegisterType((*Content)(nil), "irismod.record.Content")
 	proto.RegisterType((*Record)(nil), "irismod.record.Record")
 }
@@ -154,68 +111,31 @@ func init() {
 func init() { proto.RegisterFile("record/record.proto", fileDescriptor_197cabccbeb2a7b7) }
 
 var fileDescriptor_197cabccbeb2a7b7 = []byte{
-	// 424 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x52, 0x31, 0x6f, 0xd4, 0x30,
-	0x14, 0x8e, 0x2f, 0xa7, 0x0b, 0x75, 0xab, 0x22, 0x19, 0x54, 0x02, 0x43, 0x72, 0xca, 0x74, 0x4b,
-	0x13, 0x54, 0x10, 0x88, 0x6e, 0x97, 0x2e, 0x05, 0x09, 0x84, 0x2c, 0xb1, 0xb0, 0x54, 0x4e, 0x6c,
-	0x39, 0x86, 0x24, 0xae, 0x6c, 0x9f, 0x74, 0xb7, 0xf1, 0x0f, 0xe0, 0x27, 0x30, 0xf0, 0x63, 0x6e,
-	0xec, 0xc8, 0x14, 0x41, 0x6e, 0x61, 0xee, 0xd8, 0x09, 0xc5, 0x09, 0xe8, 0x6e, 0x42, 0x42, 0x9d,
-	0xfc, 0xbd, 0xf7, 0x3d, 0xbf, 0xef, 0xe9, 0x7d, 0x0f, 0xde, 0x53, 0x2c, 0x97, 0x8a, 0x26, 0xfd,
-	0x13, 0x5f, 0x2a, 0x69, 0x24, 0x3a, 0x14, 0x4a, 0xe8, 0x4a, 0xd2, 0xb8, 0xcf, 0x3e, 0xba, 0xcf,
-	0x25, 0x97, 0x96, 0x4a, 0x3a, 0xd4, 0x57, 0x45, 0xdf, 0x00, 0xbc, 0xfb, 0x5a, 0xf3, 0x33, 0xc5,
-	0x88, 0x61, 0xd8, 0x56, 0xa2, 0x17, 0xf0, 0x4e, 0x2e, 0x6b, 0xc3, 0x6a, 0xa3, 0x7d, 0x30, 0x75,
-	0x67, 0xfb, 0x27, 0x0f, 0xe2, 0xdd, 0x66, 0xf1, 0x59, 0xcf, 0xa7, 0xe3, 0x75, 0x13, 0x3a, 0xf8,
-	0x6f, 0x39, 0x7a, 0x0b, 0xbd, 0xbc, 0x6b, 0x25, 0x95, 0x3f, 0x9a, 0x82, 0xd9, 0x41, 0xfa, 0xec,
-	0xa6, 0x09, 0x4f, 0xb8, 0x30, 0xc5, 0x22, 0x8b, 0x73, 0x59, 0x25, 0x99, 0x20, 0xf5, 0x07, 0xc1,
-	0x88, 0x48, 0x84, 0x12, 0x86, 0x1c, 0x6b, 0xfa, 0xf1, 0x98, 0xcb, 0xc4, 0xac, 0x2e, 0x99, 0x8e,
-	0xe7, 0x79, 0x3e, 0xa7, 0x54, 0x31, 0xad, 0xf1, 0x9f, 0x36, 0xa7, 0xe3, 0x5f, 0x5f, 0x43, 0x10,
-	0x7d, 0x06, 0xd0, 0x1b, 0x34, 0xd1, 0x11, 0x9c, 0x50, 0xc1, 0x99, 0x36, 0x3e, 0x98, 0x82, 0xd9,
-	0x1e, 0x1e, 0x22, 0xf4, 0x1c, 0xee, 0xf7, 0xe8, 0x82, 0x94, 0x5c, 0x5a, 0xfd, 0xbd, 0xf4, 0xe8,
-	0xba, 0x09, 0xd1, 0x8a, 0x54, 0xe5, 0x69, 0xb4, 0x45, 0x46, 0x18, 0xf6, 0xd1, 0xbc, 0xe4, 0x12,
-	0x3d, 0x84, 0xee, 0x42, 0x09, 0xdf, 0xb5, 0x1f, 0xbc, 0xb6, 0x09, 0xdd, 0x77, 0xf8, 0x25, 0xee,
-	0x72, 0x08, 0xc1, 0x71, 0xc5, 0x0c, 0xf1, 0xc7, 0x56, 0xc9, 0xe2, 0x61, 0xa2, 0x4f, 0x23, 0x38,
-	0x19, 0xf6, 0x95, 0x43, 0xcf, 0x2c, 0x2f, 0x0a, 0xa2, 0x0b, 0x3b, 0xd1, 0x41, 0xfa, 0xea, 0xba,
-	0x09, 0x0f, 0x7b, 0xd1, 0x81, 0x88, 0x6e, 0x9a, 0xf0, 0xe9, 0xd6, 0x1a, 0x0c, 0xab, 0x29, 0x53,
-	0x95, 0xa8, 0xcd, 0x36, 0x2c, 0x45, 0xa6, 0x93, 0x6c, 0x65, 0x98, 0x8e, 0xcf, 0xd9, 0x32, 0xed,
-	0x00, 0x9e, 0x98, 0xe5, 0x39, 0xd1, 0xc5, 0x8e, 0x29, 0xa3, 0xff, 0x36, 0xc5, 0xbd, 0x45, 0x53,
-	0xd2, 0x37, 0xeb, 0x9f, 0x81, 0xb3, 0x6e, 0x03, 0x70, 0xd5, 0x06, 0xe0, 0x47, 0x1b, 0x80, 0x2f,
-	0x9b, 0xc0, 0xb9, 0xda, 0x04, 0xce, 0xf7, 0x4d, 0xe0, 0xbc, 0x7f, 0xfc, 0x6f, 0x81, 0x4a, 0xd2,
-	0x45, 0xc9, 0xf4, 0x70, 0xb7, 0xd9, 0xc4, 0x9e, 0xe4, 0x93, 0xdf, 0x01, 0x00, 0x00, 0xff, 0xff,
-	0xe2, 0x61, 0x69, 0x5d, 0xcf, 0x02, 0x00, 0x00,
+	// 341 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x54, 0x51, 0xb1, 0x4e, 0xeb, 0x30,
+	0x14, 0x8d, 0x9b, 0x28, 0x79, 0xcf, 0x95, 0x3a, 0x18, 0x54, 0x02, 0x43, 0x52, 0x65, 0xaa, 0x84,
+	0x9a, 0x20, 0x18, 0x10, 0xdd, 0x08, 0x0b, 0x2c, 0x0c, 0x96, 0x58, 0x58, 0x2a, 0x37, 0x89, 0x1c,
+	0x43, 0x52, 0x23, 0xdb, 0x95, 0xca, 0x57, 0xd0, 0x4f, 0xe0, 0x73, 0x3a, 0x76, 0x64, 0x8a, 0x20,
+	0x5d, 0x98, 0xfb, 0x05, 0xa8, 0x71, 0x40, 0x30, 0xf9, 0x9c, 0x7b, 0xae, 0x75, 0xcf, 0x3d, 0x17,
+	0xee, 0x89, 0x2c, 0xe1, 0x22, 0x8d, 0xf4, 0x13, 0x3e, 0x09, 0xae, 0x38, 0xea, 0x31, 0xc1, 0x64,
+	0xc9, 0xd3, 0x50, 0x57, 0x8f, 0xf6, 0x29, 0xa7, 0xbc, 0x91, 0xa2, 0x1d, 0xd2, 0x5d, 0xc1, 0x0b,
+	0x80, 0xce, 0x15, 0x9f, 0xa9, 0x6c, 0xa6, 0x50, 0x1f, 0xda, 0x29, 0xa3, 0x99, 0x54, 0x2e, 0x18,
+	0x80, 0xe1, 0x7f, 0xdc, 0x32, 0x74, 0x0e, 0xbb, 0x1a, 0x4d, 0x48, 0x41, 0xb9, 0xdb, 0xd9, 0x89,
+	0x71, 0x7f, 0x5b, 0xf9, 0xe8, 0x99, 0x94, 0xc5, 0x38, 0xf8, 0x25, 0x06, 0x18, 0x6a, 0x76, 0x59,
+	0x50, 0x8e, 0x0e, 0xa1, 0x39, 0x17, 0xcc, 0x35, 0x9b, 0x0f, 0x4e, 0x5d, 0xf9, 0xe6, 0x1d, 0xbe,
+	0xc1, 0xbb, 0x1a, 0x42, 0xd0, 0x2a, 0x33, 0x45, 0x5c, 0xab, 0x99, 0xd4, 0xe0, 0xb1, 0xf5, 0xf9,
+	0xea, 0x83, 0x60, 0x09, 0xa0, 0x8d, 0x1b, 0xcb, 0xe8, 0x18, 0x3a, 0x6a, 0x31, 0xc9, 0x89, 0xcc,
+	0xb5, 0xa3, 0x18, 0x6d, 0x2b, 0xbf, 0xa7, 0x87, 0xb6, 0x42, 0x80, 0x6d, 0xb5, 0xb8, 0x26, 0x32,
+	0x47, 0x17, 0xf0, 0x5f, 0xa2, 0x17, 0x91, 0x6e, 0x67, 0x60, 0x0e, 0xbb, 0xa7, 0x07, 0xe1, 0xdf,
+	0x08, 0xc2, 0x76, 0xd1, 0xd8, 0x5a, 0x55, 0xbe, 0x81, 0x7f, 0xda, 0x91, 0x0b, 0x9d, 0x44, 0x64,
+	0x44, 0x71, 0xa1, 0xbd, 0xe2, 0x6f, 0xaa, 0x2d, 0xc5, 0xb7, 0xab, 0x0f, 0xcf, 0x58, 0xd5, 0x1e,
+	0x58, 0xd7, 0x1e, 0x78, 0xaf, 0x3d, 0xb0, 0xdc, 0x78, 0xc6, 0x7a, 0xe3, 0x19, 0x6f, 0x1b, 0xcf,
+	0xb8, 0x3f, 0xa1, 0x4c, 0xe5, 0xf3, 0x69, 0x98, 0xf0, 0x32, 0x9a, 0x32, 0x32, 0x7b, 0x60, 0x19,
+	0x61, 0x11, 0x13, 0x4c, 0x91, 0x91, 0x4c, 0x1f, 0x47, 0x94, 0x47, 0x25, 0x4f, 0xe7, 0x45, 0x26,
+	0xdb, 0x03, 0x4d, 0xed, 0x26, 0xfb, 0xb3, 0xaf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xe1, 0x2f, 0xb4,
+	0x68, 0xb8, 0x01, 0x00, 0x00,
 }
 
-func (this *MsgCreateRecord) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MsgCreateRecord)
-	if !ok {
-		that2, ok := that.(MsgCreateRecord)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if len(this.Contents) != len(that1.Contents) {
-		return false
-	}
-	for i := range this.Contents {
-		if !this.Contents[i].Equal(&that1.Contents[i]) {
-			return false
-		}
-	}
-	if !bytes.Equal(this.Creator, that1.Creator) {
-		return false
-	}
-	return true
-}
 func (this *Content) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -268,7 +188,7 @@ func (this *Record) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if !bytes.Equal(this.TxHash, that1.TxHash) {
+	if this.TxHash != that1.TxHash {
 		return false
 	}
 	if len(this.Contents) != len(that1.Contents) {
@@ -279,55 +199,11 @@ func (this *Record) Equal(that interface{}) bool {
 			return false
 		}
 	}
-	if !bytes.Equal(this.Creator, that1.Creator) {
+	if this.Creator != that1.Creator {
 		return false
 	}
 	return true
 }
-func (m *MsgCreateRecord) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgCreateRecord) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgCreateRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintRecord(dAtA, i, uint64(len(m.Creator)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Contents) > 0 {
-		for iNdEx := len(m.Contents) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Contents[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintRecord(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0xa
-		}
-	}
-	return len(dAtA) - i, nil
-}
-
 func (m *Content) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -441,25 +317,6 @@ func encodeVarintRecord(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgCreateRecord) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if len(m.Contents) > 0 {
-		for _, e := range m.Contents {
-			l = e.Size()
-			n += 1 + l + sovRecord(uint64(l))
-		}
-	}
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovRecord(uint64(l))
-	}
-	return n
-}
-
 func (m *Content) Size() (n int) {
 	if m == nil {
 		return 0
@@ -513,127 +370,6 @@ func sovRecord(x uint64) (n int) {
 }
 func sozRecord(x uint64) (n int) {
 	return sovRecord(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (m *MsgCreateRecord) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowRecord
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCreateRecord: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCreateRecord: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Contents", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRecord
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthRecord
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthRecord
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Contents = append(m.Contents, Content{})
-			if err := m.Contents[len(m.Contents)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRecord
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthRecord
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthRecord
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Creator = append(m.Creator[:0], dAtA[iNdEx:postIndex]...)
-			if m.Creator == nil {
-				m.Creator = []byte{}
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipRecord(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthRecord
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthRecord
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
 }
 func (m *Content) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -849,7 +585,7 @@ func (m *Record) Unmarshal(dAtA []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field TxHash", wireType)
 			}
-			var byteLen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowRecord
@@ -859,25 +595,23 @@ func (m *Record) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if byteLen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthRecord
 			}
-			postIndex := iNdEx + byteLen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthRecord
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.TxHash = append(m.TxHash[:0], dAtA[iNdEx:postIndex]...)
-			if m.TxHash == nil {
-				m.TxHash = []byte{}
-			}
+			m.TxHash = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -917,7 +651,7 @@ func (m *Record) Unmarshal(dAtA []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
 			}
-			var byteLen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowRecord
@@ -927,25 +661,23 @@ func (m *Record) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if byteLen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthRecord
 			}
-			postIndex := iNdEx + byteLen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthRecord
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = append(m.Creator[:0], dAtA[iNdEx:postIndex]...)
-			if m.Creator == nil {
-				m.Creator = []byte{}
-			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

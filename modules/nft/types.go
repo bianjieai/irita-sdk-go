@@ -27,8 +27,12 @@ func (m MsgIssueDenom) Type() string {
 }
 
 func (m MsgIssueDenom) ValidateBasic() error {
-	if m.Sender.Empty() {
+	if len(m.Sender) == 0 {
 		return sdk.Wrapf("missing sender address")
+	}
+
+	if err := sdk.ValidateAccAddress(m.Sender); err != nil {
+		return sdk.Wrap(err)
 	}
 	id := strings.TrimSpace(m.Id)
 	if len(id) == 0 {
@@ -46,7 +50,7 @@ func (m MsgIssueDenom) GetSignBytes() []byte {
 }
 
 func (m MsgIssueDenom) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{m.Sender}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Sender)}
 }
 
 func (m MsgTransferNFT) Route() string {
@@ -58,14 +62,21 @@ func (m MsgTransferNFT) Type() string {
 }
 
 func (m MsgTransferNFT) ValidateBasic() error {
-	if m.Sender.Empty() {
+	if len(m.Sender) == 0 {
 		return sdk.Wrapf("missing sender address")
 	}
-	if m.Recipient.Empty() {
-		return sdk.Wrapf("missing recipient address")
+	if err := sdk.ValidateAccAddress(m.Sender); err != nil {
+		return sdk.Wrap(err)
 	}
 
-	denom := strings.TrimSpace(m.Denom)
+	if len(m.Recipient) == 0 {
+		return sdk.Wrapf("missing recipient address")
+	}
+	if err := sdk.ValidateAccAddress(m.Recipient); err != nil {
+		return sdk.Wrap(err)
+	}
+
+	denom := strings.TrimSpace(m.DenomId)
 	if len(denom) == 0 {
 		return sdk.Wrapf("missing denom")
 	}
@@ -86,7 +97,7 @@ func (m MsgTransferNFT) GetSignBytes() []byte {
 }
 
 func (m MsgTransferNFT) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{m.Sender}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Sender)}
 }
 
 func (m MsgEditNFT) Route() string {
@@ -98,11 +109,14 @@ func (m MsgEditNFT) Type() string {
 }
 
 func (m MsgEditNFT) ValidateBasic() error {
-	if m.Sender.Empty() {
+	if len(m.Sender) == 0 {
 		return sdk.Wrapf("missing sender address")
 	}
+	if err := sdk.ValidateAccAddress(m.Sender); err != nil {
+		return sdk.Wrap(err)
+	}
 
-	denom := strings.TrimSpace(m.Denom)
+	denom := strings.TrimSpace(m.DenomId)
 	if len(denom) == 0 {
 		return sdk.Wrapf("missing denom")
 	}
@@ -123,7 +137,7 @@ func (m MsgEditNFT) GetSignBytes() []byte {
 }
 
 func (m MsgEditNFT) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{m.Sender}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Sender)}
 }
 
 func (m MsgMintNFT) Route() string {
@@ -135,11 +149,14 @@ func (m MsgMintNFT) Type() string {
 }
 
 func (m MsgMintNFT) ValidateBasic() error {
-	if m.Sender.Empty() {
+	if len(m.Sender) == 0 {
 		return sdk.Wrapf("missing sender address")
 	}
+	if err := sdk.ValidateAccAddress(m.Sender); err != nil {
+		return sdk.Wrap(err)
+	}
 
-	denom := strings.TrimSpace(m.Denom)
+	denom := strings.TrimSpace(m.DenomId)
 	if len(denom) == 0 {
 		return sdk.Wrapf("missing denom")
 	}
@@ -160,7 +177,7 @@ func (m MsgMintNFT) GetSignBytes() []byte {
 }
 
 func (m MsgMintNFT) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{m.Sender}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Sender)}
 }
 
 func (m MsgBurnNFT) Route() string {
@@ -172,11 +189,14 @@ func (m MsgBurnNFT) Type() string {
 }
 
 func (m MsgBurnNFT) ValidateBasic() error {
-	if m.Sender.Empty() {
+	if len(m.Sender) == 0 {
 		return sdk.Wrapf("missing sender address")
 	}
+	if err := sdk.ValidateAccAddress(m.Sender); err != nil {
+		return sdk.Wrap(err)
+	}
 
-	denom := strings.TrimSpace(m.Denom)
+	denom := strings.TrimSpace(m.DenomId)
 	if len(denom) == 0 {
 		return sdk.Wrapf("missing denom")
 	}
@@ -197,19 +217,19 @@ func (m MsgBurnNFT) GetSignBytes() []byte {
 }
 
 func (m MsgBurnNFT) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{m.Sender}
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Sender)}
 }
 
 func (o Owner) Convert() interface{} {
 	var idcs []IDC
 	for _, idc := range o.IDCollections {
 		idcs = append(idcs, IDC{
-			Denom:    idc.Denom,
-			TokenIDs: idc.Ids,
+			Denom:    idc.DenomId,
+			TokenIDs: idc.TokenIds,
 		})
 	}
 	return QueryOwnerResp{
-		Address: o.Address.String(),
+		Address: o.Address,
 		IDCs:    idcs,
 	}
 }
@@ -220,7 +240,7 @@ func (this BaseNFT) Convert() interface{} {
 		Name:    this.Name,
 		URI:     this.URI,
 		Data:    this.Data,
-		Creator: this.Owner.String(),
+		Creator: this.Owner,
 	}
 }
 
@@ -231,7 +251,7 @@ func (this Denom) Convert() interface{} {
 		ID:      this.Id,
 		Name:    this.Name,
 		Schema:  this.Schema,
-		Creator: this.Creator.String(),
+		Creator: this.Creator,
 	}
 }
 
@@ -253,7 +273,7 @@ func (c Collection) Convert() interface{} {
 			Name:    nft.Name,
 			URI:     nft.URI,
 			Data:    nft.Data,
-			Creator: nft.Owner.String(),
+			Creator: nft.Owner,
 		})
 	}
 	return QueryCollectionResp{
