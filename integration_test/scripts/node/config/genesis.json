@@ -1,6 +1,7 @@
 {
-  "genesis_time": "2020-06-16T08:56:18.031163Z",
-  "chain_id": "test",
+  "genesis_time": "2020-11-26T10:24:03.296224Z",
+  "chain_id": "irita",
+  "initial_height": "1",
   "consensus_params": {
     "block": {
       "max_bytes": "22020096",
@@ -9,16 +10,97 @@
     },
     "evidence": {
       "max_age_num_blocks": "100000",
-      "max_age_duration": "172800000000000"
+      "max_age_duration": "172800000000000",
+      "max_bytes": "1048576"
     },
     "validator": {
       "pub_key_types": [
         "sm2"
       ]
-    }
+    },
+    "version": {}
   },
   "app_hash": "",
   "app_state": {
+    "admin": {
+      "role_accounts": [
+        {
+          "address": "iaa18xcshrf7qwjmmurxxxe6tezw7qeqzjaz2z5326",
+          "roles": [
+            "ROOT_ADMIN"
+          ]
+        }
+      ],
+      "black_list": []
+    },
+    "auth": {
+      "params": {
+        "max_memo_characters": "256",
+        "tx_sig_limit": "7",
+        "tx_size_cost_per_byte": "10",
+        "sig_verify_cost_ed25519": "590",
+        "sig_verify_cost_secp256k1": "1000",
+        "sig_verify_cost_sm2": "7850"
+      },
+      "accounts": [
+        {
+          "@type": "/cosmos.auth.v1beta1.BaseAccount",
+          "address": "iaa18xcshrf7qwjmmurxxxe6tezw7qeqzjaz2z5326",
+          "pub_key": null,
+          "account_number": "0",
+          "sequence": "0"
+        }
+      ]
+    },
+    "bank": {
+      "params": {
+        "send_enabled": [],
+        "default_send_enabled": true
+      },
+      "balances": [
+        {
+          "address": "iaa18xcshrf7qwjmmurxxxe6tezw7qeqzjaz2z5326",
+          "coins": [
+            {
+              "denom": "point",
+              "amount": "1000000000"
+            }
+          ]
+        }
+      ],
+      "supply": [],
+      "denom_metadata": []
+    },
+    "crisis": {
+      "constant_fee": {
+        "denom": "point",
+        "amount": "1000"
+      }
+    },
+    "evidence": {
+      "evidence": []
+    },
+    "genutil": {
+      "gen_txs": []
+    },
+    "ibc": null,
+    "ibcrecord": null,
+    "identity": {
+      "identities": []
+    },
+    "nft": {
+      "collections": []
+    },
+    "oracle": {
+      "entries": []
+    },
+    "params": null,
+    "random": {
+      "pending_random_requests": {}
+    },
+    "record": {
+      "records": []
+    },
     "service": {
       "params": {
         "max_request_timeout": "100",
@@ -31,15 +113,26 @@
         ],
         "service_fee_tax": "0.100000000000000000",
         "slash_fraction": "0.001000000000000000",
-        "complaint_retrospect": "1296000000000000",
-        "arbitration_time_limit": "432000000000000",
+        "complaint_retrospect": "1296000s",
+        "arbitration_time_limit": "432000s",
         "tx_size_limit": "4000",
         "base_denom": "point"
       },
-      "definitions": null,
-      "bindings": null,
+      "definitions": [],
+      "bindings": [],
       "withdraw_addresses": {},
       "request_contexts": {}
+    },
+    "slashing": {
+      "params": {
+        "signed_blocks_window": "100",
+        "min_signed_per_window": "0.500000000000000000",
+        "downtime_jail_duration": "600s",
+        "slash_fraction_double_sign": "0.050000000000000000",
+        "slash_fraction_downtime": "0.010000000000000000"
+      },
+      "signing_infos": [],
+      "missed_blocks": []
     },
     "token": {
       "params": {
@@ -53,128 +146,47 @@
       "tokens": [
         {
           "symbol": "point",
-          "name": "Network staking token ",
+          "name": "CSChain point",
+          "scale": 0,
           "min_unit": "point",
           "initial_supply": "2000000000",
           "max_supply": "10000000000",
           "mintable": true,
-          "owner": "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz"
+          "owner": "iaa183rfa8tvtp6ax7jr7dfaf7ywv870sykxxykejp"
         }
       ]
     },
-    "evidence": {
-      "evidence": []
-    },
-    "slashing": {
-      "params": {
-        "signed_blocks_window": "2",
-        "min_signed_per_window": "0.500000000000000000",
-        "downtime_jail_duration": "1",
-        "slash_fraction_double_sign": "0.050000000000000000",
-        "slash_fraction_downtime": "0.010000000000000000"
-      },
-      "signing_infos": {},
-      "missed_blocks": {}
-    },
-    "auth": {
-      "params": {
-        "max_memo_characters": "256",
-        "tx_sig_limit": "7",
-        "tx_size_cost_per_byte": "10",
-        "sig_verify_cost_ed25519": "590",
-        "sig_verify_cost_secp256k1": "1000",
-        "sig_verify_cost_sm2": "7850"
-      },
-      "accounts": [
-        {
-          "type": "cosmos-sdk/Account",
-          "value": {
-            "address": "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz",
-            "account_number": "1"
-          }
-        }
-      ]
-    },
-    "record": {
-      "records": null
-    },
-    "crisis": {
-      "constant_fee": {
-        "denom": "point",
-        "amount": "1000"
-      }
-    },
+    "upgrade": {},
     "validator": {
-      "root_cert": "-----BEGIN CERTIFICATE-----\nMIICcTCCAhegAwIBAgIIIBkDGQAAAEEwCgYIKoEcz1UBg3UwgacxNjA0BgNVBAMM\nLeaxn+iLj+aZuuaFp+aVsOWtl+iupOivgeaciemZkOWFrOWPuFRFU1RfUk9PVDEu\nMCwGA1UECwwl5rGf6IuP5pm65oWn5pWw5a2X6K6k6K+B5pyJ6ZmQ5YWs5Y+4IDEN\nMAsGA1UECgwEdGVzdDEPMA0GA1UEBwwG5Y2X5LqsMRAwDgYDVQQIDAfmsZ/oi48g\nMQswCQYDVQQGEwJDTjAeFw0xOTAzMTkwODE1MDZaFw0zOTAzMTkwODE1MDZaMHYx\nHDAaBgNVBAMME1NtYXJ0Q0FfVGVzdF9TTTJfQ0ExFTATBgNVBAsMDFNtYXJ0Q0Ff\nVGVzdDEQMA4GA1UECgwHU21hcnRDQTEPMA0GA1UEBwwG5Y2X5LqsMQ8wDQYDVQQI\nDAbmsZ/oi48xCzAJBgNVBAYTAkNOMFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAE\nidlqvJzwsCJ/AYP0vRPvhCdIOZwZFoZYm5z5YaO/PMT5wJbEmb9gqEbsQ4CZTZLL\nZR66HAlKBIb7hSW2tjBcQKNdMFswDAYDVR0TBAUwAwEB/zALBgNVHQ8EBAMCAQYw\nHwYDVR0jBBgwFoAUw5LeBwc/a+n3a0Gh6imEZOcPIcIwHQYDVR0OBBYEFFzzuiWM\nwmUM7Gfvvt2Na6der+OsMAoGCCqBHM9VAYN1A0gAMEUCIQCm2eElovfaR+yxCjjZ\nFBiyiEMmoi21nAUfd9SHd9+x5wIgXrRrxp/9gRYvPk3Txd/w07Q/7QFpIpyfK4jq\nXGhv3NA=\n-----END CERTIFICATE-----\n",
+      "root_cert": "-----BEGIN CERTIFICATE-----\nMIIB3zCCAYWgAwIBAgIUfVuMkvm/wgvmVEB/Seo2Lts40nAwCgYIKoEcz1UBg3Uw\nRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoMGElu\ndGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMDExMjYxMDI2NDJaFw0yMTExMjYx\nMDI2NDJaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYD\nVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwWTATBgcqhkjOPQIBBggqgRzP\nVQGCLQNCAATJf1xIWwgPzWE7Uoezq3Mo7bvBEkOhpHX2JzmCc69+wqYSMtWcZm5k\npGuu+JBWjRUbyxUJIO5VJJpUcm97ZUWCo1MwUTAdBgNVHQ4EFgQUHX/6lvGA7F6x\n0MgX3mxI8eHkKMUwHwYDVR0jBBgwFoAUHX/6lvGA7F6x0MgX3mxI8eHkKMUwDwYD\nVR0TAQH/BAUwAwEB/zAKBggqgRzPVQGDdQNIADBFAiBfm2b253Xv8boIP0o5zaQP\n8JLKNLjiuiwmcXrH0sB1OwIhANbqTQ2rKfmnIuFRvZa14CUS72tbGMhS7DsMhOzk\nnWan\n-----END CERTIFICATE-----\n",
       "params": {
         "historical_entries": 100
       },
       "validators": [
         {
+          "id": "7073E0DB91194189DB1099097CB1AF7548D1EE59D0608FF4134CB9C8C55818FF",
           "name": "node0",
-          "pubkey": "icp1ulx45dfpqdnyust0a8ezcdhjjn3cekla9wx9lnpqmer9httzvstx64mns5njq2qe5yg",
-          "certificate": "-----BEGIN CERTIFICATE-----\nMIICkjCCAjegAwIBAgIIICAGFgACiXAwCgYIKoEcz1UBg3UwdjEcMBoGA1UEAwwT\nU21hcnRDQV9UZXN0X1NNMl9DQTEVMBMGA1UECwwMU21hcnRDQV9UZXN0MRAwDgYD\nVQQKDAdTbWFydENBMQ8wDQYDVQQHDAbljZfkuqwxDzANBgNVBAgMBuaxn+iLjzEL\nMAkGA1UEBhMCQ04wHhcNMjAwNjE2MDg1OTMxWhcNMjEwNjE2MDg1OTMzWjCBpTFR\nME8GA1UELQxIYXBpX2NhX1RFU1RfVE9fUEhfUkFfMl9VU0wxM1NTMV9hcGlfY2Ff\nODYwZmM1MTRjNGJjNDkxZGE0NWE3MWUxNWY1Njk0NTQxMQswCQYDVQQGEwJDTjEL\nMAkGA1UECAwCU0gxCzAJBgNVBAcMAlNIMQswCQYDVQQKDAJCSjELMAkGA1UECwwC\nQkoxDzANBgNVBAMMBnp6cUA0MDBZMBMGByqGSM49AgEGCCqBHM9VAYItA0IABGZO\nQW/p8iw28pTjjNv9K4xfzCDeRlutYmQWbVdzhScgI8t+C1byVafj/HLtRgs1BuBd\nxGwpk1JzPbbxMjoMSAujfzB9MAsGA1UdDwQEAwIGwDAMBgNVHRMEBTADAQH/MB0G\nA1UdDgQWBBSlP+hYMOGNI4AKNFlmuV98S1gfETAfBgNVHSMEGDAWgBRc87oljMJl\nDOxn777djWunXq/jrDAgBggqgRzQFAQBAwQUExIzMjAxMjUyMDE4MDkwOTM0MTgw\nCgYIKoEcz1UBg3UDSQAwRgIhAP4oW+uLC1X2X73ZdHlspiolTCIab2tSVJ7G2p39\nBV5XAiEAxnGmfzfeKU/z2ssrvJtsx9roVPe0rWkJ7YY37L+tFaA=\n-----END CERTIFICATE-----\n",
+          "pubkey": "icp1ulx45dfpqw6ljsdeg4d90duzf4zps2c79vr4xucupgzstmuy8zpkpqr9tz0gj946jhc",
+          "certificate": "-----BEGIN CERTIFICATE-----\nMIIBhTCCASsCFHl6DJ1Hbbdp4HG1VfW7oMwjlWWlMAoGCCqBHM9VAYN1MEUxCzAJ\nBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5l\ndCBXaWRnaXRzIFB0eSBMdGQwHhcNMjAxMTI2MTAyNzI3WhcNMjAxMjI2MTAyNzI3\nWjBFMQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwY\nSW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0D\nQgAEtflBuUVaV7eCTUQYKx4rB1NzHAoFBe+EOINggGVYnonGf7OTw7NAzd0lL2o6\nHq8PEuAwFZ4XSuF41doKqMyGATAKBggqgRzPVQGDdQNIADBFAiARrHhCgywqJZ5Y\nBAT7wYE/9dwW4IAddD7W2hJ1ZkoSUQIhANkFtLOTWsQHGtnjLTMMO5Ziv7Z6Hm1l\nh995dgI3YPX3\n-----END CERTIFICATE-----\n",
           "power": "100",
-          "operator": "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz"
+          "description": "",
+          "jailed": false,
+          "operator": "iaa18xcshrf7qwjmmurxxxe6tezw7qeqzjaz2z5326"
         }
       ]
     },
-    "params": null,
-    "capability": {
-      "index": "1",
-      "owners": []
-    },
-    "admin": {
-      "role_accounts": [
-        {
-          "address": "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz",
-          "roles": [
-            "RootAdmin","PermAdmin","NodeAdmin","BlacklistAdmin","ParamAdmin","PowerUser"
-          ]
-        }
-      ],
-      "black_list": null
-    },
-    "ibc": {
-      "client_genesis": {
-        "clients": [],
-        "clients_consensus": []
+    "wasm": {
+      "params": {
+        "code_upload_access": {
+          "permission": "Everybody",
+          "address": ""
+        },
+        "instantiate_default_permission": "Everybody",
+        "max_wasm_code_size": "614400"
       },
-      "connection_genesis": {
-        "connections": [],
-        "client_connection_paths": []
-      },
-      "channel_genesis": {
-        "channels": [],
-        "acknowledgements": [],
-        "commitments": [],
-        "send_sequences": [],
-        "recv_sequences": []
-      }
-    },
-    "genutil": {
-      "gentxs": []
-    },
-    "nft": {
-      "collections": []
-    },
-    "bank": {
-      "send_enabled": true,
-      "balances": [
-        {
-          "address": "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz",
-          "coins": [
-            {
-              "denom": "point",
-              "amount": "500000000"
-            }
-          ]
-        }
-      ],
-      "supply": []
-    },
-    "transfer": {
-      "portid": "transfer"
+      "codes": [],
+      "contracts": [],
+      "sequences": []
     }
   }
 }

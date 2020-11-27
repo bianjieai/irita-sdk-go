@@ -18,7 +18,7 @@ func TestNewMnemonicKeyManager(t *testing.T) {
 	pubKey := km.ExportPubKey()
 	pubkeyBech32, err := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, pubKey)
 	assert.NoError(t, err)
-	assert.Equal(t, "iap1ulx45dfpqg0f84wcp06t5ajvdf6dxhnwu0hhgjv3ulvpvy9cklqp374t5sty5ajqwjq", pubkeyBech32)
+	assert.Equal(t, "iap1qg0f84wcp06t5ajvdf6dxhnwu0hhgjv3ulvpvy9cklqp374t5sty55dw3ps", pubkeyBech32)
 
 	address := sdk.AccAddress(pubKey.Address()).String()
 	assert.Equal(t, "iaa1yh6ke44anmv92g9w3r3rf0lpaxhjrenrshc4am", address)
