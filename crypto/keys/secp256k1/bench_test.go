@@ -11,7 +11,7 @@ import (
 
 func BenchmarkKeyGeneration(b *testing.B) {
 	benchmarkKeygenWrapper := func(reader io.Reader) crypto.PrivKey {
-		return genPrivKey(reader)
+		return &PrivKey{Key: genPrivKey(crypto.CReader())}
 	}
 	benchmarking.BenchmarkKeyGeneration(b, benchmarkKeygenWrapper)
 }

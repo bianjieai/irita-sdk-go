@@ -117,7 +117,9 @@ func (base baseClient) broadcastTx(txBytes []byte, mode sdk.BroadcastMode) (res 
 // broadcastTxCommit broadcasts transaction bytes to a Tendermint node
 // and waits for a commit.
 func (base baseClient) broadcastTxCommit(tx []byte) (sdk.ResultTx, sdk.Error) {
-	res, err := base.BroadcastTxCommit(context.Background(), tx)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(base.cfg.Timeout)*time.Second)
+	defer cancel()
+	res, err := base.BroadcastTxCommit(ctx, tx)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
@@ -143,7 +145,10 @@ func (base baseClient) broadcastTxCommit(tx []byte) (sdk.ResultTx, sdk.Error) {
 // BroadcastTxSync broadcasts transaction bytes to a Tendermint node
 // synchronously.
 func (base baseClient) broadcastTxSync(tx []byte) (sdk.ResultTx, sdk.Error) {
-	res, err := base.BroadcastTxSync(context.Background(), tx)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(base.cfg.Timeout)*time.Second)
+	defer cancel()
+
+	res, err := base.BroadcastTxSync(ctx, tx)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
@@ -159,7 +164,10 @@ func (base baseClient) broadcastTxSync(tx []byte) (sdk.ResultTx, sdk.Error) {
 // BroadcastTxAsync broadcasts transaction bytes to a Tendermint node
 // asynchronously.
 func (base baseClient) broadcastTxAsync(tx []byte) (sdk.ResultTx, sdk.Error) {
-	res, err := base.BroadcastTxAsync(context.Background(), tx)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(base.cfg.Timeout)*time.Second)
+	defer cancel()
+
+	res, err := base.BroadcastTxAsync(ctx, tx)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}

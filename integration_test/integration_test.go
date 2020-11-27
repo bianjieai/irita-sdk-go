@@ -54,7 +54,7 @@ func TestSuite(t *testing.T) {
 func (s *IntegrationTestSuite) SetupSuite() {
 	options := []types.Option{
 		types.KeyDAOOption(store.NewMemory(nil)),
-		types.TimeoutOption(10),
+		types.TimeoutOption(6),
 	}
 	cfg, err := types.NewClientConfig(nodeURI, grpcAddr, chainID, options...)
 	if err != nil {
