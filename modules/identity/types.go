@@ -96,7 +96,7 @@ func ValidateIdentityFields(
 		return errors.New("owner missing")
 	}
 
-	if len(id) != IDLength {
+	if len(id) != IDLength*2 {
 		return fmt.Errorf("size of the ID must be %d in bytes", IDLength)
 	}
 
