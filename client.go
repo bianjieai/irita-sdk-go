@@ -23,6 +23,20 @@ import (
 	txtypes "github.com/bianjieai/irita-sdk-go/types/tx"
 )
 
+var registers = []codec.RegisterInterfaces{
+	admin.RegisterInterfaces,
+	bank.RegisterInterfaces,
+	identity.RegisterInterfaces,
+	token.RegisterInterfaces,
+	token.RegisterInterfaces,
+	record.RegisterInterfaces,
+	nft.RegisterInterfaces,
+	nft.RegisterInterfaces,
+	service.RegisterInterfaces,
+	node.RegisterInterfaces,
+	params.RegisterInterfaces,
+}
+
 // IRITAClient define a group of api to access c network
 type IRITAClient struct {
 	logger         log.Logger
@@ -40,6 +54,16 @@ type IRITAClient struct {
 	Identity identity.Client
 	Node     node.Client
 	Params   params.Client
+}
+
+// AppCodec return a Marshaler of the protobuf
+func AppCodec(rs ...codec.RegisterInterfaces) codec.Marshaler {
+	encodingConfig := makeEncodingConfig()
+	registers = append(registers, rs...)
+	for _, register := range registers {
+		register(encodingConfig.InterfaceRegistry)
+	}
+	return encodingConfig.Marshaler
 }
 
 // NewIRITAClient return a instance of the  IRITAClient
