@@ -15,7 +15,7 @@ type bankClient struct {
 	codec.Marshaler
 }
 
-func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) BankI {
+func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) Client {
 	return bankClient{
 		BaseClient: bc,
 		Marshaler:  cdc,

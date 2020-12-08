@@ -5,7 +5,7 @@ import (
 )
 
 // expose NFT module api for user
-type NFTI interface {
+type Client interface {
 	sdk.Module
 
 	IssueDenom(request IssueDenomRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)

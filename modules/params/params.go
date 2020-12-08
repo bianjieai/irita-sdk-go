@@ -11,7 +11,7 @@ type paramsClient struct {
 	codec.Marshaler
 }
 
-func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) ParamsI {
+func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) Client {
 	return paramsClient{
 		BaseClient: bc,
 		Marshaler:  cdc,
