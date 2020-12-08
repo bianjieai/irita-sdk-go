@@ -22,8 +22,7 @@ func (s IntegrationTestSuite) TestAdmin() {
 		admin.RoleBlacklistAdmin,
 	}
 
-	adminClient := admin.NewClient(s.IRITAClient.BaseClient, s.IRITAClient.AppCodec())
-	s.IRITAClient.RegisterModule(adminClient)
+	adminClient := s.Module(admin.ModuleName).(admin.AdminI)
 
 	//test AddRoles
 	rs, err := adminClient.AddRoles(acc.Address.String(), roles, baseTx)

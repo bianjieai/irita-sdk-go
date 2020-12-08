@@ -36,8 +36,7 @@ LTWCInii/I8Skv+Nuk034CK3u1fThnk=
 		Details:     "this is a test",
 	}
 
-	nodeClient := node.NewClient(s.IRITAClient.BaseClient, s.IRITAClient.AppCodec())
-	s.IRITAClient.RegisterModule(nodeClient)
+	nodeClient := s.Module(node.ModuleName).(node.ValidatorI)
 
 	rs, err := nodeClient.CreateValidator(createReq, baseTx)
 	require.NoError(s.T(), err)

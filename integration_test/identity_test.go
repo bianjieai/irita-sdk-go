@@ -57,8 +57,7 @@ JZOeFg1owNP2nZ8cD2TwDKS+T+T1rAG1ovnVp/PV7lbH1o8Kn2rwtj1S42O824Gr
 		Credentials: &testCredentials,
 	}
 
-	identityClient := identity.NewClient(s.IRITAClient.BaseClient, s.IRITAClient.AppCodec())
-	s.IRITAClient.RegisterModule(identityClient)
+	identityClient := s.Module(identity.ModuleName).(identity.IdentityI)
 
 	_, err := identityClient.QueryIdentity(id)
 	require.Error(s.T(), err, "not exist")
