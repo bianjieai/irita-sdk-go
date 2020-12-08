@@ -3,7 +3,7 @@ package iritamod.params;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "gitlab.bianjie.ai/irita-pro/iritamod-sdk-go/modules/params";
+option go_package = "github.com/bianjieai/irita-sdk-go/modules/params";
 option (gogoproto.goproto_getters_all) = false;
 
 // MsgUpdateParams defines an SDK message for updating params.

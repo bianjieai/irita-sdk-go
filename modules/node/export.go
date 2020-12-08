@@ -1,4 +1,4 @@
-package validator
+package node
 
 import (
 	sdk "github.com/bianjieai/irita-sdk-go/types"
