@@ -17,11 +17,11 @@ import (
 )
 
 const (
-	nodeURI  = "tcp://localhost:26657"
+	nodeURI  = "tcp://127.0.0.1:26657"
 	grpcAddr = "localhost:9090"
-	chainID  = "test"
+	chainID  = "irita"
 	charset  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	addr     = "iaa1rgnu8grzt6mwnjg7jss7w0sfyjn67g4et0hzfz"
+	addr     = "iaa18xcshrf7qwjmmurxxxe6tezw7qeqzjaz2z5326"
 )
 
 var (
@@ -65,7 +65,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.r = rand.New(rand.NewSource(time.Now().UnixNano()))
 	s.rootAccount = MockAccount{
 		Name:     "v1",
-		Password: "YQVGsOjegu",
+		Password: "1234567890",
 		Address:  types.MustAccAddressFromBech32(addr),
 	}
 	s.SetLogger(log.NewLogger(log.Config{
@@ -80,11 +80,9 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 }
 
 func (s *IntegrationTestSuite) initAccount() {
-	_, err := s.Key.Import(
-		s.Account().Name,
+	_, err := s.Key.Import(s.Account().Name,
 		s.Account().Password,
-		string(getPrivKeyArmor()),
-	)
+		string(getPrivKeyArmor()))
 	if err != nil {
 		panic(err)
 	}
