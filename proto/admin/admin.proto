@@ -3,7 +3,7 @@ package iritamod.admin;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "gitlab.bianjie.ai/irita-pro/iritamod-sdk-go/modules/admin";
+option go_package = "github.com/bianjieai/irita-sdk-go/modules/admin";
 option (gogoproto.goproto_getters_all) = false;
 
 // MsgAddRoles defines an SDK message for adding roles to a address.

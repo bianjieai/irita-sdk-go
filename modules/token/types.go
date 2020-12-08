@@ -26,11 +26,11 @@ func (msg MsgIssueToken) Type() string { return "issue_token" }
 
 // Implements Msg.
 func (msg MsgIssueToken) ValidateBasic() error {
-	if len(msg.Owner) ==0  {
+	if len(msg.Owner) == 0 {
 		return errors.New("owner must be not empty")
 	}
 
-	if err := sdk.ValidateAccAddress(msg.Owner);err != nil {
+	if err := sdk.ValidateAccAddress(msg.Owner); err != nil {
 		return sdk.Wrap(err)
 	}
 
@@ -80,19 +80,19 @@ func (msg MsgTransferTokenOwner) GetSigners() []sdk.AccAddress {
 }
 
 func (msg MsgTransferTokenOwner) ValidateBasic() error {
-	if len(msg.SrcOwner) ==0  {
+	if len(msg.SrcOwner) == 0 {
 		return errors.New("srcOwner must be not empty")
 	}
 
-	if err := sdk.ValidateAccAddress(msg.SrcOwner);err != nil {
+	if err := sdk.ValidateAccAddress(msg.SrcOwner); err != nil {
 		return sdk.Wrap(err)
 	}
 
-	if len(msg.DstOwner) ==0  {
+	if len(msg.DstOwner) == 0 {
 		return errors.New("dstOwner must be not empty")
 	}
 
-	if err := sdk.ValidateAccAddress(msg.DstOwner);err != nil {
+	if err := sdk.ValidateAccAddress(msg.DstOwner); err != nil {
 		return sdk.Wrap(err)
 	}
 
@@ -115,11 +115,11 @@ func (msg MsgEditToken) Type() string { return "edit_token" }
 
 // ValidateBasic implements Msg
 func (msg MsgEditToken) ValidateBasic() error {
-	if len(msg.Owner) ==0  {
+	if len(msg.Owner) == 0 {
 		return errors.New("owner must be not empty")
 	}
 
-	if err := sdk.ValidateAccAddress(msg.Owner);err != nil {
+	if err := sdk.ValidateAccAddress(msg.Owner); err != nil {
 		return sdk.Wrap(err)
 	}
 
@@ -165,11 +165,11 @@ func (msg MsgMintToken) GetSigners() []sdk.AccAddress {
 
 // ValidateBasic implements Msg
 func (msg MsgMintToken) ValidateBasic() error {
-	if len(msg.Owner) ==0  {
+	if len(msg.Owner) == 0 {
 		return errors.New("owner must be not empty")
 	}
 
-	if err := sdk.ValidateAccAddress(msg.Owner);err != nil {
+	if err := sdk.ValidateAccAddress(msg.Owner); err != nil {
 		return sdk.Wrap(err)
 	}
 

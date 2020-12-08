@@ -3,7 +3,7 @@ package iritamod.identity;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "gitlab.bianjie.ai/irita-pro/iritamod-sdk-go/modules/identity";
+option go_package = "github.com/bianjieai/irita-sdk-go/modules/identity";
 option (gogoproto.goproto_getters_all) = false;
 
 // MsgCreateIdentity defines a message to create an identity

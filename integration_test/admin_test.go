@@ -6,7 +6,6 @@ import (
 	"github.com/bianjieai/irita-sdk-go/types"
 
 	"github.com/bianjieai/irita-sdk-go/modules/admin"
-
 )
 
 func (s IntegrationTestSuite) TestAdmin() {
