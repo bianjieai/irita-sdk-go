@@ -18,6 +18,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/regen-network/cosmos-proto v0.3.0
 	github.com/sirupsen/logrus v1.4.2
+	github.com/spf13/cast v1.3.0
 	github.com/stretchr/testify v1.6.1
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15
 	github.com/tendermint/go-amino v0.15.1

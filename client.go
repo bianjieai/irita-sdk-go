@@ -19,6 +19,7 @@ import (
 	"github.com/bianjieai/irita-sdk-go/modules/record"
 	"github.com/bianjieai/irita-sdk-go/modules/service"
 	"github.com/bianjieai/irita-sdk-go/modules/token"
+	"github.com/bianjieai/irita-sdk-go/modules/wasm"
 	"github.com/bianjieai/irita-sdk-go/types"
 	txtypes "github.com/bianjieai/irita-sdk-go/types/tx"
 )
@@ -35,6 +36,7 @@ var registers = []codec.RegisterInterfaces{
 	service.RegisterInterfaces,
 	node.RegisterInterfaces,
 	params.RegisterInterfaces,
+	wasm.RegisterInterfaces,
 }
 
 // IRITAClient define a group of api to access c network
@@ -54,6 +56,7 @@ type IRITAClient struct {
 	Identity identity.Client
 	Node     node.Client
 	Params   params.Client
+	WASM     wasm.Client
 }
 
 // AppCodec return a Marshaler of the protobuf
@@ -82,6 +85,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 	serviceClient := service.NewClient(baseClient, encodingConfig.Marshaler)
 	nodeClient := node.NewClient(baseClient, encodingConfig.Marshaler)
 	paramsClient := params.NewClient(baseClient, encodingConfig.Marshaler)
+	wasmClient := wasm.NewClient(baseClient)
 
 	client := &IRITAClient{
 		logger:         baseClient.Logger(),
@@ -96,6 +100,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 		Identity:       idClient,
 		Node:           nodeClient,
 		Params:         paramsClient,
+		WASM:           wasmClient,
 		moduleManager:  make(map[string]types.Module),
 		encodingConfig: encodingConfig,
 	}
