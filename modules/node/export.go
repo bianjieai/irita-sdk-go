@@ -5,11 +5,11 @@ import (
 )
 
 var (
-	_ ValidatorI = validatorClient{}
+	_ Client = validatorClient{}
 )
 
 // expose Record module api for user
-type ValidatorI interface {
+type Client interface {
 	sdk.Module
 
 	CreateValidator(request CreateValidatorRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)

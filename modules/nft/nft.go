@@ -14,7 +14,7 @@ type nftClient struct {
 	codec.Marshaler
 }
 
-func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) NFTI {
+func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) Client {
 	return nftClient{
 		BaseClient: bc,
 		Marshaler:  cdc,

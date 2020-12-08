@@ -4,7 +4,7 @@ import (
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
-type IdentityI interface {
+type Client interface {
 	sdk.Module
 
 	CreateIdentity(request CreateIdentityRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)

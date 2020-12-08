@@ -4,7 +4,8 @@ import (
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
-type AdminI interface {
+// Client export a group api for Admin module
+type Client interface {
 	sdk.Module
 
 	AddRoles(address string, roles []Role, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)

@@ -13,7 +13,7 @@ type identityClient struct {
 	codec.Marshaler
 }
 
-func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) IdentityI {
+func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) Client {
 	return identityClient{
 		BaseClient: bc,
 		Marshaler:  cdc,

@@ -5,11 +5,11 @@ import (
 )
 
 var (
-	_ ParamsI = paramsClient{}
+	_ Client = paramsClient{}
 )
 
 // expose params module api for user
-type ParamsI interface {
+type Client interface {
 	sdk.Module
 
 	UpdateParams(request []UpdateParamRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)

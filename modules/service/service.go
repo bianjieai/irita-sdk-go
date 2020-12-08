@@ -19,7 +19,7 @@ type serviceClient struct {
 	codec.Marshaler
 }
 
-func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) ServiceI {
+func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) Client {
 	return serviceClient{
 		BaseClient: bc,
 		Marshaler:  cdc,

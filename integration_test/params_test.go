@@ -23,9 +23,7 @@ func (s IntegrationTestSuite) TestParams() {
 		Value:  `"200"`,
 	}}
 
-	paramsClient := s.Module(params.ModuleName).(params.ParamsI)
-
-	rs, err := paramsClient.UpdateParams(request, baseTx)
+	rs, err := s.Params.UpdateParams(request, baseTx)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), rs.Hash)
 

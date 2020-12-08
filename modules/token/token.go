@@ -17,7 +17,7 @@ type tokenClient struct {
 	codec.Marshaler
 }
 
-func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) TokenI {
+func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) Client {
 	return tokenClient{
 		BaseClient: bc,
 		Marshaler:  cdc,

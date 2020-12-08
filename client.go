@@ -30,16 +30,16 @@ type IRITAClient struct {
 	encodingConfig types.EncodingConfig
 
 	types.BaseClient
-	Bank     bank.BankI
-	Token    token.TokenI
-	Record   record.RecordI
-	NFT      nft.NFTI
-	Service  service.ServiceI
-	Key      keys.KeyI
-	Admin    admin.AdminI
-	Identity identity.IdentityI
-	Node     node.ValidatorI
-	Params   params.ParamsI
+	Bank     bank.Client
+	Token    token.Client
+	Record   record.Client
+	NFT      nft.Client
+	Service  service.Client
+	Key      keys.Client
+	Admin    admin.Client
+	Identity identity.Client
+	Node     node.Client
+	Params   params.Client
 }
 
 // NewIRITAClient return a instance of the  IRITAClient
