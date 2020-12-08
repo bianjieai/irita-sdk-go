@@ -5,7 +5,7 @@ import (
 )
 
 // expose Record module api for user
-type RecordI interface {
+type Client interface {
 	sdk.Module
 
 	CreateRecord(request CreateRecordRequest, baseTx sdk.BaseTx) (string, sdk.Error)

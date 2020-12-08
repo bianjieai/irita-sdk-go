@@ -9,9 +9,13 @@ import (
 	cdctypes "github.com/bianjieai/irita-sdk-go/codec/types"
 	cryptocodec "github.com/bianjieai/irita-sdk-go/crypto/codec"
 	"github.com/bianjieai/irita-sdk-go/modules"
+	"github.com/bianjieai/irita-sdk-go/modules/admin"
 	"github.com/bianjieai/irita-sdk-go/modules/bank"
+	"github.com/bianjieai/irita-sdk-go/modules/identity"
 	"github.com/bianjieai/irita-sdk-go/modules/keys"
 	"github.com/bianjieai/irita-sdk-go/modules/nft"
+	"github.com/bianjieai/irita-sdk-go/modules/node"
+	"github.com/bianjieai/irita-sdk-go/modules/params"
 	"github.com/bianjieai/irita-sdk-go/modules/record"
 	"github.com/bianjieai/irita-sdk-go/modules/service"
 	"github.com/bianjieai/irita-sdk-go/modules/token"
@@ -19,31 +23,65 @@ import (
 	txtypes "github.com/bianjieai/irita-sdk-go/types/tx"
 )
 
+var registers = []codec.RegisterInterfaces{
+	admin.RegisterInterfaces,
+	bank.RegisterInterfaces,
+	identity.RegisterInterfaces,
+	token.RegisterInterfaces,
+	token.RegisterInterfaces,
+	record.RegisterInterfaces,
+	nft.RegisterInterfaces,
+	nft.RegisterInterfaces,
+	service.RegisterInterfaces,
+	node.RegisterInterfaces,
+	params.RegisterInterfaces,
+}
+
+// IRITAClient define a group of api to access c network
 type IRITAClient struct {
 	logger         log.Logger
 	moduleManager  map[string]types.Module
 	encodingConfig types.EncodingConfig
 
 	types.BaseClient
-	Bank    bank.BankI
-	Token   token.TokenI
-	Record  record.RecordI
-	NFT     nft.NFTI
-	Service service.ServiceI
-	Key     keys.KeyI
+	Bank     bank.Client
+	Token    token.Client
+	Record   record.Client
+	NFT      nft.Client
+	Service  service.Client
+	Key      keys.Client
+	Admin    admin.Client
+	Identity identity.Client
+	Node     node.Client
+	Params   params.Client
 }
 
+// AppCodec return a Marshaler of the protobuf
+func AppCodec(rs ...codec.RegisterInterfaces) codec.Marshaler {
+	encodingConfig := makeEncodingConfig()
+	registers = append(registers, rs...)
+	for _, register := range registers {
+		register(encodingConfig.InterfaceRegistry)
+	}
+	return encodingConfig.Marshaler
+}
+
+// NewIRITAClient return a instance of the  IRITAClient
 func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 	encodingConfig := makeEncodingConfig()
 	//create a instance of baseClient
 	baseClient := modules.NewBaseClient(cfg, encodingConfig, nil)
 
+	adminClient := admin.NewClient(baseClient, encodingConfig.Marshaler)
 	bankClient := bank.NewClient(baseClient, encodingConfig.Marshaler)
+	idClient := identity.NewClient(baseClient, encodingConfig.Marshaler)
 	tokenClient := token.NewClient(baseClient, encodingConfig.Marshaler)
 	keysClient := keys.NewClient(baseClient)
 	recordClient := record.NewClient(baseClient, encodingConfig.Marshaler)
 	nftClient := nft.NewClient(baseClient, encodingConfig.Marshaler)
 	serviceClient := service.NewClient(baseClient, encodingConfig.Marshaler)
+	nodeClient := node.NewClient(baseClient, encodingConfig.Marshaler)
+	paramsClient := params.NewClient(baseClient, encodingConfig.Marshaler)
 
 	client := &IRITAClient{
 		logger:         baseClient.Logger(),
@@ -54,36 +92,49 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 		Record:         recordClient,
 		NFT:            nftClient,
 		Service:        serviceClient,
+		Admin:          adminClient,
+		Identity:       idClient,
+		Node:           nodeClient,
+		Params:         paramsClient,
 		moduleManager:  make(map[string]types.Module),
 		encodingConfig: encodingConfig,
 	}
 
 	client.RegisterModule(
+		adminClient,
 		bankClient,
+		idClient,
 		tokenClient,
 		recordClient,
 		nftClient,
 		serviceClient,
+		nodeClient,
+		paramsClient,
 	)
 	return *client
 }
 
+// SetLogger set the logger for irita client
 func (client *IRITAClient) SetLogger(logger log.Logger) {
 	client.BaseClient.SetLogger(logger)
 }
 
+// Codec return the codec of the amnio
 func (client *IRITAClient) Codec() *codec.LegacyAmino {
 	return client.encodingConfig.Amino
 }
 
+// AppCodec return the codec of the protobuf
 func (client *IRITAClient) AppCodec() codec.Marshaler {
 	return client.encodingConfig.Marshaler
 }
 
+// Manager return the BaseClient
 func (client *IRITAClient) Manager() types.BaseClient {
 	return client.BaseClient
 }
 
+// RegisterModule regisger the module for irita client
 func (client *IRITAClient) RegisterModule(ms ...types.Module) {
 	for _, m := range ms {
 		_, ok := client.moduleManager[m.Name()]
@@ -97,6 +148,7 @@ func (client *IRITAClient) RegisterModule(ms ...types.Module) {
 	}
 }
 
+// Module return the subclient by the module name
 func (client *IRITAClient) Module(name string) types.Module {
 	return client.moduleManager[name]
 }

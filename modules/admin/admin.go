@@ -13,7 +13,7 @@ type adminClient struct {
 	codec.Marshaler
 }
 
-func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) AdminI {
+func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) Client {
 	return adminClient{
 		BaseClient: bc,
 		Marshaler:  cdc,

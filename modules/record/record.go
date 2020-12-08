@@ -13,7 +13,7 @@ type recordClient struct {
 	codec.Marshaler
 }
 
-func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) RecordI {
+func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) Client {
 	return recordClient{
 		BaseClient: bc,
 		Marshaler:  cdc,

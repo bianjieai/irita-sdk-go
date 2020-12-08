@@ -4,8 +4,8 @@ import (
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
-// expose bank module api for user
-type BankI interface {
+// Client export a group api for Admin module
+type Client interface {
 	sdk.Module
 
 	Send(to string, amount sdk.DecCoins, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)

@@ -63,4 +63,7 @@ type (
 		MarshalAminoJSON() ([]byte, error)
 		UnmarshalAminoJSON([]byte) error
 	}
+
+	// RegisterInterfaces defines an method for regisger inteface for registry
+	RegisterInterfaces func(registry types.InterfaceRegistry)
 )

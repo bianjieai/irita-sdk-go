@@ -57,17 +57,14 @@ JZOeFg1owNP2nZ8cD2TwDKS+T+T1rAG1ovnVp/PV7lbH1o8Kn2rwtj1S42O824Gr
 		Credentials: &testCredentials,
 	}
 
-	identityClient := identity.NewClient(s.IRITAClient.BaseClient, s.IRITAClient.AppCodec())
-	s.IRITAClient.RegisterModule(identityClient)
-
-	_, err := identityClient.QueryIdentity(id)
+	_, err := s.Identity.QueryIdentity(id)
 	require.Error(s.T(), err, "not exist")
 
-	rs, err := identityClient.CreateIdentity(request, baseTx)
+	rs, err := s.Identity.CreateIdentity(request, baseTx)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), rs.Hash)
 
-	res, err := identityClient.QueryIdentity(id)
+	res, err := s.Identity.QueryIdentity(id)
 	require.NoError(s.T(), err)
 	require.Equal(s.T(), res.Credentials, testCredentials)
 	require.Contains(s.T(), res.Certificates, testCertificate)
@@ -86,11 +83,11 @@ JZOeFg1owNP2nZ8cD2TwDKS+T+T1rAG1ovnVp/PV7lbH1o8Kn2rwtj1S42O824Gr
 		Credentials: &testCredentials,
 	}
 
-	rs, err = identityClient.UpdateIdentity(req2, baseTx)
+	rs, err = s.Identity.UpdateIdentity(req2, baseTx)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), rs.Hash)
 
-	res, err = identityClient.QueryIdentity(id)
+	res, err = s.Identity.QueryIdentity(id)
 	require.NoError(s.T(), err)
 	require.Len(s.T(), res.PubkeyInfos, 3)
 }

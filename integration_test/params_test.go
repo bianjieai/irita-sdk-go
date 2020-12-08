@@ -23,10 +23,7 @@ func (s IntegrationTestSuite) TestParams() {
 		Value:  `"200"`,
 	}}
 
-	paramsClient := params.NewClient(s.IRITAClient.BaseClient, s.IRITAClient.AppCodec())
-	s.IRITAClient.RegisterModule(paramsClient)
-
-	rs, err := paramsClient.UpdateParams(request, baseTx)
+	rs, err := s.Params.UpdateParams(request, baseTx)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), rs.Hash)
 

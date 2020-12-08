@@ -36,20 +36,17 @@ LTWCInii/I8Skv+Nuk034CK3u1fThnk=
 		Details:     "this is a test",
 	}
 
-	nodeClient := node.NewClient(s.IRITAClient.BaseClient, s.IRITAClient.AppCodec())
-	s.IRITAClient.RegisterModule(nodeClient)
-
-	rs, err := nodeClient.CreateValidator(createReq, baseTx)
+	rs, err := s.Node.CreateValidator(createReq, baseTx)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), rs.Hash)
 
 	validatorID, er := rs.Events.GetValue("create_validator", "validator")
 	require.NoError(s.T(), er)
 
-	v, err := nodeClient.QueryValidator(validatorID)
+	v, err := s.Node.QueryValidator(validatorID)
 	require.NoError(s.T(), err)
 
-	vs, err := nodeClient.QueryValidators(nil, 0, 0, false)
+	vs, err := s.Node.QueryValidators(nil, 0, 0, false)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), vs)
 
@@ -60,19 +57,19 @@ LTWCInii/I8Skv+Nuk034CK3u1fThnk=
 		Power:       10,
 		Details:     "this is a updated test",
 	}
-	rs, err = nodeClient.UpdateValidator(updateReq, baseTx)
+	rs, err = s.Node.UpdateValidator(updateReq, baseTx)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), rs.Hash)
 
-	v, err = nodeClient.QueryValidator(validatorID)
+	v, err = s.Node.QueryValidator(validatorID)
 	require.NoError(s.T(), err)
 	require.Equal(s.T(), updateReq.Name, v.Name)
 	require.Equal(s.T(), updateReq.Details, v.Details)
 
-	rs, err = nodeClient.RemoveValidator(validatorID, baseTx)
+	rs, err = s.Node.RemoveValidator(validatorID, baseTx)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), rs.Hash)
 
-	v, err = nodeClient.QueryValidator(validatorID)
+	v, err = s.Node.QueryValidator(validatorID)
 	require.Error(s.T(), err)
 }

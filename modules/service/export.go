@@ -41,8 +41,8 @@ type Query interface {
 	QueryParams() (QueryParamsResp, sdk.Error)
 }
 
-// ServiceI defines a set of interfaces in the service module
-type ServiceI interface {
+// Client defines a set of interfaces in the service module
+type Client interface {
 	sdk.Module
 	Tx
 	Query

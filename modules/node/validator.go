@@ -14,7 +14,7 @@ type validatorClient struct {
 	codec.Marshaler
 }
 
-func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) ValidatorI {
+func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) Client {
 	return validatorClient{
 		BaseClient: bc,
 		Marshaler:  cdc,
