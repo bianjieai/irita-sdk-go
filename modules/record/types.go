@@ -43,7 +43,7 @@ func (msg MsgCreateRecord) ValidateBasic() error {
 		return fmt.Errorf("creator missing")
 	}
 
-	if err := sdk.ValidateAccAddress(msg.Creator) ;err != nil {
+	if err := sdk.ValidateAccAddress(msg.Creator); err != nil {
 		return sdk.Wrap(err)
 	}
 

@@ -1,4 +1,4 @@
-package validator
+package node
 
 import (
 	"errors"
@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	ModuleName = "validator"
+	ModuleName = "node"
 )
 
 var (

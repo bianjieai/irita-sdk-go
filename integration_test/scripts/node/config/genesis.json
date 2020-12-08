@@ -55,7 +55,8 @@
     "bank": {
       "params": {
         "send_enabled": [],
-        "default_send_enabled": true
+        "default_send_enabled": true,
+        "unrestricted_token_transfer": true
       },
       "balances": [
         {
@@ -157,7 +158,7 @@
       ]
     },
     "upgrade": {},
-    "validator": {
+    "node": {
       "root_cert": "-----BEGIN CERTIFICATE-----\nMIIB3zCCAYWgAwIBAgIUfVuMkvm/wgvmVEB/Seo2Lts40nAwCgYIKoEcz1UBg3Uw\nRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoMGElu\ndGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMDExMjYxMDI2NDJaFw0yMTExMjYx\nMDI2NDJaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYD\nVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwWTATBgcqhkjOPQIBBggqgRzP\nVQGCLQNCAATJf1xIWwgPzWE7Uoezq3Mo7bvBEkOhpHX2JzmCc69+wqYSMtWcZm5k\npGuu+JBWjRUbyxUJIO5VJJpUcm97ZUWCo1MwUTAdBgNVHQ4EFgQUHX/6lvGA7F6x\n0MgX3mxI8eHkKMUwHwYDVR0jBBgwFoAUHX/6lvGA7F6x0MgX3mxI8eHkKMUwDwYD\nVR0TAQH/BAUwAwEB/zAKBggqgRzPVQGDdQNIADBFAiBfm2b253Xv8boIP0o5zaQP\n8JLKNLjiuiwmcXrH0sB1OwIhANbqTQ2rKfmnIuFRvZa14CUS72tbGMhS7DsMhOzk\nnWan\n-----END CERTIFICATE-----\n",
       "params": {
         "historical_entries": 100

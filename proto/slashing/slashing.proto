@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "gitlab.bianjie.ai/irita-pro/iritamod-sdk-go/modules/slashing";
+option go_package = "github.com/bianjieai/irita-sdk-go/modules/slashing";
 option (gogoproto.goproto_getters_all) = false;
 
 // MsgUnjailValidator - struct for unjailing jailed validator
