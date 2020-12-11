@@ -154,3 +154,21 @@ func (v validatorClient) QueryParams() (QueryParamsResp, sdk.Error) {
 
 	return resp.Params.Convert().(QueryParamsResp), nil
 }
+
+//func (v validatorClient) GrantValidator(id string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
+//	creator, err := v.QueryAddress(baseTx.From, baseTx.Password)
+//	if err != nil {
+//		return sdk.ResultTx{}, sdk.Wrap(err)
+//	}
+//
+//	vID, er := sdk.HexBytesFrom(id)
+//	if er != nil {
+//		return sdk.ResultTx{}, sdk.Wrap(er)
+//	}
+//	msg := &MsgRemoveValidator{
+//		Id:       vID.String(),
+//		Operator: creator.String(),
+//	}
+//
+//	return v.BuildAndSend([]sdk.Msg{msg}, baseTx)
+//}
