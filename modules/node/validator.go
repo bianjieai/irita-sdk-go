@@ -171,6 +171,56 @@ func (v validatorClient) QueryValidator(id string) (QueryValidatorResp, sdk.Erro
 	return resp.Validator.Convert().(QueryValidatorResp), nil
 }
 
+func (v validatorClient) QueryNodes(key []byte, offset uint64, limit uint64, countTotal bool) ([]QueryNodeResp, sdk.Error) {
+	conn, err := v.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	resp, err := NewQueryClient(conn).Nodes(
+		context.Background(),
+		&QueryNodesRequest{
+			Pagination: &query.PageRequest{
+				Key:        key,
+				Offset:     offset,
+				Limit:      limit,
+				CountTotal: countTotal,
+			},
+		},
+	)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	return nodes(resp.Nodes).Convert().([]QueryNodeResp), nil
+}
+
+func (v validatorClient) QueryNode(id string) (QueryNodeResp, sdk.Error) {
+	conn, err := v.GenConn()
+	defer func() { _ = conn.Close() }()
+	if err != nil {
+		return QueryNodeResp{}, sdk.Wrap(err)
+	}
+
+	vID, err := sdk.HexBytesFrom(id)
+	if err != nil {
+		return QueryNodeResp{}, sdk.Wrap(err)
+	}
+
+	resp, err := NewQueryClient(conn).Node(
+		context.Background(),
+		&QueryNodeRequest{
+			Id: vID.String(),
+		},
+	)
+	if err != nil {
+		return QueryNodeResp{}, sdk.Wrap(err)
+	}
+
+	return resp.Node.Convert().(QueryNodeResp), nil
+}
+
 func (v validatorClient) QueryParams() (QueryParamsResp, sdk.Error) {
 	conn, err := v.GenConn()
 	defer func() { _ = conn.Close() }()

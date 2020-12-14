@@ -194,6 +194,28 @@ func (vs validators) Convert() interface{} {
 	return vrs
 }
 
+func (n Node) Convert() interface{} {
+	return QueryNodeResp{
+		ID:          n.Id,
+		Name:        n.Name,
+		Certificate: n.Certificate,
+	}
+}
+
+type nodes []Node
+
+func (ns nodes) Convert() interface{} {
+	var nrs []QueryNodeResp
+	for _, n := range ns {
+		nrs = append(nrs, QueryNodeResp{
+			ID:          n.Id,
+			Name:        n.Name,
+			Certificate: n.Certificate,
+		})
+	}
+	return nrs
+}
+
 func (p Params) Convert() interface{} {
 	return QueryParamsResp(p)
 }

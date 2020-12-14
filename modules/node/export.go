@@ -21,6 +21,8 @@ type Client interface {
 
 	QueryValidators(key []byte, offset uint64, limit uint64, countTotal bool) ([]QueryValidatorResp, sdk.Error)
 	QueryValidator(id string) (QueryValidatorResp, sdk.Error)
+	QueryNodes(key []byte, offset uint64, limit uint64, countTotal bool) ([]QueryNodeResp, sdk.Error)
+	QueryNode(id string) (QueryNodeResp, sdk.Error)
 	QueryParams() (QueryParamsResp, sdk.Error)
 }
 
@@ -54,6 +56,12 @@ type QueryValidatorResp struct {
 	Details     string `json:"details"`
 	Jailed      bool   `json:"jailed"`
 	Operator    string `json:"operator"`
+}
+
+type QueryNodeResp struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Certificate string `json:"certificate"`
 }
 
 // token params
