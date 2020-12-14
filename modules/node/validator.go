@@ -87,6 +87,40 @@ func (v validatorClient) RemoveValidator(id string, baseTx sdk.BaseTx) (sdk.Resu
 	return v.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
+func (v validatorClient) GrantNode(request GrantNodeRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
+	creator, err := v.QueryAddress(baseTx.From, baseTx.Password)
+	if err != nil {
+		return sdk.ResultTx{}, sdk.Wrap(err)
+	}
+
+	msg := &MsgGrantNode{
+		Name:        request.Name,
+		Certificate: request.Certificate,
+		Operator:    creator.String(),
+	}
+
+	return v.BuildAndSend([]sdk.Msg{msg}, baseTx)
+}
+
+func (v validatorClient) RevokeNode(nodeId string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
+	creator, err := v.QueryAddress(baseTx.From, baseTx.Password)
+	if err != nil {
+		return sdk.ResultTx{}, sdk.Wrap(err)
+	}
+
+	vID, er := sdk.HexBytesFrom(nodeId)
+	if er != nil {
+		return sdk.ResultTx{}, sdk.Wrap(er)
+	}
+
+	msg := &MsgRevokeNode{
+		Id:       vID.String(),
+		Operator: creator.String(),
+	}
+
+	return v.BuildAndSend([]sdk.Msg{msg}, baseTx)
+}
+
 func (v validatorClient) QueryValidators(key []byte, offset uint64, limit uint64, countTotal bool) ([]QueryValidatorResp, sdk.Error) {
 	conn, err := v.GenConn()
 	defer func() { _ = conn.Close() }()
@@ -154,21 +188,3 @@ func (v validatorClient) QueryParams() (QueryParamsResp, sdk.Error) {
 
 	return resp.Params.Convert().(QueryParamsResp), nil
 }
-
-//func (v validatorClient) GrantValidator(id string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
-//	creator, err := v.QueryAddress(baseTx.From, baseTx.Password)
-//	if err != nil {
-//		return sdk.ResultTx{}, sdk.Wrap(err)
-//	}
-//
-//	vID, er := sdk.HexBytesFrom(id)
-//	if er != nil {
-//		return sdk.ResultTx{}, sdk.Wrap(er)
-//	}
-//	msg := &MsgRemoveValidator{
-//		Id:       vID.String(),
-//		Operator: creator.String(),
-//	}
-//
-//	return v.BuildAndSend([]sdk.Msg{msg}, baseTx)
-//}

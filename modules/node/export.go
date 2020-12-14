@@ -16,6 +16,9 @@ type Client interface {
 	UpdateValidator(request UpdateValidatorRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 	RemoveValidator(id string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 
+	GrantNode(request GrantNodeRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
+	RevokeNode(nodeId string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
+
 	QueryValidators(key []byte, offset uint64, limit uint64, countTotal bool) ([]QueryValidatorResp, sdk.Error)
 	QueryValidator(id string) (QueryValidatorResp, sdk.Error)
 	QueryParams() (QueryParamsResp, sdk.Error)
@@ -33,6 +36,12 @@ type UpdateValidatorRequest struct {
 	Name        string `json:"name"`
 	Certificate string `json:"certificate"`
 	Power       int64  `json:"power"`
+	Details     string `json:"details"`
+}
+
+type GrantNodeRequest struct {
+	Name        string `json:"name"`
+	Certificate string `json:"certificate"`
 	Details     string `json:"details"`
 }
 
