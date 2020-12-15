@@ -130,13 +130,13 @@ func (base *baseClient) BuildAndSend(msg []sdk.Msg, baseTx sdk.BaseTx) (sdk.Resu
 	retryIfFunc := func(err error) bool {
 		e, ok := err.(sdk.Error)
 		if ok && sdk.Code(e.Code()) == sdk.WrongSequence {
-			_ = base.removeCache(address)
 			return true
 		}
 		return false
 	}
 
 	onRetryFunc := func(n uint, err error) {
+		_ = base.removeCache(address)
 		base.Logger().Error("wrong sequence, will retry",
 			"address", address, "attempts", n, "err", err.Error())
 	}
@@ -209,13 +209,13 @@ func (base *baseClient) SendBatch(msgs sdk.Msgs, baseTx sdk.BaseTx) (rs []sdk.Re
 	retryIf := func(err error) bool {
 		e, ok := err.(sdk.Error)
 		if ok && (sdk.Code(e.Code()) == sdk.InvalidSequence || sdk.Code(e.Code()) == sdk.TxTooLarge) {
-			_ = base.removeCache(address)
 			return true
 		}
 		return false
 	}
 
 	onRetry := func(n uint, err error) {
+		_ = base.removeCache(address)
 		base.Logger().Error("wrong sequence, will retry",
 			"address", address, "attempts", n, "err", err.Error())
 	}
