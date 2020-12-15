@@ -23,12 +23,16 @@ func (s IntegrationTestSuite) TestBank() {
 			send,
 		},
 		{
+			"TestConcurrency",
+			concurrencySend,
+		},
+		{
 			"TestMultiSend",
 			multiSend,
 		},
 		{
-			"TestSimulate",
-			simulate,
+			"TestSendBatch",
+			sendBatch,
 		},
 	}
 
@@ -55,7 +59,7 @@ func send(s IntegrationTestSuite) {
 		Memo:               "test",
 		Mode:               types.Commit,
 		Password:           s.Account().Password,
-		SimulateAndExecute: true,
+		SimulateAndExecute: false,
 		GasAdjustment:      1.5,
 	}
 
@@ -76,6 +80,32 @@ func send(s IntegrationTestSuite) {
 	<-ch
 }
 
+func concurrencySend(s IntegrationTestSuite) {
+	baseTx := types.BaseTx{
+		From:     s.Account().Name,
+		Gas:      500000,
+		Memo:     "test",
+		Mode:     types.Commit,
+		Password: s.Account().Password,
+	}
+
+	coins, err := types.ParseDecCoins("1point")
+	s.NoError(err)
+	to := s.GetRandAccount().Address.String()
+
+	var lock sync.WaitGroup
+	for i := 1; i <= 20; i++ {
+		lock.Add(1)
+		go func() {
+			result, err := s.Bank.Send(to, coins, baseTx)
+			require.NoError(s.T(), err)
+			require.NotEmpty(s.T(), result.Hash)
+			lock.Done()
+		}()
+	}
+	lock.Wait()
+}
+
 func multiSend(s IntegrationTestSuite) {
 	baseTx := types.BaseTx{
 		From:     s.Account().Name,
@@ -88,7 +118,7 @@ func multiSend(s IntegrationTestSuite) {
 	coins, e := types.ParseDecCoins("1000point")
 	require.NoError(s.T(), e)
 
-	var accNum = 11
+	var accNum = 4
 	var acc = make([]string, accNum)
 	var receipts = make([]bank.Receipt, accNum)
 	for i := 0; i < accNum; i++ {
@@ -134,21 +164,34 @@ func multiSend(s IntegrationTestSuite) {
 	fmt.Printf("total senconds:%s\n", end.Sub(begin).String())
 }
 
-func simulate(s IntegrationTestSuite) {
-	coins, err := types.ParseDecCoins("10point")
-	s.NoError(err)
-	to := s.GetRandAccount().Address.String()
+func sendBatch(s IntegrationTestSuite)  {
 	baseTx := types.BaseTx{
-		From:               s.Account().Name,
-		Gas:                200000,
-		Memo:               "test",
-		Mode:               types.Commit,
-		Password:           s.Account().Password,
+		From:     s.Account().Name,
+		Gas:      500000,
+		Memo:     "test",
+		Mode:     types.Commit,
+		Password: s.Account().Password,
 		SimulateAndExecute: true,
 	}
 
-	result, err := s.Bank.Send(to, coins, baseTx)
+	coins, e := types.ParseDecCoins("1point")
+	require.NoError(s.T(), e)
+
+	var accNum = 100
+	var acc = make([]string, accNum)
+	var receipts = make([]bank.Receipt, accNum)
+	for i := 0; i < accNum; i++ {
+		acc[i] = s.RandStringOfLength(10)
+		addr, _, err := s.Key.Add(acc[i], "1234567890")
+
+		require.NoError(s.T(), err)
+		require.NotEmpty(s.T(), addr)
+
+		receipts[i] = bank.Receipt{
+			Address: addr,
+			Amount:  coins,
+		}
+	}
+	_, err := s.Bank.MultiSend(bank.MultiSendRequest{Receipts: receipts}, baseTx)
 	require.NoError(s.T(), err)
-	require.Greater(s.T(), result.GasWanted, int64(0))
-	fmt.Println(result)
 }

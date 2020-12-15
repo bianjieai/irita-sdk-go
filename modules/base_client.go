@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/avast/retry-go"
 	"github.com/gogo/protobuf/proto"
 
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -17,6 +18,7 @@ import (
 
 	clienttx "github.com/bianjieai/irita-sdk-go/client/tx"
 	"github.com/bianjieai/irita-sdk-go/codec"
+	"github.com/bianjieai/irita-sdk-go/modules/service"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/types/tx"
 	"github.com/bianjieai/irita-sdk-go/utils"
@@ -51,7 +53,7 @@ func NewBaseClient(cfg sdk.ClientConfig, encodingConfig sdk.EncodingConfig, logg
 	if logger == nil {
 		logger = sdklog.NewLogger(sdklog.Config{
 			Format: sdklog.FormatText,
-			Level:  sdklog.InfoLevel,
+			Level:  cfg.Level,
 		})
 	}
 
@@ -61,7 +63,7 @@ func NewBaseClient(cfg sdk.ClientConfig, encodingConfig sdk.EncodingConfig, logg
 		logger:         logger,
 		cfg:            &cfg,
 		encodingConfig: encodingConfig,
-		l:              NewLocker(concurrency),
+		l:              NewLocker(concurrency).setLogger(logger),
 	}
 
 	base.KeyManager = keyManager{
@@ -105,15 +107,43 @@ func (base *baseClient) Marshaler() codec.Marshaler {
 }
 
 func (base *baseClient) BuildAndSend(msg []sdk.Msg, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
-	txByte, ctx, err := base.buildTx(msg, baseTx)
-	if err != nil {
-		return sdk.ResultTx{}, err
-	}
+	var res sdk.ResultTx
+	var address string
 
-	if err := base.ValidateTxSize(len(txByte), msg); err != nil {
-		return sdk.ResultTx{}, err
+	// lock the account
+	base.l.Lock(baseTx.From)
+	defer base.l.Unlock(baseTx.From)
+
+	err := retry.Do(func() error {
+		txByte, ctx, e := base.buildTx(msg, baseTx)
+		if e != nil {
+			return e
+		}
+
+		if res, e = base.broadcastTx(txByte, ctx.Mode()); e != nil {
+			address = ctx.Address()
+			return e
+		}
+		return nil
+	}, retry.Attempts(tryThreshold),
+		retry.RetryIf(func(err error) bool {
+			e, ok := err.(sdk.Error)
+			if ok && sdk.Code(e.Code()) == sdk.WrongSequence {
+				_ = base.removeCache(address)
+				return true
+			}
+			return false
+		}),
+		retry.OnRetry(func(n uint, err error) {
+			base.Logger().Error("wrong sequence, will retry",
+				"address", address, "attempts", n, "err", err.Error())
+		}),
+	)
+
+	if err != nil {
+		return res, sdk.Wrap(err)
 	}
-	return base.broadcastTx(txByte, ctx.Mode())
+	return res, nil
 }
 
 func (base *baseClient) SendBatch(msgs sdk.Msgs, baseTx sdk.BaseTx) (rs []sdk.ResultTx, err sdk.Error) {
@@ -136,49 +166,57 @@ func (base *baseClient) SendBatch(msgs sdk.Msgs, baseTx sdk.BaseTx) (rs []sdk.Re
 	base.l.Lock(baseTx.From)
 	defer base.l.Unlock(baseTx.From)
 
-	batch := maxBatch
-	var tryCnt = 0
+	var address string
+	var batch = maxBatch
 
-resize:
-	for i, ms := range utils.SubArray(batch, msgs) {
-		mss := ms.(sdk.Msgs)
-
-	retry:
-		txByte, ctx, err := base.buildTx(mss, baseTx)
-		if err != nil {
-			return rs, err
-		}
-
-		if err := base.ValidateTxSize(len(txByte), mss); err != nil {
-			base.Logger().Debug("tx is too large", "msgsLength", batch, "errMsg", err.Error())
-
-			// filter out transactions that have been sent
-			msgs = msgs[i*batch:]
-			// reset the maximum number of msg in each transaction
-			batch = batch / 2
-			_ = base.removeCache(ctx.Address())
-			goto resize
-		}
-
-		res, err := base.broadcastTx(txByte, ctx.Mode())
-		if err != nil {
-			if sdk.Code(err.Code()) == sdk.InvalidSequence {
-				base.Logger().Debug("wrong sequence,retrying ...", "address", ctx.Address(), "tryCnt", tryCnt)
-
-				_ = base.removeCache(ctx.Address())
-				if tryCnt++; tryCnt >= tryThreshold {
-					return rs, err
-				}
-				goto retry
+	retryableFunc := func() error {
+		for i, ms := range utils.SubArray(batch, msgs) {
+			mss := ms.(sdk.Msgs)
+			txByte, ctx, err := base.buildTx(mss, baseTx)
+			if err != nil {
+				return err
 			}
 
-			base.Logger().Error("broadcast transaction failed", "errMsg", err.Error())
-			return rs, err
+			valid, err := base.ValidateTxSize(len(txByte), mss)
+			if err != nil {
+				return err
+			}
+			if !valid {
+				base.Logger().Debug("tx is too large", "msgsLength", batch)
+				// filter out transactions that have been sent
+				msgs = msgs[i*batch:]
+				// reset the maximum number of msg in each transaction
+				batch = batch / 2
+				return sdk.GetError(sdk.RootCodespace, uint32(sdk.TxTooLarge))
+			}
+			res, err := base.broadcastTx(txByte, ctx.Mode())
+			if err != nil {
+				address = ctx.Address()
+				return err
+			}
+			rs = append(rs, res)
 		}
-		rs = append(rs, res)
-
-		base.Logger().Info("broadcast transaction success", "txHash", res.Hash, "height", res.Height)
+		return nil
 	}
+
+	retryIf := func(err error) bool {
+		e, ok := err.(sdk.Error)
+		if ok && (sdk.Code(e.Code()) == sdk.InvalidSequence || sdk.Code(e.Code()) == sdk.TxTooLarge) {
+			_ = base.removeCache(address)
+			return true
+		}
+		return false
+	}
+
+	onRetry := func(n uint, err error) {
+		base.Logger().Error("wrong sequence, will retry",
+			"address", address, "attempts", n, "err", err.Error())
+	}
+
+	retry.Do(retryableFunc,
+		retry.Attempts(tryThreshold),
+		retry.RetryIf(retryIf), retry.OnRetry(onRetry),
+	)
 	return rs, nil
 }
 
@@ -299,38 +337,43 @@ func (base *baseClient) prepare(baseTx sdk.BaseTx) (*clienttx.Factory, error) {
 	return factory, nil
 }
 
-func (base *baseClient) ValidateTxSize(txSize int, msgs []sdk.Msg) sdk.Error {
-	//var isServiceTx bool
-	//for _, msg := range msgs {
-	//	if msg.Route() == service.ModuleName {
-	//		isServiceTx = true
-	//		break
-	//	}
-	//}
-	//if isServiceTx {
-	//	var param service.Params
-	//
-	//	err := base.QueryParams(service.ModuleName, &param)
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	//
-	//	if uint64(txSize) > param.TxSizeLimit {
-	//		return sdk.Wrapf("tx size too large, expected: <= %d, got %d", param.TxSizeLimit, txSize)
-	//	}
-	//	return nil
-	//
-	//} else {
-	//	if uint64(txSize) > base.cfg.MaxTxBytes {
-	//		return sdk.Wrapf("tx size too large, expected: <= %d, got %d", base.cfg.MaxTxBytes, txSize)
-	//	}
-	//}
-	return nil
+func (base *baseClient) ValidateTxSize(txSize int, msgs []sdk.Msg) (bool, sdk.Error) {
+	var isServiceTx bool
+	for _, msg := range msgs {
+		if msg.Route() == service.ModuleName {
+			isServiceTx = true
+			break
+		}
+	}
+	if isServiceTx {
+		conn, err := base.GenConn()
+		if err != nil {
+			return false, sdk.Wrap(err)
+		}
+
+		defer func() { _ = conn.Close() }()
+
+		res, err := service.NewQueryClient(conn).Params(
+			context.Background(),
+			&service.QueryParamsRequest{},
+		)
+		if err != nil {
+			return false, sdk.Wrap(err)
+		}
+
+		if uint64(txSize) > res.Params.TxSizeLimit {
+			return false, nil
+		}
+		return true, nil
+
+	}
+	return true, nil
 }
 
 type locker struct {
 	shards []chan int
 	size   int
+	logger log.Logger
 }
 
 //NewLocker implement the function of lock, can lock resources according to conditions
@@ -345,12 +388,19 @@ func NewLocker(size int) *locker {
 	}
 }
 
+func (l *locker) setLogger(logger log.Logger) *locker {
+	l.logger = logger
+	return l
+}
+
 func (l *locker) Lock(key string) {
 	ch := l.getShard(key)
 	ch <- 1
+	l.logger.Info("lock key", "key", key)
 }
 
 func (l *locker) Unlock(key string) {
+	l.logger.Info("unlock key", "key", key)
 	ch := l.getShard(key)
 	<-ch
 }

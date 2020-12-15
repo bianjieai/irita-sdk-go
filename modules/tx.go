@@ -111,6 +111,10 @@ func (base baseClient) broadcastTx(txBytes []byte, mode sdk.BroadcastMode) (res 
 	default:
 		err = sdk.Wrapf("commit mode(%s) not supported", mode)
 	}
+
+	if err == nil {
+		base.Logger().Info("commit tx success","result",res)
+	}
 	return
 }
 

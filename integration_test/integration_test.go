@@ -48,6 +48,7 @@ type MockAccount struct {
 }
 
 func TestSuite(t *testing.T) {
+	t.Parallel()
 	suite.Run(t, new(IntegrationTestSuite))
 }
 
@@ -55,6 +56,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	options := []types.Option{
 		types.KeyDAOOption(store.NewMemory(nil)),
 		types.TimeoutOption(6),
+		types.CachedOption(true),
 	}
 	cfg, err := types.NewClientConfig(nodeURI, grpcAddr, chainID, options...)
 	if err != nil {
@@ -69,7 +71,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		Address:  types.MustAccAddressFromBech32(addr),
 	}
 	s.SetLogger(log.NewLogger(log.Config{
-		Format: log.FormatJSON,
+		Format: log.FormatText,
 		Level:  log.DebugLevel,
 	}))
 	s.initAccount()
