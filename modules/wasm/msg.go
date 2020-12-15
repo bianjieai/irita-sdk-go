@@ -152,7 +152,7 @@ func (msg MsgMigrateContract) ValidateBasic() error {
 	if err := sdk.ValidateAccAddress(msg.Contract); err != nil {
 		return err
 	}
-	
+
 	if !json.Valid(msg.MigrateMsg) {
 		return errors.New("migrate msg json")
 	}

@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/99designs/keyring v1.1.5
+	github.com/avast/retry-go v2.6.0+incompatible
 	github.com/bluele/gcache v0.0.0-20190518031135-bc40bd653833
 	github.com/btcsuite/btcd v0.21.0-beta
 	github.com/btcsuite/btcutil v1.0.2
@@ -26,6 +27,7 @@ require (
 	github.com/tendermint/tm-db v0.6.2
 	github.com/tjfoc/gmsm v1.3.2
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
+	golang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect
 	google.golang.org/genproto v0.0.0-20200825200019-8632dd797987
 	google.golang.org/grpc v1.32.0
 	google.golang.org/protobuf v1.24.0

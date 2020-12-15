@@ -13,7 +13,7 @@ const (
 )
 
 var (
-	amino     = codec.NewLegacyAmino()
+	amino = codec.NewLegacyAmino()
 	// ModuleCdc define the codec for wasm module
 	ModuleCdc = codec.NewAminoCodec(amino)
 )
