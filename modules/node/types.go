@@ -15,6 +15,8 @@ var (
 	_ sdk.Msg = &MsgCreateValidator{}
 	_ sdk.Msg = &MsgRemoveValidator{}
 	_ sdk.Msg = &MsgUpdateValidator{}
+	_ sdk.Msg = &MsgGrantNode{}
+	_ sdk.Msg = &MsgRevokeNode{}
 )
 
 func (m MsgCreateValidator) Route() string {
@@ -109,6 +111,57 @@ func (m MsgRemoveValidator) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Operator)}
 }
 
+func (m MsgGrantNode) Route() string {
+	return ModuleName
+}
+
+func (m MsgGrantNode) Type() string {
+	return "grant_node"
+}
+
+func (m MsgGrantNode) ValidateBasic() error {
+	if len(m.Operator) == 0 {
+		return errors.New("operator missing")
+	}
+	return nil
+}
+
+func (m MsgGrantNode) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m MsgGrantNode) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Operator)}
+}
+
+func (m MsgRevokeNode) Route() string {
+	return ModuleName
+}
+
+func (m MsgRevokeNode) Type() string {
+	return "revoke_node"
+}
+
+func (m MsgRevokeNode) ValidateBasic() error {
+	if len(m.Operator) == 0 {
+		return errors.New("operator missing")
+	}
+	if len(m.Id) == 0 {
+		return errors.New("validator id cannot be blank")
+	}
+	return nil
+}
+
+func (m MsgRevokeNode) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m MsgRevokeNode) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Operator)}
+}
+
 func (v Validator) Convert() interface{} {
 	return QueryValidatorResp{
 		ID:          v.Id,
@@ -139,6 +192,28 @@ func (vs validators) Convert() interface{} {
 		})
 	}
 	return vrs
+}
+
+func (n Node) Convert() interface{} {
+	return QueryNodeResp{
+		ID:          n.Id,
+		Name:        n.Name,
+		Certificate: n.Certificate,
+	}
+}
+
+type nodes []Node
+
+func (ns nodes) Convert() interface{} {
+	var nrs []QueryNodeResp
+	for _, n := range ns {
+		nrs = append(nrs, QueryNodeResp{
+			ID:          n.Id,
+			Name:        n.Name,
+			Certificate: n.Certificate,
+		})
+	}
+	return nrs
 }
 
 func (p Params) Convert() interface{} {

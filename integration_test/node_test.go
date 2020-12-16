@@ -72,4 +72,29 @@ LTWCInii/I8Skv+Nuk034CK3u1fThnk=
 
 	v, err = s.Node.QueryValidator(validatorID)
 	require.Error(s.T(), err)
+
+	grantNodeReq := node.GrantNodeRequest{
+		Name:        "test3",
+		Certificate: cert,
+		Details:     "this is a grantNode test",
+	}
+	rs, err = s.Node.GrantNode(grantNodeReq, baseTx)
+	require.NoError(s.T(), err)
+	require.NotEmpty(s.T(), rs.Hash)
+
+	noid, e := rs.Events.GetValue("grant_node", "id")
+	require.NoError(s.T(), e)
+
+	n, err := s.Node.QueryNode(noid)
+	require.NoError(s.T(), err)
+	require.NotEmpty(s.T(), n)
+
+	ns, err := s.Node.QueryNodes(nil, 0, 0, false)
+	require.NoError(s.T(), err)
+	require.Equal(s.T(), len(ns), 1)
+
+	rs, err = s.Node.RevokeNode(noid, baseTx)
+	require.NoError(s.T(), err)
+	require.NotEmpty(s.T(), rs.Hash)
+
 }

@@ -23,5 +23,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgCreateValidator{},
 		&MsgUpdateValidator{},
 		&MsgRemoveValidator{},
+		&MsgGrantNode{},
+		&MsgRevokeNode{},
 	)
 }
