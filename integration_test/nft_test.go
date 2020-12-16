@@ -62,7 +62,7 @@ func (s IntegrationTestSuite) TestNFT() {
 	require.NoError(s.T(), err)
 	require.Equal(s.T(), uint64(1), supply)
 
-	owner, err := s.NFT.QueryOwner(nftRes.Creator, mintReq.Denom)
+	owner, err := s.NFT.QueryOwner(nftRes.Creator, mintReq.Denom, nil)
 	require.NoError(s.T(), err)
 	require.Len(s.T(), owner.IDCs, 1)
 	require.Len(s.T(), owner.IDCs[0].TokenIDs, 1)
@@ -84,7 +84,7 @@ func (s IntegrationTestSuite) TestNFT() {
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), res.Hash)
 
-	owner, err = s.NFT.QueryOwner(transferReq.Recipient, mintReq.Denom)
+	owner, err = s.NFT.QueryOwner(transferReq.Recipient, mintReq.Denom, nil)
 	require.NoError(s.T(), err)
 	require.Len(s.T(), owner.IDCs, 1)
 	require.Len(s.T(), owner.IDCs[0].TokenIDs, 1)
@@ -94,7 +94,7 @@ func (s IntegrationTestSuite) TestNFT() {
 	require.NoError(s.T(), err)
 	require.Equal(s.T(), uint64(1), supply)
 
-	denoms, err := s.NFT.QueryDenoms()
+	denoms, err := s.NFT.QueryDenoms(nil)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), denoms)
 
@@ -104,7 +104,7 @@ func (s IntegrationTestSuite) TestNFT() {
 	require.Equal(s.T(), denomName, d.Name)
 	require.Equal(s.T(), schema, d.Schema)
 
-	col, err := s.NFT.QueryCollection(denomID)
+	col, err := s.NFT.QueryCollection(denomID, nil)
 	require.NoError(s.T(), err)
 	require.EqualValues(s.T(), d, col.Denom)
 	require.Len(s.T(), col.NFTs, 1)

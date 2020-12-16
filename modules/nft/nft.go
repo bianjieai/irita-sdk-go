@@ -2,6 +2,7 @@ package nft
 
 import (
 	"context"
+	"github.com/bianjieai/irita-sdk-go/types/query"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
@@ -152,7 +153,7 @@ func (nc nftClient) QuerySupply(denom, creator string) (uint64, sdk.Error) {
 	return res.Amount, nil
 }
 
-func (nc nftClient) QueryOwner(creator, denom string) (QueryOwnerResp, sdk.Error) {
+func (nc nftClient) QueryOwner(creator, denom string, pageReq *query.PageRequest) (QueryOwnerResp, sdk.Error) {
 	if len(denom) == 0 {
 		return QueryOwnerResp{}, sdk.Wrapf("denom is required")
 	}
@@ -170,8 +171,9 @@ func (nc nftClient) QueryOwner(creator, denom string) (QueryOwnerResp, sdk.Error
 	res, err := NewQueryClient(conn).Owner(
 		context.Background(),
 		&QueryOwnerRequest{
-			Owner:   creator,
-			DenomId: denom,
+			Owner:      creator,
+			DenomId:    denom,
+			Pagination: pageReq,
 		},
 	)
 	if err != nil {
@@ -181,7 +183,7 @@ func (nc nftClient) QueryOwner(creator, denom string) (QueryOwnerResp, sdk.Error
 	return res.Owner.Convert().(QueryOwnerResp), nil
 }
 
-func (nc nftClient) QueryCollection(denom string) (QueryCollectionResp, sdk.Error) {
+func (nc nftClient) QueryCollection(denom string, pageReq *query.PageRequest) (QueryCollectionResp, sdk.Error) {
 	if len(denom) == 0 {
 		return QueryCollectionResp{}, sdk.Wrapf("denom is required")
 	}
@@ -194,7 +196,10 @@ func (nc nftClient) QueryCollection(denom string) (QueryCollectionResp, sdk.Erro
 
 	res, err := NewQueryClient(conn).Collection(
 		context.Background(),
-		&QueryCollectionRequest{DenomId: denom},
+		&QueryCollectionRequest{
+			DenomId:    denom,
+			Pagination: pageReq,
+		},
 	)
 	if err != nil {
 		return QueryCollectionResp{}, sdk.Wrap(err)
@@ -203,7 +208,7 @@ func (nc nftClient) QueryCollection(denom string) (QueryCollectionResp, sdk.Erro
 	return res.Collection.Convert().(QueryCollectionResp), nil
 }
 
-func (nc nftClient) QueryDenoms() ([]QueryDenomResp, sdk.Error) {
+func (nc nftClient) QueryDenoms(pageReq *query.PageRequest) ([]QueryDenomResp, sdk.Error) {
 	conn, err := nc.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
@@ -212,7 +217,7 @@ func (nc nftClient) QueryDenoms() ([]QueryDenomResp, sdk.Error) {
 
 	res, err := NewQueryClient(conn).Denoms(
 		context.Background(),
-		&QueryDenomsRequest{},
+		&QueryDenomsRequest{Pagination: pageReq},
 	)
 	if err != nil {
 		return nil, sdk.Wrap(err)

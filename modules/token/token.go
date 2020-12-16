@@ -5,6 +5,7 @@ package token
 
 import (
 	"context"
+	"github.com/bianjieai/irita-sdk-go/types/query"
 	"strconv"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
@@ -115,7 +116,7 @@ func (t tokenClient) QueryToken(denom string) (sdk.Token, error) {
 	return t.BaseClient.QueryToken(denom)
 }
 
-func (t tokenClient) QueryTokens(owner string) (sdk.Tokens, error) {
+func (t tokenClient) QueryTokens(owner string, pageReq *query.PageRequest) (sdk.Tokens, error) {
 	var ownerAddr string
 	if len(owner) > 0 {
 		if err := sdk.ValidateAccAddress(owner); err != nil {
@@ -132,7 +133,8 @@ func (t tokenClient) QueryTokens(owner string) (sdk.Tokens, error) {
 	}
 
 	request := &QueryTokensRequest{
-		Owner: ownerAddr,
+		Owner:      ownerAddr,
+		Pagination: pageReq,
 	}
 
 	res, err := NewQueryClient(conn).Tokens(context.Background(), request)

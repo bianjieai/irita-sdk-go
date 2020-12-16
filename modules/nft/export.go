@@ -2,6 +2,7 @@ package nft
 
 import (
 	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/types/query"
 )
 
 // expose NFT module api for user
@@ -15,10 +16,10 @@ type Client interface {
 	BurnNFT(request BurnNFTRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 
 	QuerySupply(denomID, creator string) (uint64, sdk.Error)
-	QueryOwner(creator, denomID string) (QueryOwnerResp, sdk.Error)
-	QueryCollection(denomID string) (QueryCollectionResp, sdk.Error)
+	QueryOwner(creator, denomID string, pageReq *query.PageRequest) (QueryOwnerResp, sdk.Error)
+	QueryCollection(denomID string, pageReq *query.PageRequest) (QueryCollectionResp, sdk.Error)
 	QueryDenom(denomID string) (QueryDenomResp, sdk.Error)
-	QueryDenoms() ([]QueryDenomResp, sdk.Error)
+	QueryDenoms(pageReq *query.PageRequest) ([]QueryDenomResp, sdk.Error)
 	QueryNFT(denomID, tokenID string) (QueryNFTResp, sdk.Error)
 }
 

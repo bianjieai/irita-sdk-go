@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/bianjieai/irita-sdk-go/types/query"
 	"time"
 
 	sdk "github.com/bianjieai/irita-sdk-go/types"
@@ -30,12 +31,12 @@ type Tx interface {
 type Query interface {
 	QueryServiceDefinition(serviceName string) (QueryServiceDefinitionResponse, sdk.Error)
 	QueryServiceBinding(serviceName string, provider string) (QueryServiceBindingResponse, sdk.Error)
-	QueryServiceBindings(serviceName string) ([]QueryServiceBindingResponse, sdk.Error)
+	QueryServiceBindings(serviceName string, pageReq *query.PageRequest) ([]QueryServiceBindingResponse, sdk.Error)
 	QueryServiceRequest(requestID string) (QueryServiceRequestResponse, sdk.Error)
-	QueryServiceRequests(serviceName string, provider string) ([]QueryServiceRequestResponse, sdk.Error)
-	QueryRequestsByReqCtx(requestContextID string, batchCounter uint64) ([]QueryServiceRequestResponse, sdk.Error)
+	QueryServiceRequests(serviceName string, provider string, pageReq *query.PageRequest) ([]QueryServiceRequestResponse, sdk.Error)
+	QueryRequestsByReqCtx(requestContextID string, batchCounter uint64, pageReq *query.PageRequest) ([]QueryServiceRequestResponse, sdk.Error)
 	QueryServiceResponse(requestID string) (QueryServiceResponseResponse, sdk.Error)
-	QueryServiceResponses(requestContextID string, batchCounter uint64) ([]QueryServiceResponseResponse, sdk.Error)
+	QueryServiceResponses(requestContextID string, batchCounter uint64, pageReq *query.PageRequest) ([]QueryServiceResponseResponse, sdk.Error)
 	QueryRequestContext(requestContextID string) (QueryRequestContextResp, sdk.Error)
 	QueryFees(provider string) (sdk.Coins, sdk.Error)
 	QueryParams() (QueryParamsResp, sdk.Error)
