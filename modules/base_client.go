@@ -114,7 +114,7 @@ func (base *baseClient) BuildAndSend(msg []sdk.Msg, baseTx sdk.BaseTx) (sdk.Resu
 	base.l.Lock(baseTx.From)
 	defer base.l.Unlock(baseTx.From)
 
-	err := retry.Do(func() error {
+	retryableFunc := func() error {
 		txByte, ctx, e := base.buildTx(msg, baseTx)
 		if e != nil {
 			return e
@@ -125,19 +125,26 @@ func (base *baseClient) BuildAndSend(msg []sdk.Msg, baseTx sdk.BaseTx) (sdk.Resu
 			return e
 		}
 		return nil
-	}, retry.Attempts(tryThreshold),
-		retry.RetryIf(func(err error) bool {
-			e, ok := err.(sdk.Error)
-			if ok && sdk.Code(e.Code()) == sdk.WrongSequence {
-				_ = base.removeCache(address)
-				return true
-			}
-			return false
-		}),
-		retry.OnRetry(func(n uint, err error) {
-			base.Logger().Error("wrong sequence, will retry",
-				"address", address, "attempts", n, "err", err.Error())
-		}),
+	}
+
+	retryIfFunc := func(err error) bool {
+		e, ok := err.(sdk.Error)
+		if ok && sdk.Code(e.Code()) == sdk.WrongSequence {
+			return true
+		}
+		return false
+	}
+
+	onRetryFunc := func(n uint, err error) {
+		_ = base.removeCache(address)
+		base.Logger().Error("wrong sequence, will retry",
+			"address", address, "attempts", n, "err", err.Error())
+	}
+
+	err := retry.Do(retryableFunc,
+		retry.Attempts(tryThreshold),
+		retry.RetryIf(retryIfFunc),
+		retry.OnRetry(onRetryFunc),
 	)
 
 	if err != nil {
@@ -202,20 +209,21 @@ func (base *baseClient) SendBatch(msgs sdk.Msgs, baseTx sdk.BaseTx) (rs []sdk.Re
 	retryIf := func(err error) bool {
 		e, ok := err.(sdk.Error)
 		if ok && (sdk.Code(e.Code()) == sdk.InvalidSequence || sdk.Code(e.Code()) == sdk.TxTooLarge) {
-			_ = base.removeCache(address)
 			return true
 		}
 		return false
 	}
 
 	onRetry := func(n uint, err error) {
+		_ = base.removeCache(address)
 		base.Logger().Error("wrong sequence, will retry",
 			"address", address, "attempts", n, "err", err.Error())
 	}
 
-	retry.Do(retryableFunc,
+	_ = retry.Do(retryableFunc,
 		retry.Attempts(tryThreshold),
-		retry.RetryIf(retryIf), retry.OnRetry(onRetry),
+		retry.RetryIf(retryIf),
+		retry.OnRetry(onRetry),
 	)
 	return rs, nil
 }
