@@ -46,7 +46,7 @@ LTWCInii/I8Skv+Nuk034CK3u1fThnk=
 	v, err := s.Node.QueryValidator(validatorID)
 	require.NoError(s.T(), err)
 
-	vs, err := s.Node.QueryValidators(nil, 0, 0, false)
+	vs, err := s.Node.QueryValidators(nil)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), vs)
 
@@ -89,7 +89,7 @@ LTWCInii/I8Skv+Nuk034CK3u1fThnk=
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), n)
 
-	ns, err := s.Node.QueryNodes(nil, 0, 0, false)
+	ns, err := s.Node.QueryNodes(nil)
 	require.NoError(s.T(), err)
 	require.Equal(s.T(), len(ns), 1)
 
