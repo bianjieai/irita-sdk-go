@@ -9,28 +9,28 @@ import (
 	query "github.com/bianjieai/irita-sdk-go/types/query"
 )
 
-type validatorClient struct {
+type nodeClient struct {
 	sdk.BaseClient
 	codec.Marshaler
 }
 
 func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) Client {
-	return validatorClient{
+	return nodeClient{
 		BaseClient: bc,
 		Marshaler:  cdc,
 	}
 }
 
-func (v validatorClient) Name() string {
+func (n nodeClient) Name() string {
 	return ModuleName
 }
 
-func (v validatorClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
+func (n nodeClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
 	RegisterInterfaces(registry)
 }
 
-func (v validatorClient) CreateValidator(request CreateValidatorRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
-	creator, err := v.QueryAddress(baseTx.From, baseTx.Password)
+func (n nodeClient) CreateValidator(request CreateValidatorRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
+	creator, err := n.QueryAddress(baseTx.From, baseTx.Password)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
@@ -43,11 +43,11 @@ func (v validatorClient) CreateValidator(request CreateValidatorRequest, baseTx 
 		Operator:    creator.String(),
 	}
 
-	return v.BuildAndSend([]sdk.Msg{msg}, baseTx)
+	return n.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
-func (v validatorClient) UpdateValidator(request UpdateValidatorRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
-	creator, err := v.QueryAddress(baseTx.From, baseTx.Password)
+func (n nodeClient) UpdateValidator(request UpdateValidatorRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
+	creator, err := n.QueryAddress(baseTx.From, baseTx.Password)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
@@ -66,11 +66,11 @@ func (v validatorClient) UpdateValidator(request UpdateValidatorRequest, baseTx 
 		Operator:    creator.String(),
 	}
 
-	return v.BuildAndSend([]sdk.Msg{msg}, baseTx)
+	return n.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
-func (v validatorClient) RemoveValidator(id string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
-	creator, err := v.QueryAddress(baseTx.From, baseTx.Password)
+func (n nodeClient) RemoveValidator(id string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
+	creator, err := n.QueryAddress(baseTx.From, baseTx.Password)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
@@ -84,11 +84,11 @@ func (v validatorClient) RemoveValidator(id string, baseTx sdk.BaseTx) (sdk.Resu
 		Operator: creator.String(),
 	}
 
-	return v.BuildAndSend([]sdk.Msg{msg}, baseTx)
+	return n.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
-func (v validatorClient) GrantNode(request GrantNodeRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
-	creator, err := v.QueryAddress(baseTx.From, baseTx.Password)
+func (n nodeClient) GrantNode(request GrantNodeRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
+	creator, err := n.QueryAddress(baseTx.From, baseTx.Password)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
@@ -99,11 +99,11 @@ func (v validatorClient) GrantNode(request GrantNodeRequest, baseTx sdk.BaseTx) 
 		Operator:    creator.String(),
 	}
 
-	return v.BuildAndSend([]sdk.Msg{msg}, baseTx)
+	return n.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
-func (v validatorClient) RevokeNode(nodeId string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
-	creator, err := v.QueryAddress(baseTx.From, baseTx.Password)
+func (n nodeClient) RevokeNode(nodeId string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
+	creator, err := n.QueryAddress(baseTx.From, baseTx.Password)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
@@ -118,11 +118,11 @@ func (v validatorClient) RevokeNode(nodeId string, baseTx sdk.BaseTx) (sdk.Resul
 		Operator: creator.String(),
 	}
 
-	return v.BuildAndSend([]sdk.Msg{msg}, baseTx)
+	return n.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
-func (v validatorClient) QueryValidators(key []byte, offset uint64, limit uint64, countTotal bool) ([]QueryValidatorResp, sdk.Error) {
-	conn, err := v.GenConn()
+func (n nodeClient) QueryValidators(key []byte, offset uint64, limit uint64, countTotal bool) ([]QueryValidatorResp, sdk.Error) {
+	conn, err := n.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return nil, sdk.Wrap(err)
@@ -146,8 +146,8 @@ func (v validatorClient) QueryValidators(key []byte, offset uint64, limit uint64
 	return validators(resp.Validators).Convert().([]QueryValidatorResp), nil
 }
 
-func (v validatorClient) QueryValidator(id string) (QueryValidatorResp, sdk.Error) {
-	conn, err := v.GenConn()
+func (n nodeClient) QueryValidator(id string) (QueryValidatorResp, sdk.Error) {
+	conn, err := n.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return QueryValidatorResp{}, sdk.Wrap(err)
@@ -171,8 +171,8 @@ func (v validatorClient) QueryValidator(id string) (QueryValidatorResp, sdk.Erro
 	return resp.Validator.Convert().(QueryValidatorResp), nil
 }
 
-func (v validatorClient) QueryNodes(key []byte, offset uint64, limit uint64, countTotal bool) ([]QueryNodeResp, sdk.Error) {
-	conn, err := v.GenConn()
+func (n nodeClient) QueryNodes(key []byte, offset uint64, limit uint64, countTotal bool) ([]QueryNodeResp, sdk.Error) {
+	conn, err := n.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return nil, sdk.Wrap(err)
@@ -196,8 +196,8 @@ func (v validatorClient) QueryNodes(key []byte, offset uint64, limit uint64, cou
 	return nodes(resp.Nodes).Convert().([]QueryNodeResp), nil
 }
 
-func (v validatorClient) QueryNode(id string) (QueryNodeResp, sdk.Error) {
-	conn, err := v.GenConn()
+func (n nodeClient) QueryNode(id string) (QueryNodeResp, sdk.Error) {
+	conn, err := n.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return QueryNodeResp{}, sdk.Wrap(err)
@@ -221,8 +221,8 @@ func (v validatorClient) QueryNode(id string) (QueryNodeResp, sdk.Error) {
 	return resp.Node.Convert().(QueryNodeResp), nil
 }
 
-func (v validatorClient) QueryParams() (QueryParamsResp, sdk.Error) {
-	conn, err := v.GenConn()
+func (n nodeClient) QueryParams() (QueryParamsResp, sdk.Error) {
+	conn, err := n.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
 		return QueryParamsResp{}, sdk.Wrap(err)

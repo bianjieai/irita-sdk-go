@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	_ Client = validatorClient{}
+	_ Client = nodeClient{}
 )
 
 // expose Record module api for user
