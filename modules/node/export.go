@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	_ Client = validatorClient{}
+	_ Client = nodeClient{}
 )
 
 // expose Record module api for user
@@ -16,8 +16,13 @@ type Client interface {
 	UpdateValidator(request UpdateValidatorRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 	RemoveValidator(id string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 
+	GrantNode(request GrantNodeRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
+	RevokeNode(nodeId string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
+
 	QueryValidators(key []byte, offset uint64, limit uint64, countTotal bool) ([]QueryValidatorResp, sdk.Error)
 	QueryValidator(id string) (QueryValidatorResp, sdk.Error)
+	QueryNodes(key []byte, offset uint64, limit uint64, countTotal bool) ([]QueryNodeResp, sdk.Error)
+	QueryNode(id string) (QueryNodeResp, sdk.Error)
 	QueryParams() (QueryParamsResp, sdk.Error)
 }
 
@@ -36,6 +41,12 @@ type UpdateValidatorRequest struct {
 	Details     string `json:"details"`
 }
 
+type GrantNodeRequest struct {
+	Name        string `json:"name"`
+	Certificate string `json:"certificate"`
+	Details     string `json:"details"`
+}
+
 type QueryValidatorResp struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
@@ -45,6 +56,12 @@ type QueryValidatorResp struct {
 	Details     string `json:"details"`
 	Jailed      bool   `json:"jailed"`
 	Operator    string `json:"operator"`
+}
+
+type QueryNodeResp struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Certificate string `json:"certificate"`
 }
 
 // token params
