@@ -1,14 +1,67 @@
 package integration_test
 
 import (
+	"fmt"
 	"github.com/bianjieai/irita-sdk-go/modules/oracle"
 	"github.com/bianjieai/irita-sdk-go/modules/service"
-	"github.com/stretchr/testify/require"
-	//oracle "github.com/bianjieai/irita-sdk-go/modules/oracle"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/stretchr/testify/require"
+	"time"
 )
 
+var serviceName = generateServiceName()
+
+func (s *IntegrationTestSuite) SetupService(ch chan<- int) {
+	schemas := `{"input":{"type":"object"},"output":{"type":"object"},"error":{"type":"object"}}`
+	pricing := `{"price":"1point"}`
+	output := `{"header":{},"body":{"last":"100"}}`
+	testResult := `{"code":200,"message":""}`
+
+	coin, _ := sdk.ParseDecCoins("4point")
+	baseTx := sdk.BaseTx{
+		From:     s.Account().Name,
+		Gas:      200000,
+		Fee:      coin,
+		Memo:     "test",
+		Mode:     sdk.Commit,
+		Password: s.Account().Password,
+	}
+
+	definition := service.DefineServiceRequest{
+		ServiceName:       serviceName,
+		Description:       "this is a test service",
+		Tags:              nil,
+		AuthorDescription: "service provider",
+		Schemas:           schemas,
+	}
+
+	_, err := s.Service.DefineService(definition, baseTx)
+	require.NoError(s.T(), err)
+	deposit, _ := sdk.ParseDecCoins("6000point")
+	binding := service.BindServiceRequest{
+		ServiceName: definition.ServiceName,
+		Deposit:     deposit,
+		Pricing:     pricing,
+		QoS:         10,
+		Options:     `{}`,
+	}
+	_, err = s.Service.BindService(binding, baseTx)
+	require.NoError(s.T(), err)
+
+	_, err = s.Service.SubscribeServiceRequest(
+		definition.ServiceName,
+		func(reqCtxID, reqID, input string) (string, string) {
+			s.Logger().Info("Service received request", "input", input, "reqCtxID", reqCtxID, "reqID", reqID, "output", output)
+			ch <- 1
+			return output, testResult
+		}, baseTx)
+
+	require.NoError(s.T(), err)
+}
 func (s IntegrationTestSuite) TestOracle() {
+	var ch = make(chan int)
+	s.SetupService(ch)
+
 	baseTx := sdk.BaseTx{
 		From:     s.Account().Name,
 		Gas:      200000,
@@ -16,136 +69,77 @@ func (s IntegrationTestSuite) TestOracle() {
 		Mode:     sdk.Commit,
 		Password: s.Account().Password,
 	}
-	serviceName := "test-service"
+	input := `{"header":{},"body":{"pair":"iris-usdt"}}`
+	feedName := generateFeedName(serviceName)
+	serviceFeeCap, _ := sdk.ParseCoins("1000point")
 
-	//author := val.Address
-	//provider := author
-	provider := []string{"xiaoming", "xiaohong"}
-	//creator := author
-	//creator := provider
-	feedName := "test-feed"
-	aggregateFunc := "avg"
-	valueJsonPath := "price"
-	latestHistory := 10
-	description := "description"
-	input := `{"header":{},"body":{}}`
-	providers := provider
-	timeout := 2
-	//serviceDenom := "stake"
-	//	serviceFeeCap := fmt.Sprintf("50%s", serviceDenom)
-	threshold := 1
-	frequency := 12
-
+	sender := s.rootAccount.Address
 	createReq := oracle.CreateFeedRequest{
-		FeedName:      feedName,
-		AggregateFunc: aggregateFunc,
-		ValueJsonPath: valueJsonPath,
-		LatestHistory: uint64(latestHistory),
-		Description:   description,
-		Input:         input,
-		Timeout:       int64(timeout),
-		//ServiceFeeCap : 	serviceFeeCap,
-		ResponseThreshold: uint32(threshold),
-		RepeatedFrequency: uint64(frequency),
-		Providers:         providers,
+		FeedName:          feedName,
+		LatestHistory:     5,
+		Description:       "fetch USDT-CNY ",
 		ServiceName:       serviceName,
+		Providers:         []string{sender.String()},
+		Input:             input,
+		Timeout:           50,
+		ServiceFeeCap:     serviceFeeCap,
+		RepeatedFrequency: 50,
+		AggregateFunc:     "avg",
+		ValueJsonPath:     "last",
+		ResponseThreshold: 1,
 	}
 
-	rs, err := s.Oracle.CreateFeed(createReq, baseTx)
+	cfrs, err := s.Oracle.CreateFeed(createReq, baseTx)
 	require.NoError(s.T(), err)
-	require.NotEmpty(s.T(), rs.Hash)
+	require.NotEmpty(s.T(), cfrs.Hash)
 
-	rs, err = s.Oracle.StartFeed(feedName, baseTx)
+	sfrs, err := s.Oracle.StartFeed(feedName, baseTx)
 	require.NoError(s.T(), err)
-	require.NotEmpty(s.T(), rs.Hash)
+	require.NotEmpty(s.T(), sfrs.Hash)
 
-	rs, err = s.Oracle.PauseFeed(feedName, baseTx)
-	require.NoError(s.T(), err)
-	require.NotEmpty(s.T(), rs.Hash)
+	select {
+	case <-ch:
 
-	feedName = "feed-test2"
+		time.Sleep(2 * time.Second)
 
-	editReq := oracle.EditFeedRequest{
-		FeedName:      feedName,
-		LatestHistory: uint64(11),
-		Description:   description,
-		Timeout:       int64(timeout),
-		//ServiceFeeCap : 	,
-		ResponseThreshold: uint32(threshold),
-		RepeatedFrequency: uint64(frequency),
-		Providers:         provider,
+		feedValuesRep, err := s.Oracle.QueryFeedValue(feedName)
+		require.NoError(s.T(), err)
+		s.Logger().Info("Query feed value", "feedName", feedName, "result", feedValuesRep)
+
+		editReq := oracle.EditFeedRequest{
+			FeedName:          feedName,
+			LatestHistory:     5,
+			Description:       "fetch USDT-CNY ",
+			Timeout:           3,
+			ServiceFeeCap:     serviceFeeCap,
+			ResponseThreshold: 1,
+			RepeatedFrequency: 5,
+			Providers:         []string{sender.String()},
+		}
+
+		efrs, err := s.Oracle.EditFeedRequest(editReq, baseTx)
+		require.NoError(s.T(), err)
+		require.NotEmpty(s.T(), efrs.Hash)
+
+		pfrs, err := s.Oracle.PauseFeed(feedName, baseTx)
+		require.NoError(s.T(), err)
+		require.NotEmpty(s.T(), pfrs.Hash)
+
+		feedRep, err := s.Oracle.QueryFeed(feedName)
+		require.NoError(s.T(), err)
+		require.NotEmpty(s.T(), feedRep)
+
+		feedsRep, err := s.Oracle.QueryFeeds("PAUSED")
+		require.NoError(s.T(), err)
+		require.NotEmpty(s.T(), feedsRep)
+		require.Equal(s.T(), service.PAUSED, feedRep.State)
 	}
+}
 
-	rs, err = s.Oracle.EditFeedRequest(editReq, baseTx)
-	require.NoError(s.T(), err)
-	require.NotEmpty(s.T(), rs.Hash)
+func generateServiceName() string {
+	return fmt.Sprintf("service-%d", time.Now().Nanosecond())
+}
 
-	state := service.PAUSED
-	feedRep, err := s.Oracle.QueryFeed(feedName)
-	require.NoError(s.T(), err)
-	require.NotEmpty(s.T(), feedRep)
-	require.Equal(s.T(), state, feedRep.State)
-
-	feedsRep, err := s.Oracle.QueryFeeds("PAUSED")
-	require.NoError(s.T(), err)
-	require.NotEmpty(s.T(), feedsRep)
-
-	feedValuesRep, err := s.Oracle.QueryFeedValue(feedName)
-	require.NoError(s.T(), err)
-	require.NotEmpty(s.T(), feedValuesRep)
-
-	//v, err := s.Node.QueryValidator(validatorID)
-	//require.NoError(s.T(), err)
-	//
-	//vs, err := s.Node.QueryValidators(nil, 0, 0, false)
-	//require.NoError(s.T(), err)
-	//require.NotEmpty(s.T(), vs)
-
-	//updateReq := node.UpdateValidatorRequest{
-	//	ID:          validatorID,
-	//	Name:        "test2",
-	//	Certificate: cert,
-	//	Power:       10,
-	//	Details:     "this is a updated test",
-	//}
-	//rs, err = s.Node.UpdateValidator(updateReq, baseTx)
-	//require.NoError(s.T(), err)
-	//require.NotEmpty(s.T(), rs.Hash)
-	//
-	//v, err = s.Node.QueryValidator(validatorID)
-	//require.NoError(s.T(), err)
-	//require.Equal(s.T(), updateReq.Name, v.Name)
-	//require.Equal(s.T(), updateReq.Details, v.Details)
-	//
-	//rs, err = s.Node.RemoveValidator(validatorID, baseTx)
-	//require.NoError(s.T(), err)
-	//require.NotEmpty(s.T(), rs.Hash)
-	//
-	//v, err = s.Node.QueryValidator(validatorID)
-	//require.Error(s.T(), err)
-	//
-	//grantNodeReq := node.GrantNodeRequest{
-	//	Name:        "test3",
-	//	Certificate: cert,
-	//	Details:     "this is a grantNode test",
-	//}
-	//rs, err = s.Node.GrantNode(grantNodeReq, baseTx)
-	//require.NoError(s.T(), err)
-	//require.NotEmpty(s.T(), rs.Hash)
-	//
-	//noid, e := rs.Events.GetValue("grant_node", "id")
-	//require.NoError(s.T(), e)
-	//
-	//n, err := s.Node.QueryNode(noid)
-	//require.NoError(s.T(), err)
-	//require.NotEmpty(s.T(), n)
-	//
-	//ns, err := s.Node.QueryNodes(nil, 0, 0, false)
-	//require.NoError(s.T(), err)
-	//require.Equal(s.T(), len(ns), 1)
-	//
-	//rs, err = s.Node.RevokeNode(noid, baseTx)
-	//require.NoError(s.T(), err)
-	//require.NotEmpty(s.T(), rs.Hash)
-
+func generateFeedName(serviceName string) string {
+	return fmt.Sprintf("feed-%s", serviceName)
 }
