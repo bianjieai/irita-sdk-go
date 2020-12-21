@@ -2,6 +2,7 @@ package token
 
 import (
 	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/types/query"
 )
 
 type Client interface {
@@ -13,7 +14,7 @@ type Client interface {
 	MintToken(symbol string, amount uint64, to string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 
 	QueryToken(symbol string) (sdk.Token, error)
-	QueryTokens(owner string) (sdk.Tokens, error)
+	QueryTokens(owner string, pageReq *query.PageRequest) (sdk.Tokens, error)
 	QueryFees(symbol string) (QueryFeesResp, error)
 	QueryParams() (QueryParamsResp, error)
 }

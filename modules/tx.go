@@ -113,7 +113,7 @@ func (base baseClient) broadcastTx(txBytes []byte, mode sdk.BroadcastMode) (res 
 	}
 
 	if err == nil {
-		base.Logger().Info("commit tx success","result",res)
+		base.Logger().Info("commit tx success", "result", res)
 	}
 	return
 }

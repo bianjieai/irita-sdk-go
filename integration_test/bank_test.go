@@ -164,13 +164,13 @@ func multiSend(s IntegrationTestSuite) {
 	fmt.Printf("total senconds:%s\n", end.Sub(begin).String())
 }
 
-func sendBatch(s IntegrationTestSuite)  {
+func sendBatch(s IntegrationTestSuite) {
 	baseTx := types.BaseTx{
-		From:     s.Account().Name,
-		Gas:      500000,
-		Memo:     "test",
-		Mode:     types.Commit,
-		Password: s.Account().Password,
+		From:               s.Account().Name,
+		Gas:                500000,
+		Memo:               "test",
+		Mode:               types.Commit,
+		Password:           s.Account().Password,
 		SimulateAndExecute: true,
 	}
 

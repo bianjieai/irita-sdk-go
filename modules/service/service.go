@@ -10,6 +10,7 @@ import (
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
+	"github.com/bianjieai/irita-sdk-go/types/query"
 
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
@@ -503,7 +504,7 @@ func (s serviceClient) QueryServiceBinding(serviceName string, provider string) 
 }
 
 // QueryBindings returns all bindings of the specified service
-func (s serviceClient) QueryServiceBindings(serviceName string) ([]QueryServiceBindingResponse, sdk.Error) {
+func (s serviceClient) QueryServiceBindings(serviceName string, pageReq *query.PageRequest) ([]QueryServiceBindingResponse, sdk.Error) {
 	conn, err := s.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
@@ -512,7 +513,10 @@ func (s serviceClient) QueryServiceBindings(serviceName string) ([]QueryServiceB
 
 	resp, err := NewQueryClient(conn).Bindings(
 		context.Background(),
-		&QueryBindingsRequest{ServiceName: serviceName},
+		&QueryBindingsRequest{
+			ServiceName: serviceName,
+			Pagination:  pageReq,
+		},
 	)
 	if err != nil {
 		return nil, sdk.Wrap(err)
@@ -541,7 +545,7 @@ func (s serviceClient) QueryServiceRequest(requestID string) (QueryServiceReques
 }
 
 // QueryRequest returns all the active requests of the specified service binding
-func (s serviceClient) QueryServiceRequests(serviceName string, provider string) ([]QueryServiceRequestResponse, sdk.Error) {
+func (s serviceClient) QueryServiceRequests(serviceName string, provider string, pageReq *query.PageRequest) ([]QueryServiceRequestResponse, sdk.Error) {
 	conn, err := s.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
@@ -554,7 +558,11 @@ func (s serviceClient) QueryServiceRequests(serviceName string, provider string)
 
 	resp, err := NewQueryClient(conn).Requests(
 		context.Background(),
-		&QueryRequestsRequest{ServiceName: serviceName, Provider: provider},
+		&QueryRequestsRequest{
+			ServiceName: serviceName,
+			Provider:    provider,
+			Pagination:  pageReq,
+		},
 	)
 	if err != nil {
 		return nil, sdk.Wrap(err)
@@ -564,7 +572,7 @@ func (s serviceClient) QueryServiceRequests(serviceName string, provider string)
 }
 
 // QueryRequestsByReqCtx returns all requests of the specified request context ID and batch counter
-func (s serviceClient) QueryRequestsByReqCtx(reqCtxID string, batchCounter uint64) ([]QueryServiceRequestResponse, sdk.Error) {
+func (s serviceClient) QueryRequestsByReqCtx(reqCtxID string, batchCounter uint64, pageReq *query.PageRequest) ([]QueryServiceRequestResponse, sdk.Error) {
 	conn, err := s.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
@@ -576,6 +584,7 @@ func (s serviceClient) QueryRequestsByReqCtx(reqCtxID string, batchCounter uint6
 		&QueryRequestsByReqCtxRequest{
 			RequestContextId: reqCtxID,
 			BatchCounter:     batchCounter,
+			Pagination:       pageReq,
 		},
 	)
 	if err != nil {
@@ -605,7 +614,7 @@ func (s serviceClient) QueryServiceResponse(requestID string) (QueryServiceRespo
 }
 
 // QueryResponses returns all responses of the specified request context and batch counter
-func (s serviceClient) QueryServiceResponses(reqCtxID string, batchCounter uint64) ([]QueryServiceResponseResponse, sdk.Error) {
+func (s serviceClient) QueryServiceResponses(reqCtxID string, batchCounter uint64, pageReq *query.PageRequest) ([]QueryServiceResponseResponse, sdk.Error) {
 	conn, err := s.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
@@ -617,6 +626,7 @@ func (s serviceClient) QueryServiceResponses(reqCtxID string, batchCounter uint6
 		&QueryResponsesRequest{
 			RequestContextId: reqCtxID,
 			BatchCounter:     batchCounter,
+			Pagination:       pageReq,
 		},
 	)
 	if err != nil {

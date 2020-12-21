@@ -2,6 +2,7 @@ package node
 
 import (
 	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/types/query"
 )
 
 var (
@@ -19,9 +20,9 @@ type Client interface {
 	GrantNode(request GrantNodeRequest, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 	RevokeNode(nodeId string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 
-	QueryValidators(key []byte, offset uint64, limit uint64, countTotal bool) ([]QueryValidatorResp, sdk.Error)
+	QueryValidators(pageReq *query.PageRequest) ([]QueryValidatorResp, sdk.Error)
 	QueryValidator(id string) (QueryValidatorResp, sdk.Error)
-	QueryNodes(key []byte, offset uint64, limit uint64, countTotal bool) ([]QueryNodeResp, sdk.Error)
+	QueryNodes(pageReq *query.PageRequest) ([]QueryNodeResp, sdk.Error)
 	QueryNode(id string) (QueryNodeResp, sdk.Error)
 	QueryParams() (QueryParamsResp, sdk.Error)
 }

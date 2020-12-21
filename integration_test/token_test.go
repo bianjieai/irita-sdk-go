@@ -69,7 +69,7 @@ func (s IntegrationTestSuite) TestToken() {
 	require.Equal(s.T(), t1.Mintable, editTokenReq.Mintable)
 	require.Equal(s.T(), receipt, t1.Owner)
 
-	tokens, er := s.Token.QueryTokens("")
+	tokens, er := s.Token.QueryTokens("", nil)
 	require.NoError(s.T(), er)
 	require.Contains(s.T(), tokens, t1)
 
