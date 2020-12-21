@@ -2,10 +2,10 @@ package nft
 
 import (
 	"context"
-	"github.com/bianjieai/irita-sdk-go/types/query"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
+	"github.com/bianjieai/irita-sdk-go/types/query"
 
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )

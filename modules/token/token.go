@@ -5,12 +5,12 @@ package token
 
 import (
 	"context"
-	"github.com/bianjieai/irita-sdk-go/types/query"
 	"strconv"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/types/query"
 )
 
 type tokenClient struct {

@@ -1,10 +1,10 @@
 package service
 
 import (
-	"github.com/bianjieai/irita-sdk-go/types/query"
 	"time"
 
 	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/types/query"
 )
 
 // Tx defines a set of transaction interfaces in the service module

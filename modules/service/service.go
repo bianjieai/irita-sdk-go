@@ -6,11 +6,11 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"github.com/bianjieai/irita-sdk-go/types/query"
 	"strings"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
+	"github.com/bianjieai/irita-sdk-go/types/query"
 
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
