@@ -2,6 +2,7 @@ package oracle
 
 import (
 	"errors"
+
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 

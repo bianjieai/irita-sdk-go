@@ -2,11 +2,13 @@ package integration_test
 
 import (
 	"fmt"
+	"time"
+
+	"github.com/stretchr/testify/require"
+
 	"github.com/bianjieai/irita-sdk-go/modules/oracle"
 	"github.com/bianjieai/irita-sdk-go/modules/service"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
-	"github.com/stretchr/testify/require"
-	"time"
 )
 
 var serviceName = generateServiceName()

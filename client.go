@@ -2,6 +2,7 @@ package sdk
 
 import (
 	"fmt"
+
 	"github.com/bianjieai/irita-sdk-go/modules/oracle"
 
 	"github.com/tendermint/tendermint/libs/log"
