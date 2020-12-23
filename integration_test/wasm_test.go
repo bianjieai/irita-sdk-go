@@ -3,9 +3,10 @@ package integration_test
 import (
 	"fmt"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/bianjieai/irita-sdk-go/modules/wasm"
 	"github.com/bianjieai/irita-sdk-go/types"
-	"github.com/stretchr/testify/require"
 )
 
 func (s IntegrationTestSuite) TestWasm() {
