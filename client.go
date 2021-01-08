@@ -3,6 +3,8 @@ package sdk
 import (
 	"fmt"
 
+	"github.com/bianjieai/irita-sdk-go/modules/oracle"
+
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
@@ -57,6 +59,7 @@ type IRITAClient struct {
 	Node     node.Client
 	Params   params.Client
 	WASM     wasm.Client
+	Oracle   oracle.Client
 }
 
 // AppCodec return a Marshaler of the protobuf
@@ -84,6 +87,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 	nftClient := nft.NewClient(baseClient, encodingConfig.Marshaler)
 	serviceClient := service.NewClient(baseClient, encodingConfig.Marshaler)
 	nodeClient := node.NewClient(baseClient, encodingConfig.Marshaler)
+	oracleClient := oracle.NewClient(baseClient, encodingConfig.Marshaler)
 	paramsClient := params.NewClient(baseClient, encodingConfig.Marshaler)
 	wasmClient := wasm.NewClient(baseClient)
 
@@ -99,6 +103,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 		Admin:          adminClient,
 		Identity:       idClient,
 		Node:           nodeClient,
+		Oracle:         oracleClient,
 		Params:         paramsClient,
 		WASM:           wasmClient,
 		moduleManager:  make(map[string]types.Module),

@@ -121,7 +121,7 @@ func (n nodeClient) RevokeNode(nodeId string, baseTx sdk.BaseTx) (sdk.ResultTx, 
 	return n.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
-func (n nodeClient) QueryValidators(key []byte, offset uint64, limit uint64, countTotal bool) ([]QueryValidatorResp, sdk.Error) {
+func (n nodeClient) QueryValidators(pageReq *query.PageRequest) ([]QueryValidatorResp, sdk.Error) {
 	conn, err := n.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
@@ -131,12 +131,7 @@ func (n nodeClient) QueryValidators(key []byte, offset uint64, limit uint64, cou
 	resp, err := NewQueryClient(conn).Validators(
 		context.Background(),
 		&QueryValidatorsRequest{
-			Pagination: &query.PageRequest{
-				Key:        key,
-				Offset:     offset,
-				Limit:      limit,
-				CountTotal: countTotal,
-			},
+			Pagination: pageReq,
 		},
 	)
 	if err != nil {
@@ -171,7 +166,7 @@ func (n nodeClient) QueryValidator(id string) (QueryValidatorResp, sdk.Error) {
 	return resp.Validator.Convert().(QueryValidatorResp), nil
 }
 
-func (n nodeClient) QueryNodes(key []byte, offset uint64, limit uint64, countTotal bool) ([]QueryNodeResp, sdk.Error) {
+func (n nodeClient) QueryNodes(pageReq *query.PageRequest) ([]QueryNodeResp, sdk.Error) {
 	conn, err := n.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
@@ -181,12 +176,7 @@ func (n nodeClient) QueryNodes(key []byte, offset uint64, limit uint64, countTot
 	resp, err := NewQueryClient(conn).Nodes(
 		context.Background(),
 		&QueryNodesRequest{
-			Pagination: &query.PageRequest{
-				Key:        key,
-				Offset:     offset,
-				Limit:      limit,
-				CountTotal: countTotal,
-			},
+			Pagination: pageReq,
 		},
 	)
 	if err != nil {
