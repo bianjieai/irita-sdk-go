@@ -12,9 +12,11 @@ message Params {
   option (gogoproto.goproto_stringer)       = false;
   repeated SendEnabled send_enabled         = 1 [(gogoproto.moretags) = "yaml:\"send_enabled,omitempty\""];
   bool                 default_send_enabled = 2 [(gogoproto.moretags) = "yaml:\"default_send_enabled,omitempty\""];
+  bool unrestricted_token_transfer          = 3 [(gogoproto.moretags) = "yaml:\"unrestricted_token_transfer,omitempty\""];
 }
 
-// SendEnabled maps coin denom to a send_enabled status (whether a denom is sendable).
+// SendEnabled maps coin denom to a send_enabled status (whether a denom is
+// sendable).
 message SendEnabled {
   option (gogoproto.equal)            = true;
   option (gogoproto.goproto_stringer) = false;
@@ -24,20 +26,22 @@ message SendEnabled {
 
 // Input models transaction input.
 message Input {
-  option (gogoproto.equal) = true;
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
 
-  string    address                        = 1;
+  string   address                        = 1;
   repeated cosmos.base.v1beta1.Coin coins = 2
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/bianjieai/irita-sdk-go/types.Coins"];
 }
 
 // Output models transaction outputs.
 message Output {
-  option (gogoproto.equal) = true;
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
 
-  string    address                        = 1;
+  string   address                        = 1;
   repeated cosmos.base.v1beta1.Coin coins = 2
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/bianjieai/irita-sdk-go/types.Coins"];
+  [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/bianjieai/irita-sdk-go/types.Coins"];
 }
 
 // Supply represents a struct that passively keeps track of the total supply
@@ -49,7 +53,7 @@ message Supply {
   option (cosmos_proto.implements_interface) = "*github.com/bianjieai/irita-sdk-go/modules/bank/exported.SupplyI";
 
   repeated cosmos.base.v1beta1.Coin total = 1
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/bianjieai/irita-sdk-go/types.Coins"];
+  [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/bianjieai/irita-sdk-go/types.Coins"];
 }
 
 // DenomUnit represents a struct that describes a given

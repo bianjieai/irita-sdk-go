@@ -6,6 +6,21 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/bianjieai/irita-sdk-go/modules/token";
 option (gogoproto.goproto_getters_all) = false;
 
+// Msg defines the oracle Msg service.
+service Msg {
+    // IssueToken defines a method for issuing a new token.
+    rpc IssueToken(MsgIssueToken) returns (MsgIssueTokenResponse);
+
+    // EditToken defines a method for editing a token.
+    rpc EditToken(MsgEditToken) returns (MsgEditTokenResponse);
+
+    // MintToken defines a method for minting some tokens.
+    rpc MintToken(MsgMintToken) returns (MsgMintTokenResponse);
+
+    // TransferTokenOwner defines a method for minting some tokens.
+    rpc TransferTokenOwner(MsgTransferTokenOwner) returns (MsgTransferTokenOwnerResponse);
+}
+
 // MsgIssueToken defines an SDK message for issuing a new token.
 message MsgIssueToken {
     string symbol = 1;
@@ -18,12 +33,18 @@ message MsgIssueToken {
     string owner = 8;
 }
 
+// MsgIssueTokenResponse defines the Msg/IssueToken response type.
+message MsgIssueTokenResponse {}
+
 // MsgMintToken defines an SDK message for transferring the token owner.
 message MsgTransferTokenOwner {
     string src_owner = 1 [(gogoproto.moretags) = "yaml:\"src_owner\""];
     string dst_owner = 2 [(gogoproto.moretags) = "yaml:\"dst_owner\""];
     string symbol = 3;
 }
+
+// MsgTransferTokenOwnerResponse defines the Msg/TransferTokenOwner response type.
+message MsgTransferTokenOwnerResponse {}
 
 // MsgEditToken defines an SDK message for editing a new token.
 message MsgEditToken {
@@ -34,6 +55,9 @@ message MsgEditToken {
     string owner = 5;
 }
 
+// MsgEditTokenResponse defines the Msg/EditToken response type.
+message MsgEditTokenResponse {}
+
 // MsgMintToken defines an SDK message for minting a new token.
 message MsgMintToken {
     string symbol = 1;
@@ -41,3 +65,6 @@ message MsgMintToken {
     string to = 3;
     string owner = 4;
 }
+
+// MsgMintTokenResponse defines the Msg/MintToken response type.
+message MsgMintTokenResponse {}

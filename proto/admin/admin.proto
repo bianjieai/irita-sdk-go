@@ -6,40 +6,6 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/bianjieai/irita-sdk-go/modules/admin";
 option (gogoproto.goproto_getters_all) = false;
 
-// MsgAddRoles defines an SDK message for adding roles to a address.
-message MsgAddRoles {
-    option (gogoproto.equal) = true;
-
-    string address = 1 ;
-    repeated Role roles = 2;
-    string operator = 3 ;
-}
-
-// MsgRemoveRoles defines an SDK message for removing roles from an existing address.
-message MsgRemoveRoles {
-    option (gogoproto.equal) = true;
-
-    string address = 1 ;
-    repeated Role roles = 2;
-    string operator = 3 ;
-}
-
-// MsgBlockAccount defines an SDK message for blocking an account.
-message MsgBlockAccount {
-    option (gogoproto.equal) = true;
-
-    string address = 1 ;
-    string operator = 2 ;
-}
-
-// MsgUnblockAccount defines an SDK message for unblocking an account.
-message MsgUnblockAccount {
-    option (gogoproto.equal) = true;
-
-    string address = 1 ;
-    string operator = 2 ;
-}
-
 // Role is a type alias that represents a proposal status as a byte
 enum Role {
     option (gogoproto.enum_stringer) = true;
@@ -47,19 +13,19 @@ enum Role {
     option (gogoproto.goproto_enum_prefix) = false;
 
     // ROOT_ADMIN defines the root admin role index.
-    ROOT_ADMIN = 0 [ (gogoproto.enumvalue_customname) = "RoleRootAdmin" ];
+    ROOT_ADMIN = 0 [(gogoproto.enumvalue_customname) = "RoleRootAdmin"];
     // PERM_ADMIN defines the permission admin role index.
-    PERM_ADMIN = 1 [ (gogoproto.enumvalue_customname) = "RolePermAdmin" ];
+    PERM_ADMIN = 1 [(gogoproto.enumvalue_customname) = "RolePermAdmin"];
     // BLACKLIST_ADMIN defines the blacklist admin role index.
-    BLACKLIST_ADMIN = 2 [ (gogoproto.enumvalue_customname) = "RoleBlacklistAdmin" ];
+    BLACKLIST_ADMIN = 2 [(gogoproto.enumvalue_customname) = "RoleBlacklistAdmin"];
     // NODE_ADMIN defines the validator node admin role index.
-    NODE_ADMIN = 3 [ (gogoproto.enumvalue_customname) = "RoleNodeAdmin" ];
+    NODE_ADMIN = 3 [(gogoproto.enumvalue_customname) = "RoleNodeAdmin"];
     // PARAM_ADMIN defines the param admin role index.
-    PARAM_ADMIN = 4 [ (gogoproto.enumvalue_customname) = "RoleParamAdmin" ];
+    PARAM_ADMIN = 4 [(gogoproto.enumvalue_customname) = "RoleParamAdmin"];
     // POWER_USER defines the power user role index.
-    POWER_USER = 5 [ (gogoproto.enumvalue_customname) = "RolePowerUser" ];
+    POWER_USER = 5 [(gogoproto.enumvalue_customname) = "RolePowerUser"];
     // RELAYER_USER defines the relayer role index.
-    RELAYER_USER = 6 [ (gogoproto.enumvalue_customname) = "RoleRelayerUser" ];
+    RELAYER_USER = 6 [(gogoproto.enumvalue_customname) = "RoleRelayerUser"];
     // IDAdmin defines the identity role index.
-    ID_ADMIN = 7 [ (gogoproto.enumvalue_customname) = "RoleIDAdmin" ];
+    ID_ADMIN = 7 [(gogoproto.enumvalue_customname) = "RoleIDAdmin"];
 }
