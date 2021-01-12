@@ -1,6 +1,7 @@
 package sm2
 
 import (
+	"crypto/rand"
 	"crypto/sha256"
 	"crypto/subtle"
 	"fmt"
@@ -65,7 +66,7 @@ func (privKey PrivKey) Bytes() []byte {
 
 func (privKey PrivKey) Sign(msg []byte) ([]byte, error) {
 	priv := privKey.GetPrivateKey()
-	r, s, err := sm2.Sm2Sign(priv, msg, nil)
+	r, s, err := sm2.Sm2Sign(priv, msg, nil, rand.Reader)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +118,7 @@ func genPrivKey(rand io.Reader) PrivKey {
 		panic(err)
 	}
 
-	privKey, err := sm2.GenerateKey()
+	privKey, err := sm2.GenerateKey(rand)
 	if err != nil {
 		panic(err)
 	}
