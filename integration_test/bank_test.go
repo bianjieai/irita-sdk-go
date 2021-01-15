@@ -44,7 +44,7 @@ func (s IntegrationTestSuite) TestBank() {
 }
 
 func queryAccount(s IntegrationTestSuite) {
-	acc, err := s.Bank.QueryAccount("iaa18xcshrf7qwjmmurxxxe6tezw7qeqzjaz2z5326")
+	acc, err := s.Bank.QueryAccount("iaa15u46etypaxy0wj0gwse7gyjfz464xhe3prmuzw")
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), acc)
 }
@@ -54,13 +54,11 @@ func send(s IntegrationTestSuite) {
 	s.NoError(err)
 	to := s.GetRandAccount().Address.String()
 	baseTx := types.BaseTx{
-		From:               s.Account().Name,
-		Gas:                200000,
-		Memo:               "test",
-		Mode:               types.Commit,
-		Password:           s.Account().Password,
-		SimulateAndExecute: false,
-		GasAdjustment:      1.5,
+		From:     s.Account().Name,
+		Gas:      200000,
+		Memo:     "test",
+		Mode:     types.Commit,
+		Password: s.Account().Password,
 	}
 
 	ch := make(chan int)
