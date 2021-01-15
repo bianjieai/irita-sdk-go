@@ -54,11 +54,13 @@ func send(s IntegrationTestSuite) {
 	s.NoError(err)
 	to := s.GetRandAccount().Address.String()
 	baseTx := types.BaseTx{
-		From:     s.Account().Name,
-		Gas:      200000,
-		Memo:     "test",
-		Mode:     types.Commit,
-		Password: s.Account().Password,
+		From:               s.Account().Name,
+		Gas:                200000,
+		Memo:               "test",
+		Mode:               types.Commit,
+		Password:           s.Account().Password,
+		SimulateAndExecute: false,
+		GasAdjustment:      1.5,
 	}
 
 	ch := make(chan int)
