@@ -2,10 +2,7 @@ package service
 
 import (
 	"context"
-	"encoding/binary"
-	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"strings"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
@@ -284,24 +281,6 @@ func (s serviceClient) SubscribeServiceResponse(reqCtxID string,
 	})
 }
 
-// SplitRequestID splits the given contextID to contextID, batchCounter, requestHeight, batchRequestIndex
-func splitRequestID(reqID string) (sdk.HexBytes, uint64, int64, int16, error) {
-	requestID, err := hex.DecodeString(reqID)
-	if err != nil {
-		return nil, 0, 0, 0, errors.New("invalid request id")
-	}
-
-	if len(requestID) != requestIDLen {
-		return nil, 0, 0, 0, errors.New("invalid request id")
-	}
-
-	reqCtxID := requestID[0:40]
-	batchCounter := binary.BigEndian.Uint64(requestID[40:48])
-	requestHeight := int64(binary.BigEndian.Uint64(requestID[48:56]))
-	batchRequestIndex := int16(binary.BigEndian.Uint16(requestID[56:]))
-	return reqCtxID, batchCounter, requestHeight, batchRequestIndex, nil
-}
-
 // SetWithdrawAddress sets a new withdrawal address for the specified service binding
 func (s serviceClient) SetWithdrawAddress(withdrawAddress string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
 	owner, err := s.QueryAddress(baseTx.From, baseTx.Password)
@@ -537,11 +516,18 @@ func (s serviceClient) QueryServiceRequest(requestID string) (QueryServiceReques
 		context.Background(),
 		&QueryRequestRequest{RequestId: requestID},
 	)
+
+	if err == nil && !resp.Request.Empty() {
+		return resp.Request.Convert().(QueryServiceRequestResponse), nil
+	}
+
+	//query service Request by block
+	request, err := s.queryRequestByTxQuery(requestID)
 	if err != nil {
 		return QueryServiceRequestResponse{}, sdk.Wrap(err)
 	}
 
-	return resp.Request.Convert().(QueryServiceRequestResponse), nil
+	return request.Convert().(QueryServiceRequestResponse), nil
 }
 
 // QueryRequest returns all the active requests of the specified service binding
@@ -606,11 +592,17 @@ func (s serviceClient) QueryServiceResponse(requestID string) (QueryServiceRespo
 		context.Background(),
 		&QueryResponseRequest{RequestId: requestID},
 	)
-	if err != nil {
-		return QueryServiceResponseResponse{}, sdk.Wrap(err)
+
+	if err == nil {
+		return resp.Response.Convert().(QueryServiceResponseResponse), nil
 	}
 
-	return resp.Response.Convert().(QueryServiceResponseResponse), nil
+	response, err := s.queryResponseByTxQuery(requestID)
+	if err != nil {
+		return QueryServiceResponseResponse{}, sdk.Wrap(nil)
+	}
+
+	return response.Convert().(QueryServiceResponseResponse), nil
 }
 
 // QueryResponses returns all responses of the specified request context and batch counter
@@ -648,11 +640,16 @@ func (s serviceClient) QueryRequestContext(reqCtxID string) (QueryRequestContext
 		context.Background(),
 		&QueryRequestContextRequest{RequestContextId: reqCtxID},
 	)
+	if err == nil && !resp.RequestContext.Empty() {
+		return resp.RequestContext.Convert().(QueryRequestContextResp), nil
+	}
+
+	reqCtx, err := s.queryRequestContextByTxQuery(reqCtxID)
 	if err != nil {
 		return QueryRequestContextResp{}, sdk.Wrap(err)
 	}
 
-	return resp.RequestContext.Convert().(QueryRequestContextResp), nil
+	return reqCtx.Convert().(QueryRequestContextResp), nil
 }
 
 //QueryFees return the earned fees for a provider
