@@ -58,7 +58,7 @@ func (s serviceClient) queryRequestByTxQuery(requestID string) (Request, error) 
 	}
 
 	// query request context
-	reqCtx, err := s.queryRequestContextByTxQuery(hex.EncodeToString(reqCtxID))
+	reqCtx, err := s.QueryRequestContext(hex.EncodeToString(reqCtxID))
 	if err != nil {
 		return Request{}, err
 	}

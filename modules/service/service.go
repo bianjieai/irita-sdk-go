@@ -640,11 +640,16 @@ func (s serviceClient) QueryRequestContext(reqCtxID string) (QueryRequestContext
 		context.Background(),
 		&QueryRequestContextRequest{RequestContextId: reqCtxID},
 	)
+	if err == nil && !resp.RequestContext.Empty() {
+		return resp.RequestContext.Convert().(QueryRequestContextResp), nil
+	}
+
+	reqCtx, err := s.queryRequestContextByTxQuery(reqCtxID)
 	if err != nil {
 		return QueryRequestContextResp{}, sdk.Wrap(err)
 	}
 
-	return resp.RequestContext.Convert().(QueryRequestContextResp), nil
+	return reqCtx.Convert().(QueryRequestContextResp), nil
 }
 
 //QueryFees return the earned fees for a provider
