@@ -8,7 +8,7 @@ option go_package = "github.com/bianjieai/irita-sdk-go/modules/random";
 
 // Random defines the feed standard
 message Random {
-    string request_tx_hash = 1 ;
+    string request_tx_hash = 1 [ (gogoproto.moretags) = "yaml:\"request_tx_hash\"" ];
     int64 height = 2;
     string value = 3;
 }
@@ -20,5 +20,5 @@ message Request {
     string tx_hash = 3 [ (gogoproto.moretags) = "yaml:\"tx_hash\"" ];
     bool oracle = 4;
     repeated cosmos.base.v1beta1.Coin service_fee_cap = 5 [ (gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/bianjieai/irita-sdk-go/types.Coins", (gogoproto.moretags) = "yaml:\"service_fee_cap\"" ];
-    string service_context_id = 6;
+    string service_context_id = 6 [ (gogoproto.customname) = "ServiceContextID", (gogoproto.moretags) = "yaml:\"service_context_id\"" ];
 }

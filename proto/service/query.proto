@@ -28,7 +28,7 @@ service Query {
 
     // WithdrawAddress returns the withdraw address of the binding owner
     rpc WithdrawAddress(QueryWithdrawAddressRequest) returns (QueryWithdrawAddressResponse) {
-        option (google.api.http).get = "/irismod/service/{owner}/withdraw-address";
+        option (google.api.http).get = "/irismod/service/owners/{owner}/withdraw-address";
     }
 
     // RequestContext returns the request context
@@ -101,7 +101,8 @@ message QueryBindingResponse {
 // QueryBindingsRequest is request type for the Query/Bindings RPC method
 message QueryBindingsRequest {
     string service_name = 1;
-    string owner = 2 ;
+    string owner = 2;
+    // pagination defines an optional pagination for the request.
     cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 

@@ -12,18 +12,21 @@ option go_package = "github.com/bianjieai/irita-sdk-go/modules/auth";
 // Query defines the gRPC querier service.
 service Query {
   // Account returns account details based on address.
-  rpc Account(QueryAccountRequest) returns(QueryAccountResponse) {
-    option(google.api.http).get = "/cosmos/auth/v1beta1/accounts/{address}";
+  rpc Account(QueryAccountRequest) returns (QueryAccountResponse) {
+    option (google.api.http).get = "/cosmos/auth/v1beta1/accounts/{address}";
   }
 
   // Params queries all parameters.
-  rpc Params(QueryParamsRequest) returns(QueryParamsResponse) {
-    option(google.api.http).get = "/cosmos/auth/v1beta1/params";
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/cosmos/auth/v1beta1/params";
   }
 }
 
 // QueryAccountRequest is the request type for the Query/Account RPC method.
 message QueryAccountRequest {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
   // address defines the address to query for.
   string address = 1;
 }
@@ -31,8 +34,7 @@ message QueryAccountRequest {
 // QueryAccountResponse is the response type for the Query/Account RPC method.
 message QueryAccountResponse {
   // account defines the account of the corresponding address.
-  google.protobuf.Any account =
-      1 [(cosmos_proto.accepts_interface) = "AccountI"];
+  google.protobuf.Any account = 1 [(cosmos_proto.accepts_interface) = "AccountI"];
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
