@@ -19,9 +19,9 @@ import (
 const (
 	nodeURI  = "tcp://127.0.0.1:26657"
 	grpcAddr = "localhost:9090"
-	chainID  = "irita"
+	chainID  = "test"
 	charset  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	addr     = "iaa15u46etypaxy0wj0gwse7gyjfz464xhe3prmuzw"
+	addr     = "iaa13wk3kksandam9l2fzc4vxgu02tf5httvdu7qkg"
 )
 
 var (
