@@ -21,7 +21,7 @@ const (
 	grpcAddr = "localhost:9090"
 	chainID  = "irita"
 	charset  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	addr     = "iaa18xcshrf7qwjmmurxxxe6tezw7qeqzjaz2z5326"
+	addr     = "iaa15u46etypaxy0wj0gwse7gyjfz464xhe3prmuzw"
 )
 
 var (
