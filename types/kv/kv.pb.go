@@ -339,7 +339,10 @@ func (m *Pairs) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthKv
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthKv
 			}
 			if (iNdEx + skippy) > l {
@@ -457,7 +460,10 @@ func (m *Pair) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthKv
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthKv
 			}
 			if (iNdEx + skippy) > l {

@@ -594,7 +594,10 @@ func (m *Coin) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthCoin
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthCoin
 			}
 			if (iNdEx + skippy) > l {
@@ -710,7 +713,10 @@ func (m *DecCoin) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthCoin
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthCoin
 			}
 			if (iNdEx + skippy) > l {
@@ -794,7 +800,10 @@ func (m *IntProto) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthCoin
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthCoin
 			}
 			if (iNdEx + skippy) > l {
@@ -878,7 +887,10 @@ func (m *DecProto) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthCoin
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthCoin
 			}
 			if (iNdEx + skippy) > l {

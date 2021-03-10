@@ -868,7 +868,10 @@ func (m *SignatureDescriptors) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthSigning
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthSigning
 			}
 			if (iNdEx + skippy) > l {
@@ -1009,7 +1012,10 @@ func (m *SignatureDescriptor) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthSigning
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthSigning
 			}
 			if (iNdEx + skippy) > l {
@@ -1129,7 +1135,10 @@ func (m *SignatureDescriptor_Data) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthSigning
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthSigning
 			}
 			if (iNdEx + skippy) > l {
@@ -1232,7 +1241,10 @@ func (m *SignatureDescriptor_Data_Single) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthSigning
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthSigning
 			}
 			if (iNdEx + skippy) > l {
@@ -1352,7 +1364,10 @@ func (m *SignatureDescriptor_Data_Multi) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
+			if skippy < 0 {
+				return ErrInvalidLengthSigning
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthSigning
 			}
 			if (iNdEx + skippy) > l {
