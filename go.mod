@@ -9,7 +9,6 @@ require (
 	github.com/bluele/gcache v0.0.0-20190518031135-bc40bd653833
 	github.com/btcsuite/btcd v0.21.0-beta
 	github.com/btcsuite/btcutil v1.0.2
-	github.com/cosmos/cosmos-sdk v0.42.0
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/iavl v0.15.3 // indirect
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
@@ -31,7 +30,7 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15
 	github.com/tendermint/go-amino v0.16.0
-	github.com/tendermint/tendermint v0.34.8
+	github.com/tendermint/tendermint v0.34.3
 	github.com/tendermint/tm-db v0.6.4
 	github.com/tjfoc/gmsm v1.4.0
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
