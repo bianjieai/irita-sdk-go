@@ -29,7 +29,7 @@ func (s IntegrationTestSuite) TestWasm() {
 
 	args := wasm.NewArgs().
 		Put("start", 1).
-		Put("end", 1000).
+		Put("end", 2000).
 		Put("candidates", []string{"iaa1qvty8x0c78am8c44zv2n7tgm6gfqt78j0verqa", "iaa1zk2tse0pkk87p2v8tcsfs0ytfw3t88kejecye5"})
 
 	initReq := wasm.InstantiateRequest{

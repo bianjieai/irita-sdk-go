@@ -44,7 +44,7 @@ func (s IntegrationTestSuite) TestBank() {
 }
 
 func queryAccount(s IntegrationTestSuite) {
-	acc, err := s.Bank.QueryAccount("iaa15u46etypaxy0wj0gwse7gyjfz464xhe3prmuzw")
+	acc, err := s.Bank.QueryAccount("iaa1r49m366kaexmvrlppqqeyr8ykqq248g0d4qra4")
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), acc)
 }
