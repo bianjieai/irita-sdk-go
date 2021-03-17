@@ -12,7 +12,7 @@ import (
 
 func (s IntegrationTestSuite) TestService() {
 	schemas := `{"input":{"type":"object"},"output":{"type":"object"},"error":{"type":"object"}}`
-	pricing := `{"price":"1point"}`
+	pricing := `{"price":"1upoint"}`
 	options := `{}`
 
 	baseTx := sdk.BaseTx{
@@ -44,7 +44,7 @@ func (s IntegrationTestSuite) TestService() {
 	require.Equal(s.T(), definition.Schemas, defi.Schemas)
 	require.Equal(s.T(), s.Account().Address.String(), defi.Author)
 
-	deposit, e := sdk.ParseDecCoins("20000point")
+	deposit, e := sdk.ParseDecCoins("20000upoint")
 	require.NoError(s.T(), e)
 	binding := service.BindServiceRequest{
 		ServiceName: definition.ServiceName,
@@ -77,7 +77,7 @@ func (s IntegrationTestSuite) TestService() {
 	require.NoError(s.T(), err)
 	s.Logger().Info("SubscribeServiceRequest", "condition", sub1.Query)
 
-	serviceFeeCap, e := sdk.ParseDecCoins("200point")
+	serviceFeeCap, e := sdk.ParseDecCoins("200upoint")
 	require.NoError(s.T(), e)
 
 	invocation := service.InvokeServiceRequest{
@@ -86,7 +86,6 @@ func (s IntegrationTestSuite) TestService() {
 		Input:         input,
 		ServiceFeeCap: serviceFeeCap,
 		Timeout:       10,
-		SuperMode:     false,
 		Repeated:      true,
 		RepeatedTotal: -1,
 	}
