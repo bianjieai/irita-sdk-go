@@ -4,9 +4,14 @@
 package token
 
 import (
+	context "context"
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"
+	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
+	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -68,6 +73,43 @@ func (m *MsgIssueToken) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgIssueToken proto.InternalMessageInfo
 
+// MsgIssueTokenResponse defines the Msg/IssueToken response type.
+type MsgIssueTokenResponse struct {
+}
+
+func (m *MsgIssueTokenResponse) Reset()         { *m = MsgIssueTokenResponse{} }
+func (m *MsgIssueTokenResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgIssueTokenResponse) ProtoMessage()    {}
+func (*MsgIssueTokenResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ef78f47708126356, []int{1}
+}
+func (m *MsgIssueTokenResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgIssueTokenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgIssueTokenResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgIssueTokenResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgIssueTokenResponse.Merge(m, src)
+}
+func (m *MsgIssueTokenResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgIssueTokenResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgIssueTokenResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgIssueTokenResponse proto.InternalMessageInfo
+
 // MsgMintToken defines an SDK message for transferring the token owner.
 type MsgTransferTokenOwner struct {
 	SrcOwner string `protobuf:"bytes,1,opt,name=src_owner,json=srcOwner,proto3" json:"src_owner,omitempty" yaml:"src_owner"`
@@ -79,7 +121,7 @@ func (m *MsgTransferTokenOwner) Reset()         { *m = MsgTransferTokenOwner{} }
 func (m *MsgTransferTokenOwner) String() string { return proto.CompactTextString(m) }
 func (*MsgTransferTokenOwner) ProtoMessage()    {}
 func (*MsgTransferTokenOwner) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ef78f47708126356, []int{1}
+	return fileDescriptor_ef78f47708126356, []int{2}
 }
 func (m *MsgTransferTokenOwner) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -108,6 +150,43 @@ func (m *MsgTransferTokenOwner) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgTransferTokenOwner proto.InternalMessageInfo
 
+// MsgTransferTokenOwnerResponse defines the Msg/TransferTokenOwner response type.
+type MsgTransferTokenOwnerResponse struct {
+}
+
+func (m *MsgTransferTokenOwnerResponse) Reset()         { *m = MsgTransferTokenOwnerResponse{} }
+func (m *MsgTransferTokenOwnerResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgTransferTokenOwnerResponse) ProtoMessage()    {}
+func (*MsgTransferTokenOwnerResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ef78f47708126356, []int{3}
+}
+func (m *MsgTransferTokenOwnerResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgTransferTokenOwnerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgTransferTokenOwnerResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgTransferTokenOwnerResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgTransferTokenOwnerResponse.Merge(m, src)
+}
+func (m *MsgTransferTokenOwnerResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgTransferTokenOwnerResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgTransferTokenOwnerResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgTransferTokenOwnerResponse proto.InternalMessageInfo
+
 // MsgEditToken defines an SDK message for editing a new token.
 type MsgEditToken struct {
 	Symbol    string `protobuf:"bytes,1,opt,name=symbol,proto3" json:"symbol,omitempty"`
@@ -121,7 +200,7 @@ func (m *MsgEditToken) Reset()         { *m = MsgEditToken{} }
 func (m *MsgEditToken) String() string { return proto.CompactTextString(m) }
 func (*MsgEditToken) ProtoMessage()    {}
 func (*MsgEditToken) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ef78f47708126356, []int{2}
+	return fileDescriptor_ef78f47708126356, []int{4}
 }
 func (m *MsgEditToken) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -150,6 +229,43 @@ func (m *MsgEditToken) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgEditToken proto.InternalMessageInfo
 
+// MsgEditTokenResponse defines the Msg/EditToken response type.
+type MsgEditTokenResponse struct {
+}
+
+func (m *MsgEditTokenResponse) Reset()         { *m = MsgEditTokenResponse{} }
+func (m *MsgEditTokenResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgEditTokenResponse) ProtoMessage()    {}
+func (*MsgEditTokenResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ef78f47708126356, []int{5}
+}
+func (m *MsgEditTokenResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgEditTokenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgEditTokenResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgEditTokenResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgEditTokenResponse.Merge(m, src)
+}
+func (m *MsgEditTokenResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgEditTokenResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgEditTokenResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgEditTokenResponse proto.InternalMessageInfo
+
 // MsgMintToken defines an SDK message for minting a new token.
 type MsgMintToken struct {
 	Symbol string `protobuf:"bytes,1,opt,name=symbol,proto3" json:"symbol,omitempty"`
@@ -162,7 +278,7 @@ func (m *MsgMintToken) Reset()         { *m = MsgMintToken{} }
 func (m *MsgMintToken) String() string { return proto.CompactTextString(m) }
 func (*MsgMintToken) ProtoMessage()    {}
 func (*MsgMintToken) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ef78f47708126356, []int{3}
+	return fileDescriptor_ef78f47708126356, []int{6}
 }
 func (m *MsgMintToken) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -191,48 +307,291 @@ func (m *MsgMintToken) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgMintToken proto.InternalMessageInfo
 
+// MsgMintTokenResponse defines the Msg/MintToken response type.
+type MsgMintTokenResponse struct {
+}
+
+func (m *MsgMintTokenResponse) Reset()         { *m = MsgMintTokenResponse{} }
+func (m *MsgMintTokenResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgMintTokenResponse) ProtoMessage()    {}
+func (*MsgMintTokenResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ef78f47708126356, []int{7}
+}
+func (m *MsgMintTokenResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgMintTokenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgMintTokenResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgMintTokenResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgMintTokenResponse.Merge(m, src)
+}
+func (m *MsgMintTokenResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgMintTokenResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgMintTokenResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgMintTokenResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*MsgIssueToken)(nil), "irismod.token.MsgIssueToken")
+	proto.RegisterType((*MsgIssueTokenResponse)(nil), "irismod.token.MsgIssueTokenResponse")
 	proto.RegisterType((*MsgTransferTokenOwner)(nil), "irismod.token.MsgTransferTokenOwner")
+	proto.RegisterType((*MsgTransferTokenOwnerResponse)(nil), "irismod.token.MsgTransferTokenOwnerResponse")
 	proto.RegisterType((*MsgEditToken)(nil), "irismod.token.MsgEditToken")
+	proto.RegisterType((*MsgEditTokenResponse)(nil), "irismod.token.MsgEditTokenResponse")
 	proto.RegisterType((*MsgMintToken)(nil), "irismod.token.MsgMintToken")
+	proto.RegisterType((*MsgMintTokenResponse)(nil), "irismod.token.MsgMintTokenResponse")
 }
 
 func init() { proto.RegisterFile("token/tx.proto", fileDescriptor_ef78f47708126356) }
 
 var fileDescriptor_ef78f47708126356 = []byte{
-	// 485 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x53, 0x31, 0x8f, 0xd3, 0x30,
-	0x14, 0xae, 0xd3, 0xb4, 0x97, 0x5a, 0xb4, 0x80, 0x69, 0x4f, 0xe1, 0x86, 0xa4, 0x8a, 0x18, 0xba,
-	0x5c, 0x23, 0x04, 0x13, 0x13, 0x8a, 0xc4, 0xc0, 0x10, 0x21, 0x85, 0x63, 0x61, 0xa9, 0x9c, 0xc6,
-	0x04, 0x73, 0xb1, 0x5d, 0xc5, 0x8e, 0x68, 0xff, 0x05, 0x0b, 0xbf, 0x02, 0x7e, 0xc8, 0x8d, 0x37,
-	0x32, 0x45, 0xd0, 0xfe, 0x83, 0x8e, 0x4c, 0x28, 0x4e, 0x2e, 0xd7, 0x22, 0x24, 0x60, 0xf3, 0xf7,
-	0xbe, 0xf7, 0xe9, 0x7d, 0xfe, 0x9e, 0x1e, 0x1c, 0x29, 0x71, 0x49, 0xb8, 0xaf, 0xd6, 0xf3, 0x55,
-	0x2e, 0x94, 0x40, 0x43, 0x9a, 0x53, 0xc9, 0x44, 0x32, 0xd7, 0xf5, 0xb3, 0x71, 0x2a, 0x52, 0xa1,
-	0x19, 0xbf, 0x7a, 0xd5, 0x4d, 0xde, 0x17, 0x03, 0x0e, 0x43, 0x99, 0xbe, 0x94, 0xb2, 0x20, 0x17,
-	0x55, 0x1f, 0x3a, 0x85, 0x7d, 0xb9, 0x61, 0xb1, 0xc8, 0x6c, 0x30, 0x05, 0xb3, 0x41, 0xd4, 0x20,
-	0x84, 0xa0, 0xc9, 0x31, 0x23, 0xb6, 0xa1, 0xab, 0xfa, 0x8d, 0xc6, 0xb0, 0x27, 0x97, 0x38, 0x23,
-	0x76, 0x77, 0x0a, 0x66, 0xc3, 0xa8, 0x06, 0x68, 0x0e, 0x2d, 0x46, 0xf9, 0xa2, 0xe0, 0x54, 0xd9,
-	0x66, 0xd5, 0x1d, 0x3c, 0xd8, 0x97, 0xee, 0xdd, 0x0d, 0x66, 0xd9, 0x33, 0xef, 0x86, 0xf1, 0xa2,
-	0x13, 0x46, 0xf9, 0x1b, 0x4e, 0x15, 0x7a, 0x0e, 0x47, 0x94, 0x53, 0x45, 0x71, 0xb6, 0x90, 0xc5,
-	0x6a, 0x95, 0x6d, 0xec, 0xde, 0x14, 0xcc, 0xcc, 0xe0, 0xe1, 0xbe, 0x74, 0x27, 0xb5, 0xea, 0x98,
-	0xf7, 0xa2, 0x61, 0x53, 0x78, 0xad, 0x31, 0x7a, 0x0a, 0x21, 0xc3, 0xeb, 0x1b, 0x75, 0x5f, 0xab,
-	0x27, 0xfb, 0xd2, 0xbd, 0xdf, 0xcc, 0x6c, 0x39, 0x2f, 0x1a, 0x30, 0xbc, 0x6e, 0x54, 0x67, 0xda,
-	0xa7, 0xc2, 0x71, 0x46, 0xec, 0x93, 0x29, 0x98, 0x59, 0x51, 0x8b, 0xab, 0x9f, 0x89, 0x8f, 0x9c,
-	0xe4, 0xb6, 0xa5, 0xbf, 0x5b, 0x03, 0xef, 0x33, 0x80, 0x93, 0x50, 0xa6, 0x17, 0x39, 0xe6, 0xf2,
-	0x1d, 0xc9, 0x75, 0x60, 0xaf, 0x2a, 0x06, 0x3d, 0x86, 0x03, 0x99, 0x2f, 0x17, 0xb5, 0x46, 0x07,
-	0x17, 0x8c, 0xf7, 0xa5, 0x7b, 0xaf, 0x36, 0xd0, 0x52, 0x5e, 0x64, 0xc9, 0x7c, 0xd9, 0x4a, 0x12,
-	0xa9, 0x1a, 0x89, 0xf1, 0xbb, 0xa4, 0xa5, 0xbc, 0xc8, 0x4a, 0xa4, 0xaa, 0x25, 0xb7, 0xbb, 0xe9,
-	0x1e, 0xee, 0xc6, 0xfb, 0x0a, 0xe0, 0x9d, 0x50, 0xa6, 0x2f, 0x12, 0xaa, 0xfe, 0x7f, 0x89, 0xc7,
-	0xe1, 0x75, 0xff, 0x31, 0xbc, 0x47, 0x07, 0xe1, 0xd5, 0x4b, 0xb6, 0x7e, 0x96, 0xae, 0x19, 0x08,
-	0x91, 0xfd, 0x29, 0xc6, 0xde, 0x61, 0x8c, 0x89, 0x76, 0x1b, 0x52, 0xfe, 0x17, 0xb7, 0xa7, 0xb0,
-	0x8f, 0x99, 0x28, 0xb8, 0xd2, 0x7e, 0xcd, 0xa8, 0x41, 0x68, 0x04, 0x0d, 0x25, 0x9a, 0x08, 0x0c,
-	0x25, 0x6e, 0xa7, 0x98, 0x07, 0x53, 0x82, 0xf0, 0xea, 0x87, 0xd3, 0xb9, 0xda, 0x3a, 0xe0, 0x7a,
-	0xeb, 0x80, 0xef, 0x5b, 0x07, 0x7c, 0xda, 0x39, 0x9d, 0xeb, 0x9d, 0xd3, 0xf9, 0xb6, 0x73, 0x3a,
-	0x6f, 0xfd, 0x94, 0xaa, 0xf7, 0x45, 0x3c, 0x5f, 0x0a, 0xe6, 0xc7, 0x14, 0xf3, 0x0f, 0x94, 0x60,
-	0xea, 0xd3, 0x9c, 0x2a, 0x7c, 0x2e, 0x93, 0xcb, 0xf3, 0x54, 0xf8, 0x4c, 0x24, 0x45, 0x46, 0xa4,
-	0xaf, 0xef, 0x27, 0xee, 0xeb, 0x83, 0x79, 0xf2, 0x2b, 0x00, 0x00, 0xff, 0xff, 0x20, 0x7d, 0x7c,
-	0x05, 0x67, 0x03, 0x00, 0x00,
+	// 586 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0xcd, 0x92, 0xd2, 0x4c,
+	0x14, 0x25, 0x21, 0x30, 0xa1, 0xeb, 0x83, 0x4f, 0x5b, 0xc0, 0x88, 0x9a, 0x50, 0x71, 0x16, 0x2c,
+	0x9c, 0xa4, 0xfc, 0x59, 0xb9, 0xb2, 0xa8, 0x72, 0xe1, 0x22, 0xa5, 0x15, 0xc7, 0x8d, 0x1b, 0xaa,
+	0x21, 0x31, 0xd3, 0x4e, 0xd2, 0x4d, 0xa5, 0x3b, 0x25, 0xbc, 0x85, 0x1b, 0x9f, 0x42, 0x1f, 0x64,
+	0x96, 0xb3, 0x74, 0x85, 0x0a, 0x6f, 0xc0, 0xd2, 0x95, 0x45, 0x27, 0x84, 0x20, 0xa9, 0x71, 0xdc,
+	0xe5, 0xf6, 0xb9, 0xe7, 0xde, 0x7b, 0xce, 0xed, 0x0e, 0x68, 0x71, 0x7a, 0xee, 0x13, 0x9b, 0xcf,
+	0xac, 0x69, 0x4c, 0x39, 0x85, 0x4d, 0x1c, 0x63, 0x16, 0x51, 0xcf, 0x12, 0xe7, 0xbd, 0x76, 0x40,
+	0x03, 0x2a, 0x10, 0x7b, 0xf3, 0x95, 0x26, 0x99, 0x5f, 0x64, 0xd0, 0x74, 0x58, 0xf0, 0x92, 0xb1,
+	0xc4, 0x3f, 0xdd, 0xe4, 0xc1, 0x2e, 0xa8, 0xb3, 0x79, 0x34, 0xa6, 0xa1, 0x26, 0xf5, 0xa5, 0x41,
+	0xc3, 0xcd, 0x22, 0x08, 0x81, 0x42, 0x50, 0xe4, 0x6b, 0xb2, 0x38, 0x15, 0xdf, 0xb0, 0x0d, 0x6a,
+	0x6c, 0x82, 0x42, 0x5f, 0xab, 0xf6, 0xa5, 0x41, 0xd3, 0x4d, 0x03, 0x68, 0x01, 0x35, 0xc2, 0x64,
+	0x94, 0x10, 0xcc, 0x35, 0x65, 0x93, 0x3d, 0xbc, 0xb5, 0x5e, 0x18, 0xff, 0xcf, 0x51, 0x14, 0x3e,
+	0x33, 0xb7, 0x88, 0xe9, 0x1e, 0x45, 0x98, 0xbc, 0x25, 0x98, 0xc3, 0xe7, 0xa0, 0x85, 0x09, 0xe6,
+	0x18, 0x85, 0x23, 0x96, 0x4c, 0xa7, 0xe1, 0x5c, 0xab, 0xf5, 0xa5, 0x81, 0x32, 0xbc, 0xb3, 0x5e,
+	0x18, 0x9d, 0x94, 0xb5, 0x8f, 0x9b, 0x6e, 0x33, 0x3b, 0x78, 0x23, 0x62, 0xf8, 0x14, 0x80, 0x08,
+	0xcd, 0xb6, 0xec, 0xba, 0x60, 0x77, 0xd6, 0x0b, 0xe3, 0x66, 0xd6, 0x33, 0xc7, 0x4c, 0xb7, 0x11,
+	0xa1, 0x59, 0xc6, 0xea, 0x89, 0x39, 0x39, 0x1a, 0x87, 0xbe, 0x76, 0xd4, 0x97, 0x06, 0xaa, 0x9b,
+	0xc7, 0x1b, 0x65, 0xf4, 0x23, 0xf1, 0x63, 0x4d, 0x15, 0x72, 0xd3, 0xc0, 0xbc, 0x0d, 0x3a, 0x7b,
+	0x66, 0xb9, 0x3e, 0x9b, 0x52, 0xc2, 0x7c, 0xf3, 0xb3, 0x24, 0x90, 0xd3, 0x18, 0x11, 0xf6, 0xde,
+	0x8f, 0x05, 0xf8, 0x6a, 0x43, 0x81, 0x8f, 0x40, 0x83, 0xc5, 0x93, 0x51, 0x5a, 0x4c, 0x38, 0x3a,
+	0x6c, 0xaf, 0x17, 0xc6, 0x8d, 0x74, 0xb2, 0x1c, 0x32, 0x5d, 0x95, 0xc5, 0x93, 0x9c, 0xe2, 0x31,
+	0x9e, 0x51, 0xe4, 0x3f, 0x29, 0x39, 0x64, 0xba, 0xaa, 0xc7, 0x78, 0x4a, 0xd9, 0x2d, 0xad, 0x5a,
+	0x5c, 0x9a, 0x69, 0x80, 0xfb, 0xa5, 0x63, 0xe5, 0x83, 0x7f, 0x95, 0xc0, 0x7f, 0x0e, 0x0b, 0x5e,
+	0x78, 0x98, 0xff, 0xfb, 0xfa, 0xf7, 0x6d, 0xaf, 0x5e, 0xd3, 0xf6, 0xe3, 0x82, 0xed, 0xe9, 0xf5,
+	0x50, 0x7f, 0x2d, 0x0c, 0x65, 0x48, 0x69, 0x58, 0xb6, 0x80, 0x5a, 0x71, 0x01, 0x5d, 0xd0, 0x2e,
+	0x4e, 0x9b, 0xcb, 0xf0, 0x84, 0x0a, 0x07, 0x93, 0xbf, 0xa8, 0xe8, 0x82, 0x3a, 0x8a, 0x68, 0x42,
+	0xb8, 0xd0, 0xa1, 0xb8, 0x59, 0x04, 0x5b, 0x40, 0xe6, 0x34, 0xf3, 0x4e, 0xe6, 0x74, 0xd7, 0x5d,
+	0x39, 0xec, 0x9e, 0x77, 0xd9, 0x76, 0x7f, 0xfc, 0x5d, 0x06, 0x55, 0x87, 0x05, 0xf0, 0x35, 0x00,
+	0x85, 0x87, 0x74, 0xcf, 0xda, 0x7b, 0x80, 0xd6, 0xde, 0xcd, 0xe9, 0x1d, 0x5f, 0x85, 0x6e, 0x2b,
+	0x43, 0x07, 0x34, 0x76, 0xab, 0xb9, 0x7b, 0x48, 0xc9, 0xc1, 0xde, 0x83, 0x2b, 0xc0, 0x62, 0xb9,
+	0x9d, 0x47, 0x25, 0xe5, 0x72, 0xb0, 0xac, 0xdc, 0x81, 0x6e, 0x78, 0x06, 0x60, 0xc9, 0x8d, 0x2f,
+	0x51, 0x76, 0x98, 0xd5, 0x7b, 0x78, 0x9d, 0xac, 0x6d, 0xa7, 0xa1, 0x73, 0xf1, 0x53, 0xaf, 0x5c,
+	0x2c, 0x75, 0xe9, 0x72, 0xa9, 0x4b, 0x3f, 0x96, 0xba, 0xf4, 0x69, 0xa5, 0x57, 0x2e, 0x57, 0x7a,
+	0xe5, 0xdb, 0x4a, 0xaf, 0xbc, 0xb3, 0x03, 0xcc, 0xcf, 0x92, 0xb1, 0x35, 0xa1, 0x91, 0x3d, 0xc6,
+	0x88, 0x7c, 0xc0, 0x3e, 0xc2, 0x36, 0x8e, 0x31, 0x47, 0x27, 0xcc, 0x3b, 0x3f, 0x09, 0xa8, 0x1d,
+	0x51, 0x2f, 0x09, 0x7d, 0x66, 0x8b, 0x66, 0xe3, 0xba, 0xf8, 0xf9, 0x3d, 0xf9, 0x1d, 0x00, 0x00,
+	0xff, 0xff, 0x79, 0xb9, 0xe2, 0xb0, 0x33, 0x05, 0x00, 0x00,
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConn
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion4
+
+// MsgClient is the client API for Msg service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type MsgClient interface {
+	// IssueToken defines a method for issuing a new token.
+	IssueToken(ctx context.Context, in *MsgIssueToken, opts ...grpc.CallOption) (*MsgIssueTokenResponse, error)
+	// EditToken defines a method for editing a token.
+	EditToken(ctx context.Context, in *MsgEditToken, opts ...grpc.CallOption) (*MsgEditTokenResponse, error)
+	// MintToken defines a method for minting some tokens.
+	MintToken(ctx context.Context, in *MsgMintToken, opts ...grpc.CallOption) (*MsgMintTokenResponse, error)
+	// TransferTokenOwner defines a method for minting some tokens.
+	TransferTokenOwner(ctx context.Context, in *MsgTransferTokenOwner, opts ...grpc.CallOption) (*MsgTransferTokenOwnerResponse, error)
+}
+
+type msgClient struct {
+	cc grpc1.ClientConn
+}
+
+func NewMsgClient(cc grpc1.ClientConn) MsgClient {
+	return &msgClient{cc}
+}
+
+func (c *msgClient) IssueToken(ctx context.Context, in *MsgIssueToken, opts ...grpc.CallOption) (*MsgIssueTokenResponse, error) {
+	out := new(MsgIssueTokenResponse)
+	err := c.cc.Invoke(ctx, "/irismod.token.Msg/IssueToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) EditToken(ctx context.Context, in *MsgEditToken, opts ...grpc.CallOption) (*MsgEditTokenResponse, error) {
+	out := new(MsgEditTokenResponse)
+	err := c.cc.Invoke(ctx, "/irismod.token.Msg/EditToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) MintToken(ctx context.Context, in *MsgMintToken, opts ...grpc.CallOption) (*MsgMintTokenResponse, error) {
+	out := new(MsgMintTokenResponse)
+	err := c.cc.Invoke(ctx, "/irismod.token.Msg/MintToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) TransferTokenOwner(ctx context.Context, in *MsgTransferTokenOwner, opts ...grpc.CallOption) (*MsgTransferTokenOwnerResponse, error) {
+	out := new(MsgTransferTokenOwnerResponse)
+	err := c.cc.Invoke(ctx, "/irismod.token.Msg/TransferTokenOwner", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// MsgServer is the server API for Msg service.
+type MsgServer interface {
+	// IssueToken defines a method for issuing a new token.
+	IssueToken(context.Context, *MsgIssueToken) (*MsgIssueTokenResponse, error)
+	// EditToken defines a method for editing a token.
+	EditToken(context.Context, *MsgEditToken) (*MsgEditTokenResponse, error)
+	// MintToken defines a method for minting some tokens.
+	MintToken(context.Context, *MsgMintToken) (*MsgMintTokenResponse, error)
+	// TransferTokenOwner defines a method for minting some tokens.
+	TransferTokenOwner(context.Context, *MsgTransferTokenOwner) (*MsgTransferTokenOwnerResponse, error)
+}
+
+// UnimplementedMsgServer can be embedded to have forward compatible implementations.
+type UnimplementedMsgServer struct {
+}
+
+func (*UnimplementedMsgServer) IssueToken(ctx context.Context, req *MsgIssueToken) (*MsgIssueTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IssueToken not implemented")
+}
+func (*UnimplementedMsgServer) EditToken(ctx context.Context, req *MsgEditToken) (*MsgEditTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditToken not implemented")
+}
+func (*UnimplementedMsgServer) MintToken(ctx context.Context, req *MsgMintToken) (*MsgMintTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MintToken not implemented")
+}
+func (*UnimplementedMsgServer) TransferTokenOwner(ctx context.Context, req *MsgTransferTokenOwner) (*MsgTransferTokenOwnerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TransferTokenOwner not implemented")
+}
+
+func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
+	s.RegisterService(&_Msg_serviceDesc, srv)
+}
+
+func _Msg_IssueToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgIssueToken)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).IssueToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/irismod.token.Msg/IssueToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).IssueToken(ctx, req.(*MsgIssueToken))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_EditToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgEditToken)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).EditToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/irismod.token.Msg/EditToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).EditToken(ctx, req.(*MsgEditToken))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_MintToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgMintToken)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).MintToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/irismod.token.Msg/MintToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).MintToken(ctx, req.(*MsgMintToken))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_TransferTokenOwner_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgTransferTokenOwner)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).TransferTokenOwner(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/irismod.token.Msg/TransferTokenOwner",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).TransferTokenOwner(ctx, req.(*MsgTransferTokenOwner))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Msg_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "irismod.token.Msg",
+	HandlerType: (*MsgServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "IssueToken",
+			Handler:    _Msg_IssueToken_Handler,
+		},
+		{
+			MethodName: "EditToken",
+			Handler:    _Msg_EditToken_Handler,
+		},
+		{
+			MethodName: "MintToken",
+			Handler:    _Msg_MintToken_Handler,
+		},
+		{
+			MethodName: "TransferTokenOwner",
+			Handler:    _Msg_TransferTokenOwner_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "token/tx.proto",
 }
 
 func (m *MsgIssueToken) Marshal() (dAtA []byte, err error) {
@@ -311,6 +670,29 @@ func (m *MsgIssueToken) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgIssueTokenResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgIssueTokenResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgIssueTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func (m *MsgTransferTokenOwner) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -352,6 +734,29 @@ func (m *MsgTransferTokenOwner) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0xa
 	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgTransferTokenOwnerResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgTransferTokenOwnerResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgTransferTokenOwnerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
 	return len(dAtA) - i, nil
 }
 
@@ -411,6 +816,29 @@ func (m *MsgEditToken) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgEditTokenResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgEditTokenResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgEditTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func (m *MsgMintToken) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -457,6 +885,29 @@ func (m *MsgMintToken) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0xa
 	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgMintTokenResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgMintTokenResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgMintTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
 	return len(dAtA) - i, nil
 }
 
@@ -508,6 +959,15 @@ func (m *MsgIssueToken) Size() (n int) {
 	return n
 }
 
+func (m *MsgIssueTokenResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
 func (m *MsgTransferTokenOwner) Size() (n int) {
 	if m == nil {
 		return 0
@@ -526,6 +986,15 @@ func (m *MsgTransferTokenOwner) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	return n
+}
+
+func (m *MsgTransferTokenOwnerResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	return n
 }
 
@@ -557,6 +1026,15 @@ func (m *MsgEditToken) Size() (n int) {
 	return n
 }
 
+func (m *MsgEditTokenResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
 func (m *MsgMintToken) Size() (n int) {
 	if m == nil {
 		return 0
@@ -578,6 +1056,15 @@ func (m *MsgMintToken) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	return n
+}
+
+func (m *MsgMintTokenResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	return n
 }
 
@@ -827,10 +1314,57 @@ func (m *MsgIssueToken) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthTx
 			}
-			if (iNdEx + skippy) < 0 {
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgIssueTokenResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgIssueTokenResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgIssueTokenResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthTx
 			}
 			if (iNdEx + skippy) > l {
@@ -976,10 +1510,57 @@ func (m *MsgTransferTokenOwner) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthTx
 			}
-			if (iNdEx + skippy) < 0 {
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgTransferTokenOwnerResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgTransferTokenOwnerResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgTransferTokenOwnerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthTx
 			}
 			if (iNdEx + skippy) > l {
@@ -1176,10 +1757,57 @@ func (m *MsgEditToken) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthTx
 			}
-			if (iNdEx + skippy) < 0 {
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgEditTokenResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgEditTokenResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgEditTokenResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthTx
 			}
 			if (iNdEx + skippy) > l {
@@ -1344,10 +1972,57 @@ func (m *MsgMintToken) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthTx
 			}
-			if (iNdEx + skippy) < 0 {
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgMintTokenResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgMintTokenResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgMintTokenResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthTx
 			}
 			if (iNdEx + skippy) > l {

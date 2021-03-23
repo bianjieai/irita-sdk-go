@@ -1,4 +1,4 @@
-package admin
+package perm
 
 import (
 	"context"
@@ -8,27 +8,27 @@ import (
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
-type adminClient struct {
+type permClient struct {
 	sdk.BaseClient
 	codec.Marshaler
 }
 
 func NewClient(bc sdk.BaseClient, cdc codec.Marshaler) Client {
-	return adminClient{
+	return permClient{
 		BaseClient: bc,
 		Marshaler:  cdc,
 	}
 }
 
-func (a adminClient) Name() string {
+func (a permClient) Name() string {
 	return ModuleName
 }
 
-func (a adminClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
+func (a permClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
 	RegisterInterfaces(registry)
 }
 
-func (a adminClient) AddRoles(address string, roles []Role, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
+func (a permClient) AssignRoles(address string, roles []Role, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
 	sender, err := a.QueryAddress(baseTx.From, baseTx.Password)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
@@ -39,7 +39,7 @@ func (a adminClient) AddRoles(address string, roles []Role, baseTx sdk.BaseTx) (
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	msg := &MsgAddRoles{
+	msg := &MsgAssignRoles{
 		Address:  acc.String(),
 		Roles:    roles,
 		Operator: sender.String(),
@@ -47,7 +47,7 @@ func (a adminClient) AddRoles(address string, roles []Role, baseTx sdk.BaseTx) (
 	return a.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
-func (a adminClient) RemoveRoles(address string, roles []Role, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
+func (a permClient) UnassignRoles(address string, roles []Role, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
 	sender, err := a.QueryAddress(baseTx.From, baseTx.Password)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
@@ -58,7 +58,7 @@ func (a adminClient) RemoveRoles(address string, roles []Role, baseTx sdk.BaseTx
 		return sdk.ResultTx{}, sdk.Wrap(err)
 	}
 
-	msg := &MsgRemoveRoles{
+	msg := &MsgUnassignRoles{
 		Address:  acc.String(),
 		Roles:    roles,
 		Operator: sender.String(),
@@ -66,7 +66,7 @@ func (a adminClient) RemoveRoles(address string, roles []Role, baseTx sdk.BaseTx
 	return a.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
-func (a adminClient) BlockAccount(address string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
+func (a permClient) BlockAccount(address string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
 	sender, err := a.QueryAddress(baseTx.From, baseTx.Password)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
@@ -84,7 +84,7 @@ func (a adminClient) BlockAccount(address string, baseTx sdk.BaseTx) (sdk.Result
 	return a.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
-func (a adminClient) UnblockAccount(address string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
+func (a permClient) UnblockAccount(address string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
 	sender, err := a.QueryAddress(baseTx.From, baseTx.Password)
 	if err != nil {
 		return sdk.ResultTx{}, sdk.Wrap(err)
@@ -102,7 +102,7 @@ func (a adminClient) UnblockAccount(address string, baseTx sdk.BaseTx) (sdk.Resu
 	return a.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
 
-func (a adminClient) QueryRoles(address string) ([]Role, sdk.Error) {
+func (a permClient) QueryRoles(address string) ([]Role, sdk.Error) {
 	conn, err := a.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {
@@ -125,7 +125,7 @@ func (a adminClient) QueryRoles(address string) ([]Role, sdk.Error) {
 	return resp.Roles, nil
 }
 
-func (a adminClient) QueryBlacklist(page, limit int) ([]string, sdk.Error) {
+func (a permClient) QueryBlacklist(page, limit int) ([]string, sdk.Error) {
 	conn, err := a.GenConn()
 	defer func() { _ = conn.Close() }()
 	if err != nil {

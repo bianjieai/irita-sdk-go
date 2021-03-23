@@ -1,22 +1,24 @@
 syntax = "proto3";
-package iritamod.admin;
+package iritamod.perm;
 
-import "admin/admin.proto";
+import "perm/perm.proto";
 
-option go_package = "github.com/bianjieai/irita-sdk-go/modules/admin";
+option go_package = "github.com/bianjieai/irita-sdk-go/modules/perm";
 
-// Query defines the gRPC querier service for record module
+// Query defines the gRPC querier service for perm module
 service Query {
     // Roles queries the roles of a given address
-    rpc Roles(QueryRolesRequest) returns (QueryRolesResponse) {}
+    rpc Roles (QueryRolesRequest) returns (QueryRolesResponse) {
+    }
 
     // Blacklist queries the black list
-    rpc Blacklist(QueryBlacklistRequest) returns (QueryBlacklistResponse) {}
+    rpc Blacklist (QueryBlacklistRequest) returns (QueryBlacklistResponse) {
+    }
 }
 
 // QueryRolesRequest is request type for the Query/Roles RPC method
 message QueryRolesRequest {
-    string address = 1 ;
+    string address = 1;
 }
 
 // QueryRolesResponse is response type for the Query/Roles RPC method
@@ -25,7 +27,8 @@ message QueryRolesResponse {
 }
 
 // QueryBlacklistRequest is request type for the Query/Blacklist RPC method
-message QueryBlacklistRequest {}
+message QueryBlacklistRequest {
+}
 
 // QueryBlacklistResponse is response type for the Query/Blacklist RPC method
 message QueryBlacklistResponse {

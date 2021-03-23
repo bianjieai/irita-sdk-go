@@ -69,7 +69,6 @@ message TxBody {
   // those messages define the number and order of elements in AuthInfo's
   // signer_infos and Tx's signatures. Each required signer address is added to
   // the list only the first time it occurs.
-  //
   // By convention, the first required signer (usually from the first message)
   // is referred to as the primary signer and pays the fee for the whole
   // transaction.
@@ -164,7 +163,7 @@ message ModeInfo {
 message Fee {
   // amount is the amount of coins to be paid as a fee
   repeated cosmos.base.v1beta1.Coin amount = 1
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/bianjieai/irita-sdk-go/types.Coins"];
+  [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/bianjieai/irita-sdk-go/types.Coins"];
 
   // gas_limit is the maximum gas that can be used in transaction processing
   // before an out of gas error occurs

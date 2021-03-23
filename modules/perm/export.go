@@ -1,4 +1,4 @@
-package admin
+package perm
 
 import (
 	sdk "github.com/bianjieai/irita-sdk-go/types"
@@ -8,8 +8,8 @@ import (
 type Client interface {
 	sdk.Module
 
-	AddRoles(address string, roles []Role, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
-	RemoveRoles(address string, roles []Role, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
+	AssignRoles(address string, roles []Role, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
+	UnassignRoles(address string, roles []Role, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 	BlockAccount(address string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 	UnblockAccount(address string, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error)
 

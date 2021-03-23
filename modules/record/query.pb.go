@@ -30,7 +30,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // QueryRecordRequest is the request type for the Query/Record RPC method
 type QueryRecordRequest struct {
-	RecordId []byte `protobuf:"bytes,1,opt,name=record_id,json=recordId,proto3" json:"record_id,omitempty"`
+	RecordId string `protobuf:"bytes,1,opt,name=record_id,json=recordId,proto3" json:"record_id,omitempty"`
 }
 
 func (m *QueryRecordRequest) Reset()         { *m = QueryRecordRequest{} }
@@ -66,11 +66,11 @@ func (m *QueryRecordRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryRecordRequest proto.InternalMessageInfo
 
-func (m *QueryRecordRequest) GetRecordId() []byte {
+func (m *QueryRecordRequest) GetRecordId() string {
 	if m != nil {
 		return m.RecordId
 	}
-	return nil
+	return ""
 }
 
 // QueryRecordResponse is the response type for the Query/Record RPC method
@@ -133,7 +133,7 @@ var fileDescriptor_45fc26642889837f = []byte{
 	0x88, 0x22, 0x29, 0x99, 0xf4, 0xfc, 0xfc, 0xf4, 0x9c, 0x54, 0xfd, 0xc4, 0x82, 0x4c, 0xfd, 0xc4,
 	0xbc, 0xbc, 0xfc, 0x92, 0xc4, 0x92, 0xcc, 0xfc, 0xbc, 0x62, 0x88, 0xac, 0x92, 0x21, 0x97, 0x50,
 	0x20, 0xc8, 0xc4, 0x20, 0xb0, 0x96, 0xa0, 0xd4, 0xc2, 0xd2, 0xd4, 0xe2, 0x12, 0x21, 0x69, 0x2e,
-	0x4e, 0x88, 0x19, 0xf1, 0x99, 0x29, 0x12, 0x8c, 0x0a, 0x8c, 0x1a, 0x3c, 0x41, 0x1c, 0x10, 0x01,
+	0x4e, 0x88, 0x19, 0xf1, 0x99, 0x29, 0x12, 0x8c, 0x0a, 0x8c, 0x1a, 0x9c, 0x41, 0x1c, 0x10, 0x01,
 	0xcf, 0x14, 0x25, 0x57, 0x2e, 0x61, 0x14, 0x2d, 0xc5, 0x05, 0xf9, 0x79, 0xc5, 0xa9, 0x42, 0x7a,
 	0x5c, 0x6c, 0x10, 0x25, 0x60, 0x0d, 0xdc, 0x46, 0x62, 0x7a, 0xa8, 0xae, 0xd3, 0x83, 0xaa, 0x87,
 	0xaa, 0x32, 0x6a, 0x67, 0xe4, 0x62, 0x05, 0x9b, 0x23, 0x54, 0xc7, 0xc5, 0x06, 0x91, 0x13, 0x52,
@@ -144,7 +144,7 @@ var fileDescriptor_45fc26642889837f = []byte{
 	0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0x49, 0x99, 0x89, 0x79, 0x59,
 	0x99, 0xa9, 0x89, 0x99, 0x20, 0x23, 0x4b, 0x12, 0x75, 0x8b, 0x53, 0xb2, 0x75, 0xd3, 0xf3, 0xf5,
 	0x73, 0xf3, 0x53, 0x4a, 0x73, 0x52, 0x8b, 0xa1, 0x06, 0x27, 0xb1, 0x81, 0x83, 0xd5, 0x18, 0x10,
-	0x00, 0x00, 0xff, 0xff, 0x02, 0x0b, 0x4e, 0x77, 0xaf, 0x01, 0x00, 0x00,
+	0x00, 0x00, 0xff, 0xff, 0xce, 0xb4, 0x3f, 0x8f, 0xaf, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -370,7 +370,7 @@ func (m *QueryRecordRequest) Unmarshal(dAtA []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field RecordId", wireType)
 			}
-			var byteLen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -380,25 +380,23 @@ func (m *QueryRecordRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if byteLen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthQuery
 			}
-			postIndex := iNdEx + byteLen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.RecordId = append(m.RecordId[:0], dAtA[iNdEx:postIndex]...)
-			if m.RecordId == nil {
-				m.RecordId = []byte{}
-			}
+			m.RecordId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -406,10 +404,7 @@ func (m *QueryRecordRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {
@@ -495,10 +490,7 @@ func (m *QueryRecordResponse) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if (iNdEx + skippy) > l {

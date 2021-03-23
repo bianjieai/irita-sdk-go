@@ -16,7 +16,7 @@ service Query {
 
 // QueryIdentityRequest is request type for the Query/Identity RPC method
 message QueryIdentityRequest {
-    string id = 1 ;
+    string id = 1;
 }
 
 // QueryIdentityResponse is response type for the Query/Identity RPC method

@@ -15,7 +15,7 @@ var serviceName = generateServiceName()
 
 func (s *IntegrationTestSuite) SetupService(ch chan<- int) {
 	schemas := `{"input":{"type":"object"},"output":{"type":"object"},"error":{"type":"object"}}`
-	pricing := `{"price":"1point"}`
+	pricing := `{"price":"1upoint"}`
 	output := `{"header":{},"body":{"last":"100"}}`
 	testResult := `{"code":200,"message":""}`
 
@@ -73,7 +73,7 @@ func (s IntegrationTestSuite) TestOracle() {
 	}
 	input := `{"header":{},"body":{"pair":"iris-usdt"}}`
 	feedName := generateFeedName(serviceName)
-	serviceFeeCap, _ := sdk.ParseCoins("1000point")
+	serviceFeeCap, _ := sdk.ParseCoins("1000upoint")
 
 	sender := s.rootAccount.Address
 	createReq := oracle.CreateFeedRequest{

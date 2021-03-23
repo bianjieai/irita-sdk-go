@@ -69,19 +69,19 @@ func (s IntegrationTestSuite) TestToken() {
 	require.Equal(s.T(), t1.Mintable, editTokenReq.Mintable)
 	require.Equal(s.T(), receipt, t1.Owner)
 
-	tokens, er := s.Token.QueryTokens("", nil)
+	tokens, er := s.Token.QueryTokens(t1.Owner, nil)
 	require.NoError(s.T(), er)
 	require.Contains(s.T(), tokens, t1)
 
 	feeToken, er := s.Token.QueryFees(issueTokenReq.Symbol)
 	require.NoError(s.T(), er)
 	require.Equal(s.T(), true, feeToken.Exist)
-	require.Equal(s.T(), "60000point", feeToken.IssueFee.String())
-	require.Equal(s.T(), "6000point", feeToken.MintFee.String())
+	require.Equal(s.T(), "60000000000uirita", feeToken.IssueFee.String())
+	require.Equal(s.T(), "6000000000uirita", feeToken.MintFee.String())
 
 	res, er := s.Token.QueryParams()
 	require.NoError(s.T(), er)
-	require.Equal(s.T(), res.MintTokenFeeRatio, "0.100000000000000000")
-	require.Equal(s.T(), res.TokenTaxRate, "0.400000000000000000")
-	require.Equal(s.T(), res.IssueTokenBaseFee, "60000point")
+	require.Equal(s.T(), "0.100000000000000000", res.MintTokenFeeRatio)
+	require.Equal(s.T(), "0.400000000000000000", res.TokenTaxRate)
+	require.Equal(s.T(), "60000irita", res.IssueTokenBaseFee)
 }
