@@ -10,7 +10,7 @@ import (
 
 const (
 	// ModuleName is the name of the perm module
-	ModuleName = "perm"
+	ModuleName            = "perm"
 	TypeMsgAssignRoles    = "assign_roles"    // type for MsgAssignRoles
 	TypeMsgUnassignRoles  = "unassign_roles"  // type for MsgUnassignRoles
 	TypeMsgBlockAccount   = "block_account"   // type for MsgBlockAccount
