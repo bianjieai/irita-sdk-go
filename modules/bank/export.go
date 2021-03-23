@@ -4,7 +4,7 @@ import (
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
-// Client export a group api for Admin module
+// Client export a group api for Perm module
 type Client interface {
 	sdk.Module
 

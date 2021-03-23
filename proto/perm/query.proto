@@ -1,11 +1,11 @@
 syntax = "proto3";
-package iritamod.admin;
+package iritamod.perm;
 
-import "admin/admin.proto";
+import "perm/perm.proto";
 
-option go_package = "github.com/bianjieai/irita-sdk-go/modules/admin";
+option go_package = "github.com/bianjieai/irita-sdk-go/modules/perm";
 
-// Query defines the gRPC querier service for record module
+// Query defines the gRPC querier service for perm module
 service Query {
     // Roles queries the roles of a given address
     rpc Roles (QueryRolesRequest) returns (QueryRolesResponse) {

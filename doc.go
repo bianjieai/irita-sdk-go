@@ -1,7 +1,7 @@
 // Package sdk is the entrance of the entire SDK function. SDKConfig is used to configure SDK parameters.
 //
 // The SDK mainly provides the functions of the following modules, including:
-// admin, bank, keys, nft, params, record,  service, token, validator
+// perm, bank, keys, nft, params, record,  service, token, validator
 //
 // As a quick start:
 //

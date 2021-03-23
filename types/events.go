@@ -128,7 +128,7 @@ var (
 
 	EventTypeMessage         = "message"
 	EventTypeCreateContext   = "create_context"
-	EventTypeResponseService = "response_service"
+	EventTypeResponseService = "respond_service"
 
 	AttributeKeyAction = "action"
 	AttributeKeyModule = "module"

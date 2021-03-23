@@ -1,4 +1,4 @@
-package admin
+package perm
 
 import (
 	"github.com/bianjieai/irita-sdk-go/codec"
@@ -20,8 +20,8 @@ func init() {
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations(
 		(*sdk.Msg)(nil),
-		&MsgAddRoles{},
-		&MsgRemoveRoles{},
+		&MsgAssignRoles{},
+		&MsgUnassignRoles{},
 		&MsgBlockAccount{},
 		&MsgUnblockAccount{},
 	)
