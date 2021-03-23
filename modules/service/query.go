@@ -33,7 +33,6 @@ func (s serviceClient) queryRequestContextByTxQuery(reqCtxID string) (RequestCon
 				Input:              msg.Input,
 				ServiceFeeCap:      msg.ServiceFeeCap,
 				Timeout:            msg.Timeout,
-				SuperMode:          msg.SuperMode,
 				Repeated:           msg.Repeated,
 				RepeatedFrequency:  msg.RepeatedFrequency,
 				RepeatedTotal:      msg.RepeatedTotal,

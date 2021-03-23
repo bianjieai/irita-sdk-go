@@ -1,5 +1,5 @@
 {
-  "genesis_time": "2021-03-09T03:38:06.055181Z",
+  "genesis_time": "2021-03-16T10:16:34.875024Z",
   "chain_id": "test",
   "initial_height": "1",
   "consensus_params": {
@@ -34,7 +34,7 @@
       "accounts": [
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "iaa13wk3kksandam9l2fzc4vxgu02tf5httvdu7qkg",
+          "address": "iaa1r49m366kaexmvrlppqqeyr8ykqq248g0d4qra4",
           "pub_key": null,
           "account_number": "0",
           "sequence": "0"
@@ -48,7 +48,7 @@
       },
       "balances": [
         {
-          "address": "iaa13wk3kksandam9l2fzc4vxgu02tf5httvdu7qkg",
+          "address": "iaa1r49m366kaexmvrlppqqeyr8ykqq248g0d4qra4",
           "coins": [
             {
               "denom": "uirita",
@@ -81,13 +81,13 @@
               {
                 "@type": "/iritamod.node.MsgCreateValidator",
                 "name": "node0",
-                "certificate": "-----BEGIN CERTIFICATE-----\nMIIBrDCCAVICFDba6IOmY6QwbPVxySF/c2Ifonm9MAoGCCqBHM9VAYN1MFgxCzAJ\nBgNVBAYTAkNOMQ0wCwYDVQQIDARyb290MQ0wCwYDVQQHDARyb290MQ0wCwYDVQQK\nDARyb290MQ0wCwYDVQQLDARyb290MQ0wCwYDVQQDDARyb290MB4XDTIxMDMwOTAz\nMzc1N1oXDTIyMDMwOTAzMzc1N1owWTELMAkGA1UEBhMCQ04xDTALBgNVBAgMBHRl\nc3QxDTALBgNVBAcMBHRlc3QxDTALBgNVBAoMBHRlc3QxDTALBgNVBAsMBHRlc3Qx\nDjAMBgNVBAMMBW5vZGUwMFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEjmm3Ep6V\n7v9wpYZBpyExoQMwC7VFM1pJLHXzZpwMf1WBirMftxlqZ9bCyp2/Yh6rUpq+MQtY\ndoaeX/gJn0RKnzAKBggqgRzPVQGDdQNIADBFAiEAuEISrfwhIIK6gX0Q35zTisiB\nyhZXxbRTQLPY9hpopqkCIHfnGCrmT8VHMM5dtsuXctgmsD8mA+xLCTxQZgJDJB3m\n-----END CERTIFICATE-----\n",
+                "certificate": "-----BEGIN CERTIFICATE-----\nMIIBrTCCAVICFCQaNZ/jLqFCsTqUPhC744rBiFtmMAoGCCqBHM9VAYN1MFgxCzAJ\nBgNVBAYTAkNOMQ0wCwYDVQQIDARyb290MQ0wCwYDVQQHDARyb290MQ0wCwYDVQQK\nDARyb290MQ0wCwYDVQQLDARyb290MQ0wCwYDVQQDDARyb290MB4XDTIxMDMxNjEw\nMTYyOVoXDTIyMDMxNjEwMTYyOVowWTELMAkGA1UEBhMCQ04xDTALBgNVBAgMBHRl\nc3QxDTALBgNVBAcMBHRlc3QxDTALBgNVBAoMBHRlc3QxDTALBgNVBAsMBHRlc3Qx\nDjAMBgNVBAMMBW5vZGUwMFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAE4UBCkrZd\nzCWIkRr91JnHnHFDAXTwsIoqG1KHznzJRYyDeVt0FLwAQm4Hl/QeCrm787W8P0Kz\n7yBnYJIPsotFkTAKBggqgRzPVQGDdQNJADBGAiEA91/JWtmnQnUxPUJShqdJDx4y\nHuT1SSjjIoys0eAsfQICIQD3aGXzwwubPGNzFet2iHwcnsO33pGIx3yc8aaiuDqa\n3A==\n-----END CERTIFICATE-----\n",
                 "power": "100",
                 "description": "node0",
-                "operator": "iaa13wk3kksandam9l2fzc4vxgu02tf5httvdu7qkg"
+                "operator": "iaa1r49m366kaexmvrlppqqeyr8ykqq248g0d4qra4"
               }
             ],
-            "memo": "e3d7019e1aebc94c9fa786e2a954627d30c376be@192.168.0.1:26656",
+            "memo": "98bf569f6f1560a6f73bed5fa00c0aa1d7fc762b@192.168.0.1:26656",
             "timeout_height": "0",
             "extension_options": [],
             "non_critical_extension_options": []
@@ -97,7 +97,7 @@
               {
                 "public_key": {
                   "@type": "/cosmos.crypto.sm2.PubKey",
-                  "key": "A1ykLwT3plbPr9koaPndlnwPX78xZaBgeaQ6i4c9mflI"
+                  "key": "AwsNcPHl3GQiU0l2F+cbOP8eHftvBjmd0+uxRr0IMvmt"
                 },
                 "mode_info": {
                   "single": {
@@ -115,7 +115,7 @@
             }
           },
           "signatures": [
-            "VKtYrnqjqY+WyWqP7ZEEEgc2gLoeTVkEgzFuW01zpd93CpH1lCGrW/bv111outY4h7qY13M+1w0GNsd7LDPpxA=="
+            "KjMhBp8o9kbd4APLa/+hqtSmWKCoDhfZrX+9oOdrORQAiqCc5AvjIywVXytu5Gcgbc4Uzn1/dYTiPZxS+GHGXw=="
           ]
         }
       ]
@@ -127,14 +127,14 @@
       "collections": []
     },
     "node": {
-      "root_cert": "-----BEGIN CERTIFICATE-----\nMIICBTCCAaugAwIBAgIUJ205gZynzohbybWHGSE1/NU2xb0wCgYIKoEcz1UBg3Uw\nWDELMAkGA1UEBhMCQ04xDTALBgNVBAgMBHJvb3QxDTALBgNVBAcMBHJvb3QxDTAL\nBgNVBAoMBHJvb3QxDTALBgNVBAsMBHJvb3QxDTALBgNVBAMMBHJvb3QwHhcNMjEw\nMzA5MDMzNzU3WhcNMjIwMzA5MDMzNzU3WjBYMQswCQYDVQQGEwJDTjENMAsGA1UE\nCAwEcm9vdDENMAsGA1UEBwwEcm9vdDENMAsGA1UECgwEcm9vdDENMAsGA1UECwwE\ncm9vdDENMAsGA1UEAwwEcm9vdDBZMBMGByqGSM49AgEGCCqBHM9VAYItA0IABBGK\n5JOy1LQ0FJAUqMDCXfA2+SuDm7hnjQjUv+ArghE3ASW1ec1UM9xXg+YZgtMXyyDd\nRGdO8mJm8mz/5IicL9GjUzBRMB0GA1UdDgQWBBRVPz3CGeW2v+275F8Tfn/bG11A\njDAfBgNVHSMEGDAWgBRVPz3CGeW2v+275F8Tfn/bG11AjDAPBgNVHRMBAf8EBTAD\nAQH/MAoGCCqBHM9VAYN1A0gAMEUCIQD600dgz3z4HjsPwcJXqW5ju+o+qalawJFC\nQR3E6yDGJQIgGvYUVD68/feX7v7pGHnsqTlzJDXDxyh+JMU3YD6/CrQ=\n-----END CERTIFICATE-----\n",
+      "root_cert": "-----BEGIN CERTIFICATE-----\nMIICBDCCAaugAwIBAgIUOXW65eK84IOoyuQ3EP4Ukq+XevAwCgYIKoEcz1UBg3Uw\nWDELMAkGA1UEBhMCQ04xDTALBgNVBAgMBHJvb3QxDTALBgNVBAcMBHJvb3QxDTAL\nBgNVBAoMBHJvb3QxDTALBgNVBAsMBHJvb3QxDTALBgNVBAMMBHJvb3QwHhcNMjEw\nMzE2MTAxNjI5WhcNMjIwMzE2MTAxNjI5WjBYMQswCQYDVQQGEwJDTjENMAsGA1UE\nCAwEcm9vdDENMAsGA1UEBwwEcm9vdDENMAsGA1UECgwEcm9vdDENMAsGA1UECwwE\ncm9vdDENMAsGA1UEAwwEcm9vdDBZMBMGByqGSM49AgEGCCqBHM9VAYItA0IABJDC\nShvKTgOt8XXHgXVyyp/iEUA/VXQO85Yc6x9jsNfBEq425ibBEFLIMe/6F2m5d7bu\n06jz1DTqNBLUCw8h2ROjUzBRMB0GA1UdDgQWBBS1B/RJhawZ0qm6xv8ZAo2inUSe\nJjAfBgNVHSMEGDAWgBS1B/RJhawZ0qm6xv8ZAo2inUSeJjAPBgNVHRMBAf8EBTAD\nAQH/MAoGCCqBHM9VAYN1A0cAMEQCIEILyjp7cOHZwuqDp3yhXeEu3p81b/q59v6q\nD0qo30+nAiBu4gilD42Ny2SjJB5r1zjLJT9LZ/vIlcyptCI5IfDQzw==\n-----END CERTIFICATE-----\n",
       "params": {
         "historical_entries": 100
       },
       "validators": [],
       "nodes": [
         {
-          "id": "e3d7019e1aebc94c9fa786e2a954627d30c376be",
+          "id": "98bf569f6f1560a6f73bed5fa00c0aa1d7fc762b",
           "name": "node0",
           "certificate": ""
         }
@@ -155,7 +155,7 @@
     "perm": {
       "role_accounts": [
         {
-          "address": "iaa13wk3kksandam9l2fzc4vxgu02tf5httvdu7qkg",
+          "address": "iaa1r49m366kaexmvrlppqqeyr8ykqq248g0d4qra4",
           "roles": [
             "ROOT_ADMIN"
           ]
@@ -231,7 +231,7 @@
           "initial_supply": "1000000000",
           "max_supply": "18446744073709551615",
           "mintable": true,
-          "owner": "iaa13wk3kksandam9l2fzc4vxgu02tf5httvdu7qkg"
+          "owner": "iaa1r49m366kaexmvrlppqqeyr8ykqq248g0d4qra4"
         }
       ],
       "burned_coins": []

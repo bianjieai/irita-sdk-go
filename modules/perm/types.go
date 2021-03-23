@@ -1,4 +1,4 @@
-package admin
+package perm
 
 import (
 	"encoding/json"
@@ -9,26 +9,30 @@ import (
 )
 
 const (
-	// ModuleName is the name of the admin module
-	ModuleName = "admin"
+	// ModuleName is the name of the perm module
+	ModuleName            = "perm"
+	TypeMsgAssignRoles    = "assign_roles"    // type for MsgAssignRoles
+	TypeMsgUnassignRoles  = "unassign_roles"  // type for MsgUnassignRoles
+	TypeMsgBlockAccount   = "block_account"   // type for MsgBlockAccount
+	TypeMsgUnblockAccount = "unblock_account" // type for MsgUnblockAccount
 )
 
 var (
-	_ sdk.Msg = &MsgAddRoles{}
-	_ sdk.Msg = &MsgRemoveRoles{}
+	_ sdk.Msg = &MsgAssignRoles{}
+	_ sdk.Msg = &MsgUnassignRoles{}
 	_ sdk.Msg = &MsgBlockAccount{}
 	_ sdk.Msg = &MsgUnblockAccount{}
 )
 
-func (m MsgAddRoles) Route() string {
+func (m MsgAssignRoles) Route() string {
 	return ModuleName
 }
 
-func (m MsgAddRoles) Type() string {
-	return "add_roles"
+func (m MsgAssignRoles) Type() string {
+	return TypeMsgAssignRoles
 }
 
-func (m MsgAddRoles) ValidateBasic() error {
+func (m MsgAssignRoles) ValidateBasic() error {
 	if len(m.Address) == 0 {
 		return errors.New("address missing")
 	}
@@ -41,24 +45,24 @@ func (m MsgAddRoles) ValidateBasic() error {
 	return nil
 }
 
-func (m MsgAddRoles) GetSignBytes() []byte {
+func (m MsgAssignRoles) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&m)
 	return sdk.MustSortJSON(bz)
 }
 
-func (m MsgAddRoles) GetSigners() []sdk.AccAddress {
+func (m MsgAssignRoles) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Operator)}
 }
 
-func (m MsgRemoveRoles) Route() string {
+func (m MsgUnassignRoles) Route() string {
 	return ModuleName
 }
 
-func (m MsgRemoveRoles) Type() string {
-	return "remove_roles"
+func (m MsgUnassignRoles) Type() string {
+	return TypeMsgUnassignRoles
 }
 
-func (m MsgRemoveRoles) ValidateBasic() error {
+func (m MsgUnassignRoles) ValidateBasic() error {
 	if len(m.Address) == 0 {
 		return errors.New("address missing")
 	}
@@ -71,12 +75,12 @@ func (m MsgRemoveRoles) ValidateBasic() error {
 	return nil
 }
 
-func (m MsgRemoveRoles) GetSignBytes() []byte {
+func (m MsgUnassignRoles) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&m)
 	return sdk.MustSortJSON(bz)
 }
 
-func (m MsgRemoveRoles) GetSigners() []sdk.AccAddress {
+func (m MsgUnassignRoles) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{sdk.MustAccAddressFromBech32(m.Operator)}
 }
 
@@ -85,7 +89,7 @@ func (m MsgBlockAccount) Route() string {
 }
 
 func (m MsgBlockAccount) Type() string {
-	return "block_account"
+	return TypeMsgBlockAccount
 }
 
 func (m MsgBlockAccount) ValidateBasic() error {
@@ -112,7 +116,7 @@ func (m MsgUnblockAccount) Route() string {
 }
 
 func (m MsgUnblockAccount) Type() string {
-	return "unblock_account"
+	return TypeMsgUnblockAccount
 }
 
 func (m MsgUnblockAccount) ValidateBasic() error {

@@ -11,13 +11,13 @@ import (
 	cdctypes "github.com/bianjieai/irita-sdk-go/codec/types"
 	cryptocodec "github.com/bianjieai/irita-sdk-go/crypto/codec"
 	"github.com/bianjieai/irita-sdk-go/modules"
-	"github.com/bianjieai/irita-sdk-go/modules/admin"
 	"github.com/bianjieai/irita-sdk-go/modules/bank"
 	"github.com/bianjieai/irita-sdk-go/modules/identity"
 	"github.com/bianjieai/irita-sdk-go/modules/keys"
 	"github.com/bianjieai/irita-sdk-go/modules/nft"
 	"github.com/bianjieai/irita-sdk-go/modules/node"
 	"github.com/bianjieai/irita-sdk-go/modules/params"
+	"github.com/bianjieai/irita-sdk-go/modules/perm"
 	"github.com/bianjieai/irita-sdk-go/modules/record"
 	"github.com/bianjieai/irita-sdk-go/modules/service"
 	"github.com/bianjieai/irita-sdk-go/modules/token"
@@ -27,7 +27,7 @@ import (
 )
 
 var registers = []codec.RegisterInterfaces{
-	admin.RegisterInterfaces,
+	perm.RegisterInterfaces,
 	bank.RegisterInterfaces,
 	identity.RegisterInterfaces,
 	token.RegisterInterfaces,
@@ -54,7 +54,7 @@ type IRITAClient struct {
 	NFT      nft.Client
 	Service  service.Client
 	Key      keys.Client
-	Admin    admin.Client
+	Perm     perm.Client
 	Identity identity.Client
 	Node     node.Client
 	Params   params.Client
@@ -78,7 +78,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 	//create a instance of baseClient
 	baseClient := modules.NewBaseClient(cfg, encodingConfig, nil)
 
-	adminClient := admin.NewClient(baseClient, encodingConfig.Marshaler)
+	permClient := perm.NewClient(baseClient, encodingConfig.Marshaler)
 	bankClient := bank.NewClient(baseClient, encodingConfig.Marshaler)
 	idClient := identity.NewClient(baseClient, encodingConfig.Marshaler)
 	tokenClient := token.NewClient(baseClient, encodingConfig.Marshaler)
@@ -100,7 +100,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 		Record:         recordClient,
 		NFT:            nftClient,
 		Service:        serviceClient,
-		Admin:          adminClient,
+		Perm:           permClient,
 		Identity:       idClient,
 		Node:           nodeClient,
 		Oracle:         oracleClient,
@@ -111,7 +111,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 	}
 
 	client.RegisterModule(
-		adminClient,
+		permClient,
 		bankClient,
 		idClient,
 		tokenClient,
