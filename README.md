@@ -14,8 +14,10 @@ IRITA GO SDK makes a simple package of API provided by IRITA Chain, which provid
 require (
     github.com/bianjieai/irita-sdk-go latest
 )
+replace github.com/tendermint/tendermint => github.com/bianjieai/tendermint version
 ```
 
+**NOTE**: Please make sure you use bianjieai/tendermint instead of tendermint/tendermint.
 ## Usage
 
 ### Init Client
