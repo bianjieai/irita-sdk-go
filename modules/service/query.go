@@ -95,7 +95,6 @@ func (s serviceClient) queryRequestByTxQuery(requestID string) (Request, error) 
 						Consumer:                   reqCtx.Consumer,
 						Input:                      reqCtx.Input,
 						ServiceFee:                 compactRequest.ServiceFee,
-						SuperMode:                  reqCtx.SuperMode,
 						RequestHeight:              compactRequest.RequestHeight,
 						ExpirationHeight:           compactRequest.RequestHeight + reqCtx.Timeout,
 						RequestContextId:           compactRequest.RequestContextId,
