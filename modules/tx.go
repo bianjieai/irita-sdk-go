@@ -35,8 +35,7 @@ func (base baseClient) QueryTx(hash string) (sdk.ResultQueryTx, error) {
 	return base.parseTxResult(res, resBlocks[res.Height])
 }
 
-func (base baseClient) QueryTxs(builder *sdk.EventQueryBuilder, page, size int) (sdk.ResultSearchTxs, error) {
-
+func (base baseClient) queryTxs(builder *sdk.EventQueryBuilder, page, size int) (sdk.ResultSearchTxs, error) {
 	query := builder.Build()
 	if len(query) == 0 {
 		return sdk.ResultSearchTxs{}, errors.New("must declare at least one tag to search")
@@ -63,6 +62,31 @@ func (base baseClient) QueryTxs(builder *sdk.EventQueryBuilder, page, size int) 
 
 	return sdk.ResultSearchTxs{
 		Total: res.TotalCount,
+		Txs:   txs,
+	}, nil
+}
+
+func (base baseClient) QueryTxs(builder *sdk.EventQueryBuilder, page, size int) (sdk.ResultSearchTxs, error) {
+	var pageIdx = page
+	var txs []sdk.ResultQueryTx
+loop:
+	result, err := base.queryTxs(builder, pageIdx, size)
+	if err != nil {
+		return sdk.ResultSearchTxs{}, err
+	}
+
+	if result.Total == 0 {
+		return sdk.ResultSearchTxs{}, err
+	}
+
+	txs = append(txs, result.Txs...)
+	if len(txs) < result.Total {
+		pageIdx++
+		goto loop
+	}
+
+	return sdk.ResultSearchTxs{
+		Total: result.Total,
 		Txs:   txs,
 	}, nil
 }

@@ -32,6 +32,7 @@ const (
 	cacheExpirePeriod = 1 * time.Minute
 	tryThreshold      = 3
 	maxBatch          = 100
+	maxPageSize       = 100
 )
 
 type baseClient struct {
