@@ -120,6 +120,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 		serviceClient,
 		nodeClient,
 		paramsClient,
+		wasmClient,
 	)
 	return *client
 }
