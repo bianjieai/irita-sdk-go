@@ -96,7 +96,6 @@ func (base *baseClient) buildTx(msgs []sdk.Msg, baseTx sdk.BaseTx) ([]byte, *cli
 		return nil, factory, sdk.Wrap(err)
 	}
 
-	base.Logger().Debug("sign transaction success")
 	return txByte, factory, nil
 }
 
@@ -112,9 +111,6 @@ func (base baseClient) broadcastTx(txBytes []byte, mode sdk.BroadcastMode) (res 
 		err = sdk.Wrapf("commit mode(%s) not supported", mode)
 	}
 
-	if err == nil {
-		base.Logger().Info("commit tx success", "result", res)
-	}
 	return
 }
 
