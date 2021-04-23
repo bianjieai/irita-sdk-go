@@ -404,11 +404,9 @@ func (l *locker) setLogger(logger log.Logger) *locker {
 func (l *locker) Lock(key string) {
 	ch := l.getShard(key)
 	ch <- 1
-	l.logger.Info("lock key", "key", key)
 }
 
 func (l *locker) Unlock(key string) {
-	l.logger.Info("unlock key", "key", key)
 	ch := l.getShard(key)
 	<-ch
 }
