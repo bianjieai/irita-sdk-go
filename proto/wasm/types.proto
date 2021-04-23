@@ -1,9 +1,9 @@
 syntax = "proto3";
-package cosmwasm.wasm.v1beta1;
+package wasmd.x.wasmd.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/bianjieai/irita-sdk-go/modules/wasm";
+option go_package = "github.com/CosmWasm/wasmd/x/wasmd/internal/types";
 option (gogoproto.goproto_getters_all) = false;
 option (gogoproto.equal_all) = true;
 
