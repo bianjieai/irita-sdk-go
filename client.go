@@ -94,6 +94,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 		nftClient,
 		serviceClient,
 		nodeClient,
+		oracleClient,
 		paramsClient,
 		wasmClient,
 	)
