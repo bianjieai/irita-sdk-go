@@ -31,9 +31,7 @@ var registers = []codec.RegisterInterfaces{
 	bank.RegisterInterfaces,
 	identity.RegisterInterfaces,
 	token.RegisterInterfaces,
-	token.RegisterInterfaces,
 	record.RegisterInterfaces,
-	nft.RegisterInterfaces,
 	nft.RegisterInterfaces,
 	service.RegisterInterfaces,
 	node.RegisterInterfaces,
@@ -119,7 +117,9 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 		nftClient,
 		serviceClient,
 		nodeClient,
+		oracleClient,
 		paramsClient,
+		wasmClient,
 	)
 	return *client
 }
