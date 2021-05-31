@@ -3,19 +3,18 @@ package modules
 import (
 	"context"
 	"fmt"
-	"time"
-
-	"github.com/tendermint/tendermint/libs/log"
-
 	"github.com/bianjieai/irita-sdk-go/codec"
+	"github.com/bianjieai/irita-sdk-go/codec/legacy"
 	"github.com/bianjieai/irita-sdk-go/modules/auth"
-	"github.com/bianjieai/irita-sdk-go/modules/bank"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/utils/cache"
+	"github.com/tendermint/tendermint/libs/log"
+	"time"
 )
 
 // Must be used with locker, otherwise there are thread safety issues
 type accountQuery struct {
+	sdk.TmClient
 	sdk.Queries
 	sdk.GRPCClient
 	log.Logger
@@ -44,32 +43,33 @@ func (a accountQuery) QueryAndRefreshAccount(address string) (sdk.BaseAccount, s
 }
 
 func (a accountQuery) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
-	conn, err := a.GenConn()
-	defer func() { _ = conn.Close() }()
-	if err != nil {
-		return sdk.BaseAccount{}, sdk.Wrap(err)
-	}
-
 	if err := sdk.ValidateAccAddress(address); err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
-	request := &auth.QueryAccountRequest{
+	request := struct {
+		Address string `json:"address"`
+	}{
 		Address: address,
 	}
-	response, err := auth.NewQueryClient(conn).Account(context.Background(), request)
+
+	data, err := legacy.Cdc.MarshalJSON(request)
+	if err != nil {
+		return sdk.BaseAccount{}, sdk.Wrap(err)
+	}
+
+	resultABCIQuery, err := a.ABCIQuery(context.Background(), "/custom/auth/account", data)
 	if err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
 	var acc auth.Account
-	if err := a.cdc.UnpackAny(response.Account, &acc); err != nil {
+	if err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &acc); err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
-	baseAcc := acc.(*auth.BaseAccount)
+	baseAcc := acc.(*auth.LegacyBaseAccount)
 	account := baseAcc.Convert().(sdk.BaseAccount)
-
 	if baseAcc.PubKey != nil {
 		pubkey, err := baseAcc.GetPubKey(a.cdc)
 		if err != nil {
@@ -82,17 +82,26 @@ func (a accountQuery) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) 
 		}
 	}
 
-	breq := &bank.QueryAllBalancesRequest{
-		Address:    address,
-		Pagination: nil,
+	balanceReq := struct {
+		Address string `json:"address"`
+	}{
+		Address: address,
 	}
-	balances, err := bank.NewQueryClient(conn).AllBalances(context.Background(), breq)
+	balanceData, err := legacy.Cdc.MarshalJSON(balanceReq)
 	if err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
-	account.Coins = balances.Balances
+	balancerResultABCIQuery, err := a.ABCIQuery(context.Background(), "/custom/bank/all_balances", balanceData)
+	if err != nil {
+		return sdk.BaseAccount{}, sdk.Wrap(err)
+	}
 
+	var coins sdk.Coins
+	if err = legacy.Cdc.UnmarshalJSON(balancerResultABCIQuery.Response.Value, &coins); err != nil {
+		return sdk.BaseAccount{}, sdk.Wrap(err)
+	}
+	account.Coins = coins
 	return account, nil
 }
 

@@ -17,7 +17,8 @@ import (
 )
 
 const (
-	nodeURI  = "tcp://127.0.0.1:26657"
+	nodeURI = "http://127.0.0.1:26657"
+	//nodeURI = "https://opbningxia.bsngate.com:18602/api/4efe1d3f67b5484aa91331e29dc09ea1/rpc"
 	grpcAddr = "localhost:9090"
 	chainID  = "test"
 	charset  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

@@ -27,3 +27,14 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	)
 	registry.RegisterInterface("irismod.token.TokenI", (*TokenInterface)(nil), &Token{})
 }
+
+func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	cdc.RegisterInterface((*TokenInterface)(nil), nil)
+
+	cdc.RegisterConcrete(&Token{}, "irismod/token/Token", nil)
+
+	cdc.RegisterConcrete(&MsgIssueToken{}, "irismod/token/MsgIssueToken", nil)
+	cdc.RegisterConcrete(&MsgEditToken{}, "irismod/token/MsgEditToken", nil)
+	cdc.RegisterConcrete(&MsgMintToken{}, "irismod/token/MsgMintToken", nil)
+	cdc.RegisterConcrete(&MsgTransferTokenOwner{}, "irismod/token/MsgTransferTokenOwner", nil)
+}

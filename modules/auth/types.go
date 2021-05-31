@@ -3,7 +3,6 @@ package auth
 import (
 	"encoding/json"
 	"errors"
-
 	"github.com/tendermint/tendermint/crypto"
 
 	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
@@ -100,6 +99,80 @@ func (acc BaseAccount) String() string {
 
 // Convert return a sdk.BaseAccount
 func (acc *BaseAccount) Convert() interface{} {
+	return sdk.BaseAccount{
+		Address:       sdk.MustAccAddressFromBech32(acc.Address),
+		AccountNumber: acc.AccountNumber,
+		Sequence:      acc.Sequence,
+	}
+}
+
+type LegacyBaseAccount struct {
+	Address       string        `json:"address"`
+	PubKey        crypto.PubKey `json:"public_key"`
+	AccountNumber uint64        `json:"account_number"`
+	Sequence      uint64        `json:"sequence"`
+}
+
+// GetAddress Implements sdk.Account.
+func (acc LegacyBaseAccount) GetAddress() sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(acc.Address)
+	return addr
+}
+
+// SetAddress Implements sdk.Account.
+func (acc *LegacyBaseAccount) SetAddress(addr sdk.AccAddress) error {
+	if len(acc.Address) != 0 {
+		return errors.New("cannot override BaseAccount address")
+	}
+
+	acc.Address = addr.String()
+	return nil
+}
+
+// GetPubKey - Implements sdk.Account.
+func (acc LegacyBaseAccount) GetPubKey(unpacker codectypes.AnyUnpacker) (pk crypto.PubKey, err error) {
+	if acc.PubKey == nil {
+		return nil, nil
+	}
+
+	return acc.PubKey, nil
+}
+
+// SetPubKey - Implements sdk.Account.
+func (acc *LegacyBaseAccount) SetPubKey(pubKey crypto.PubKey) error {
+	acc.PubKey = pubKey
+	return nil
+}
+
+// GetAccountNumber Implements Account
+func (acc *LegacyBaseAccount) GetAccountNumber() uint64 {
+	return acc.AccountNumber
+}
+
+// SetAccountNumber Implements Account
+func (acc *LegacyBaseAccount) SetAccountNumber(accNumber uint64) error {
+	acc.AccountNumber = accNumber
+	return nil
+}
+
+// GetSequence Implements sdk.Account.
+func (acc *LegacyBaseAccount) GetSequence() uint64 {
+	return acc.Sequence
+}
+
+// SetSequence Implements sdk.Account.
+func (acc *LegacyBaseAccount) SetSequence(seq uint64) error {
+	acc.Sequence = seq
+	return nil
+}
+
+func (acc LegacyBaseAccount) String() string {
+	out, _ := json.Marshal(acc)
+	return string(out)
+}
+
+// Convert return a sdk.BaseAccount
+func (acc *LegacyBaseAccount) Convert() interface{} {
 	return sdk.BaseAccount{
 		Address:       sdk.MustAccAddressFromBech32(acc.Address),
 		AccountNumber: acc.AccountNumber,

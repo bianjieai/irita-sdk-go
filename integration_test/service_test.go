@@ -1,14 +1,10 @@
 package integration_test
 
 import (
-	"time"
-
-	"github.com/stretchr/testify/require"
-
-	sdk "github.com/bianjieai/irita-sdk-go/types"
-	"github.com/bianjieai/irita-sdk-go/types/query"
-
 	"github.com/bianjieai/irita-sdk-go/modules/service"
+	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/stretchr/testify/require"
+	"time"
 )
 
 func (s IntegrationTestSuite) TestService() {
@@ -45,7 +41,7 @@ func (s IntegrationTestSuite) TestService() {
 	require.Equal(s.T(), definition.Schemas, defi.Schemas)
 	require.Equal(s.T(), s.Account().Address.String(), defi.Author)
 
-	deposit, e := sdk.ParseDecCoins("20000upoint")
+	deposit, e := sdk.ParseDecCoins("20000point")
 	require.NoError(s.T(), e)
 	binding := service.BindServiceRequest{
 		ServiceName: definition.ServiceName,
@@ -68,17 +64,7 @@ func (s IntegrationTestSuite) TestService() {
 	output := `{"header":{},"body":{"last":"1:100"}}`
 	testResult := `{"code":200,"message":""}`
 
-	var sub1 sdk.Subscription
-	callback := func(reqCtxID, reqID, input string) (string, string) {
-		_, err := s.Service.QueryServiceRequest(reqID)
-		require.NoError(s.T(), err)
-		return output, testResult
-	}
-	sub1, err = s.Service.SubscribeServiceRequest(definition.ServiceName, callback, baseTx)
-	require.NoError(s.T(), err)
-	s.Logger().Info("SubscribeServiceRequest", "condition", sub1.Query)
-
-	serviceFeeCap, e := sdk.ParseDecCoins("200upoint")
+	serviceFeeCap, e := sdk.ParseDecCoins("200point")
 	require.NoError(s.T(), e)
 
 	invocation := service.InvokeServiceRequest{
@@ -91,77 +77,51 @@ func (s IntegrationTestSuite) TestService() {
 		RepeatedTotal: -1,
 	}
 
-	var requestContextID string
-	var sub2 sdk.Subscription
-	var exit = make(chan int)
+	reqCtxID, _, e := s.Service.InvokeService(invocation, baseTx)
+	require.NoError(s.T(), e)
 
-	requestContextID, result, err = s.Service.InvokeService(invocation, baseTx)
-	require.NoError(s.T(), err)
-	s.Logger().Info("InvokeService success",
-		"hash", result.Hash,
-		"requestContextID", requestContextID,
-	)
+	queryRequestContextResp, e := s.Service.QueryRequestContext(reqCtxID)
+	require.NoError(s.T(), e)
+	require.Equal(s.T(), binding.ServiceName, queryRequestContextResp.ServiceName)
 
-	requestid, err := s.Service.QueryRequestsByReqCtx(requestContextID, 1, &query.PageRequest{})
-	require.NoError(s.T(), err)
-	s.Logger().Info("request_id: ", requestid)
+	time.Sleep(time.Second * 3)
+	requests, e := s.Service.QueryServiceRequests(bindResp.ServiceName, bindResp.Provider, nil)
+	require.NoError(s.T(), e)
 
-	sub2, err = s.Service.SubscribeServiceResponse(requestContextID, func(reqCtxID, reqID, responses string) {
-		require.Equal(s.T(), reqCtxID, requestContextID)
-		require.Equal(s.T(), output, responses)
-		request, err := s.Service.QueryServiceRequest(reqID)
-		require.NoError(s.T(), err)
-		require.Equal(s.T(), reqCtxID, request.RequestContextID)
-		require.Equal(s.T(), reqID, request.ID)
-		require.Equal(s.T(), input, request.Input)
-
-		exit <- 1
-	})
-	require.NoError(s.T(), err)
-
-	for {
-		select {
-		case <-exit:
-			err = s.Unsubscribe(sub1)
-			require.NoError(s.T(), err)
-			err = s.Unsubscribe(sub2)
-			require.NoError(s.T(), err)
-			goto loop
-		case <-time.After(2 * time.Minute):
-			require.Panics(s.T(), func() {}, "test service timeout")
+	var reqId string
+	for _, request := range requests {
+		if request.RequestContextID == reqCtxID {
+			reqId = request.ID
 		}
 	}
+	require.NotEqual(s.T(), 0, len(reqId))
 
-loop:
-	_, err = s.Service.PauseRequestContext(requestContextID, baseTx)
-	require.NoError(s.T(), err)
+	request, e := s.Service.QueryServiceRequest(reqId)
+	require.NoError(s.T(), e)
+	require.Equal(s.T(), bindResp.ServiceName, request.ServiceName)
 
-	_, err = s.Service.StartRequestContext(requestContextID, baseTx)
-	require.NoError(s.T(), err)
+	responseRequest := service.InvokeServiceResponseRequest{
+		RequestId: reqId,
+		Output:    output,
+		Result:    testResult,
+	}
+	resultTx, e := s.Service.InvokeServiceResponse(responseRequest, baseTx)
+	require.NoError(s.T(), e)
+	require.NotEmpty(s.T(), resultTx.Hash)
 
-	request, err := s.Service.QueryRequestContext(requestContextID)
-	require.NoError(s.T(), err)
-	require.Equal(s.T(), request.ServiceName, invocation.ServiceName)
-	require.Equal(s.T(), request.Input, invocation.Input)
+	response, e := s.Service.QueryServiceResponse(reqId)
+	require.NoError(s.T(), e)
+	require.NotEmpty(s.T(), response.Result)
 
-	addr, _, err := s.Key.Add(s.RandStringOfLength(30), "1234567890")
-	require.NoError(s.T(), err)
-	require.NotEmpty(s.T(), addr)
+	responses, e := s.Service.QueryServiceResponses(reqCtxID, 1, nil)
+	require.NoError(s.T(), e)
 
-	_, err = s.Service.SetWithdrawAddress(addr, baseTx)
-	require.NoError(s.T(), err)
-
-	fee, err := s.Service.QueryFees(s.Account().Address.String())
-	require.NoError(s.T(), err)
-	require.NotEmpty(s.T(), fee)
-
-	//acc := s.GetRandAccount()
-
-	//TODO
-	//rs, err := s.ServiceI.WithdrawEarnedFees(acc.Address.String(), baseTx)
-	//require.NoError(s.T(), err)
-	//
-	//withdrawFee, er := rs.Events.GetValue("transfer", "amount")
-	//require.NoError(s.T(), er)
-	//require.Equal(s.T(), fee.String(), withdrawFee)
+	var exist bool
+	for _, response := range responses {
+		if response.RequestContextID == reqCtxID {
+			exist = true
+			require.NotEmpty(s.T(), response.Output)
+		}
+	}
+	require.True(s.T(), exist)
 }

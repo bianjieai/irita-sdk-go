@@ -57,8 +57,9 @@ func NewBaseClient(cfg sdk.ClientConfig, encodingConfig sdk.EncodingConfig, logg
 		})
 	}
 
+	tmClient := NewRPCClient(cfg.NodeURI, encodingConfig.Amino, encodingConfig.TxConfig.TxDecoder(), logger, cfg.Timeout)
 	base := baseClient{
-		TmClient:       NewRPCClient(cfg.NodeURI, encodingConfig.Amino, encodingConfig.TxConfig.TxDecoder(), logger, cfg.Timeout),
+		TmClient:       tmClient,
 		GRPCClient:     NewGRPCClient(cfg.GRPCAddr),
 		logger:         logger,
 		cfg:            &cfg,
@@ -73,6 +74,7 @@ func NewBaseClient(cfg sdk.ClientConfig, encodingConfig sdk.EncodingConfig, logg
 
 	c := cache.NewCache(cacheCapacity, cfg.Cached)
 	base.accountQuery = accountQuery{
+		TmClient:   tmClient,
 		Queries:    base,
 		GRPCClient: base.GRPCClient,
 		Logger:     base.Logger(),
@@ -84,6 +86,7 @@ func NewBaseClient(cfg sdk.ClientConfig, encodingConfig sdk.EncodingConfig, logg
 
 	base.tokenQuery = tokenQuery{
 		q:          base,
+		TmClient:   tmClient,
 		GRPCClient: base.GRPCClient,
 		cdc:        encodingConfig.Marshaler,
 		Logger:     base.Logger(),

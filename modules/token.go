@@ -3,6 +3,7 @@ package modules
 import (
 	"context"
 	"fmt"
+	"github.com/bianjieai/irita-sdk-go/codec/legacy"
 	"strings"
 
 	"github.com/tendermint/tendermint/libs/log"
@@ -15,6 +16,7 @@ import (
 
 type tokenQuery struct {
 	q sdk.Queries
+	sdk.TmClient
 	sdk.GRPCClient
 	cdc codec.Marshaler
 	log.Logger
@@ -26,23 +28,22 @@ func (l tokenQuery) QueryToken(denom string) (sdk.Token, error) {
 	if t, err := l.Get(l.prefixKey(denom)); err == nil {
 		return t.(sdk.Token), nil
 	}
-
-	conn, err := l.GenConn()
-	defer func() { _ = conn.Close() }()
+	request := struct {
+		Denom string
+	}{
+		Denom: denom,
+	}
+	data, err := legacy.Cdc.MarshalJSON(request)
 	if err != nil {
 		return sdk.Token{}, sdk.Wrap(err)
 	}
-
-	response, err := token.NewQueryClient(conn).Token(
-		context.Background(),
-		&token.QueryTokenRequest{Denom: denom},
-	)
+	resultABCIQuery, err := l.ABCIQuery(context.Background(), "/custom/token/token", data)
 	if err != nil {
-		return sdk.Token{}, sdk.Wrap(err)
+		return sdk.Token{}, err
 	}
 
 	var srcToken token.TokenInterface
-	if err = l.cdc.UnpackAny(response.Token, &srcToken); err != nil {
+	if err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &srcToken); err != nil {
 		return sdk.Token{}, sdk.Wrap(err)
 	}
 	token := srcToken.(*token.Token).Convert().(sdk.Token)

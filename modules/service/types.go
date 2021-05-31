@@ -12,6 +12,8 @@ import (
 const (
 	ModuleName = "service"
 
+	servicePath = "/custom/service/%s"
+
 	eventTypeNewBatchRequest         = "new_batch_request"
 	eventTypeNewBatchRequestProvider = "new_batch_request_provider"
 	attributeKeyRequests             = "requests"

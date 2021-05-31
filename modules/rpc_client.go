@@ -3,11 +3,9 @@ package modules
 import (
 	"context"
 	"fmt"
-
 	"github.com/tendermint/tendermint/crypto/tmhash"
 	"github.com/tendermint/tendermint/libs/log"
 	rpc "github.com/tendermint/tendermint/rpc/client"
-	rpchttp "github.com/tendermint/tendermint/rpc/client/http"
 	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
@@ -29,12 +27,9 @@ func NewRPCClient(
 	logger log.Logger,
 	timeout uint,
 ) sdk.TmClient {
-	client, err := rpchttp.NewWithTimeout(remote, "/websocket", timeout)
-	if err != nil {
-		panic(err)
+	client := JsonRpcClient{
+		address: remote,
 	}
-
-	_ = client.Start()
 	return rpcClient{
 		Client:    client,
 		Logger:    logger,

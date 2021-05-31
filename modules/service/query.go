@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -111,14 +110,9 @@ func (s serviceClient) queryRequestByTxQuery(requestID string) (Request, error) 
 func (s serviceClient) queryResponseByTxQuery(requestID string) (Response, error) {
 	builder := sdk.NewEventQueryBuilder().AddCondition(
 		sdk.NewCond(
-			sdk.EventTypeMessage,
-			sdk.AttributeKeyAction,
-		).EQ("respond_service"),
-	).AddCondition(
-		sdk.NewCond(
-			sdk.EventTypeMessage,
-			sdk.AttributeKeyAction,
-		).EQ(attributeKeyRequestID),
+			"respond_service",
+			attributeKeyRequestID,
+		).EQ(sdk.EventValue(requestID)),
 	)
 
 	result, err := s.QueryTxs(builder, 1, 1)
