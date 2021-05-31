@@ -3,8 +3,6 @@ package sdk
 import (
 	"fmt"
 
-	"github.com/bianjieai/irita-sdk-go/modules/oracle"
-
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/bianjieai/irita-sdk-go/codec"
@@ -16,6 +14,7 @@ import (
 	"github.com/bianjieai/irita-sdk-go/modules/keys"
 	"github.com/bianjieai/irita-sdk-go/modules/nft"
 	"github.com/bianjieai/irita-sdk-go/modules/node"
+	"github.com/bianjieai/irita-sdk-go/modules/oracle"
 	"github.com/bianjieai/irita-sdk-go/modules/params"
 	"github.com/bianjieai/irita-sdk-go/modules/perm"
 	"github.com/bianjieai/irita-sdk-go/modules/record"
