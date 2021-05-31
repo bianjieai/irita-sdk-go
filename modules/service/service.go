@@ -227,12 +227,11 @@ func (s serviceClient) InvokeServiceResponse(req InvokeServiceResponseRequest, b
 		return sdk.ResultTx{}, err
 	}
 
-	// TODO
-	//reqId := req.RequestId
-	//_, err = s.QueryServiceRequest(reqId)
-	//if err != nil {
-	//	return sdk.ResultTx{}, err
-	//}
+	reqId := req.RequestId
+	_, err = s.QueryServiceRequest(reqId)
+	if err != nil {
+		return sdk.ResultTx{}, err
+	}
 
 	msg := &MsgRespondService{
 		RequestId: req.RequestId,
@@ -549,7 +548,13 @@ func (s serviceClient) QueryServiceRequest(requestID string) (QueryServiceReques
 	}
 
 	var request Request
-	if err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &request); err != nil {
+	err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &request)
+	if err != nil && !request.Empty() {
+		return request.Convert().(QueryServiceRequestResponse), nil
+	}
+
+	request, err = s.queryRequestByTxQuery(requestID)
+	if err != nil {
 		return QueryServiceRequestResponse{}, sdk.Wrap(err)
 	}
 
@@ -645,12 +650,15 @@ func (s serviceClient) QueryServiceResponse(requestID string) (QueryServiceRespo
 
 	var resp Response
 	err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &resp)
+	if err != nil && !resp.Empty() {
+		return resp.Convert().(QueryServiceResponseResponse), nil
+	}
+
+	resp, err = s.queryResponseByTxQuery(requestID)
 	if err != nil {
 		return QueryServiceResponseResponse{}, sdk.Wrap(err)
 	}
 
-	response, err := s.queryResponseByTxQuery(requestID)
-	fmt.Println(response)
 	return resp.Convert().(QueryServiceResponseResponse), nil
 }
 

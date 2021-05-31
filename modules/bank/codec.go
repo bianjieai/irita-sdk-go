@@ -15,7 +15,15 @@ var (
 
 func init() {
 	cryptocodec.RegisterCrypto(amino)
+	RegisterLegacyAminoCodec(amino)
 	amino.Seal()
+}
+
+// RegisterLegacyAminoCodec registers the account interfaces and concrete types on the
+// provided LegacyAmino codec. These types are used for amino JSON serialization
+func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	cdc.RegisterInterface((*auth.Account)(nil), nil)
+	cdc.RegisterConcrete(&auth.LegacyBaseAccount{}, "cosmos-sdk/BaseAccount", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {

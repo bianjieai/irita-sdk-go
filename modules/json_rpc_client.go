@@ -195,7 +195,16 @@ func (c JsonRpcClient) BlockByHash(ctx context.Context, hash []byte) (*ctypes.Re
 }
 
 func (c JsonRpcClient) BlockResults(ctx context.Context, height *int64) (*ctypes.ResultBlockResults, error) {
-	panic("implement me")
+	result := new(ctypes.ResultBlockResults)
+	params := make(map[string]interface{})
+	if height != nil {
+		params["height"] = strconv.Itoa(int(*height))
+	}
+	_, err := c.Call(ctx, "block_results", params, result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
 func (c JsonRpcClient) Commit(ctx context.Context, height *int64) (*ctypes.ResultCommit, error) {
