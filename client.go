@@ -184,6 +184,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*types.Msg)(nil), nil)
 	cdc.RegisterInterface((*types.Tx)(nil), nil)
 	cryptocodec.RegisterCrypto(cdc)
+	nft.RegisterCodec(cdc)
 }
 
 // RegisterInterfaces registers the sdk message type.

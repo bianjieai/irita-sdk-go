@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/codec/legacy"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
 	sdktypes "github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/types/query"
@@ -442,27 +441,16 @@ func (s serviceClient) SubscribeServiceRequest(serviceName string,
 
 // QueryDefinition return a service definition of the specified name
 func (s serviceClient) QueryServiceDefinition(serviceName string) (QueryServiceDefinitionResponse, sdk.Error) {
-	params := struct{ ServiceName string }{
+	param := struct{ ServiceName string }{
 		ServiceName: serviceName,
 	}
 
-	data, err := legacy.Cdc.MarshalJSON(params)
-	if err != nil {
+	var res ServiceDefinition
+	if err := s.QueryWithResponse(fmt.Sprintf(servicePath, "definition"), param, &res); err != nil {
 		return QueryServiceDefinitionResponse{}, sdk.Wrap(err)
 	}
 
-	resultABCIQuery, err := s.ABCIQuery(context.Background(), fmt.Sprintf(servicePath, "definition"), data)
-	if err != nil {
-		return QueryServiceDefinitionResponse{}, sdk.Wrap(err)
-	}
-
-	var resp ServiceDefinition
-	err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &resp)
-	if err != nil {
-		return QueryServiceDefinitionResponse{}, sdk.Wrap(err)
-	}
-
-	return resp.Convert().(QueryServiceDefinitionResponse), nil
+	return res.Convert().(QueryServiceDefinitionResponse), nil
 }
 
 // QueryBinding return the specified service binding
@@ -471,7 +459,7 @@ func (s serviceClient) QueryServiceBinding(serviceName string, provider string) 
 		return QueryServiceBindingResponse{}, sdk.Wrap(err)
 	}
 
-	params := struct {
+	param := struct {
 		ServiceName string
 		Provider    string
 	}{
@@ -479,27 +467,17 @@ func (s serviceClient) QueryServiceBinding(serviceName string, provider string) 
 		Provider:    provider,
 	}
 
-	data, err := legacy.Cdc.MarshalJSON(params)
-	if err != nil {
-		return QueryServiceBindingResponse{}, sdk.Wrap(err)
-	}
-	resultABCIQuery, err := s.ABCIQuery(context.Background(), fmt.Sprintf(servicePath, "binding"), data)
-	if err != nil {
+	var res ServiceBinding
+	if err := s.QueryWithResponse(fmt.Sprintf(servicePath, "binding"), param, &res); err != nil {
 		return QueryServiceBindingResponse{}, sdk.Wrap(err)
 	}
 
-	var resp ServiceBinding
-	err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &resp)
-	if err != nil {
-		return QueryServiceBindingResponse{}, sdk.Wrap(err)
-	}
-
-	return resp.Convert().(QueryServiceBindingResponse), nil
+	return res.Convert().(QueryServiceBindingResponse), nil
 }
 
 // QueryBindings returns all bindings of the specified service
 func (s serviceClient) QueryServiceBindings(serviceName string, pageReq *query.PageRequest) ([]QueryServiceBindingResponse, sdk.Error) {
-	params := struct {
+	param := struct {
 		ServiceName string
 		Pagination  *query.PageRequest
 	}{
@@ -507,22 +485,12 @@ func (s serviceClient) QueryServiceBindings(serviceName string, pageReq *query.P
 		Pagination:  pageReq,
 	}
 
-	data, err := legacy.Cdc.MarshalJSON(params)
-	if err != nil {
-		return []QueryServiceBindingResponse{}, sdk.Wrap(err)
-	}
-	resultABCIQuery, err := s.ABCIQuery(context.Background(), fmt.Sprintf(servicePath, "bindings"), data)
-	if err != nil {
-		return []QueryServiceBindingResponse{}, sdk.Wrap(err)
+	var res serviceBindings
+	if err := s.QueryWithResponse(fmt.Sprintf(servicePath, "bindings"), param, &res); err != nil {
+		return nil, sdk.Wrap(err)
 	}
 
-	var resp []*ServiceBinding
-	err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &resp)
-	if err != nil {
-		return []QueryServiceBindingResponse{}, sdk.Wrap(err)
-	}
-
-	return serviceBindings(resp).Convert().([]QueryServiceBindingResponse), nil
+	return res.Convert().([]QueryServiceBindingResponse), nil
 }
 
 // QueryRequest returns  the active request of the specified requestID
@@ -532,24 +500,15 @@ func (s serviceClient) QueryServiceRequest(requestID string) (QueryServiceReques
 		return QueryServiceRequestResponse{}, sdk.Wrap(err)
 	}
 
-	params := struct {
+	param := struct {
 		RequestID []byte
 	}{
 		RequestID: hexRequestId,
 	}
 
-	data, err := legacy.Cdc.MarshalJSON(params)
-	if err != nil {
-		return QueryServiceRequestResponse{}, sdk.Wrap(err)
-	}
-	resultABCIQuery, err := s.ABCIQuery(context.Background(), fmt.Sprintf(servicePath, "request"), data)
-	if err != nil {
-		return QueryServiceRequestResponse{}, sdk.Wrap(err)
-	}
-
 	var request Request
-	err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &request)
-	if err != nil && !request.Empty() {
+	err = s.QueryWithResponse(fmt.Sprintf(servicePath, "request"), param, &request)
+	if err == nil && !request.Empty() {
 		return request.Convert().(QueryServiceRequestResponse), nil
 	}
 
@@ -562,7 +521,7 @@ func (s serviceClient) QueryServiceRequest(requestID string) (QueryServiceReques
 }
 
 // QueryRequest returns all the active requests of the specified service binding
-func (s serviceClient) QueryServiceRequests(serviceName string, provider string, pageReq *query.PageRequest) ([]QueryServiceRequestResponse, sdk.Error) {
+func (s serviceClient) QueryServiceRequests(serviceName string, provider string, _ *query.PageRequest) ([]QueryServiceRequestResponse, sdk.Error) {
 	if err := sdk.ValidateAccAddress(provider); err != nil {
 		return nil, sdk.Wrap(err)
 	}
@@ -572,7 +531,7 @@ func (s serviceClient) QueryServiceRequests(serviceName string, provider string,
 		return nil, sdk.Wrap(e)
 	}
 
-	params := struct {
+	param := struct {
 		ServiceName string
 		Provider    sdk.AccAddress
 	}{
@@ -580,26 +539,17 @@ func (s serviceClient) QueryServiceRequests(serviceName string, provider string,
 		Provider:    accAddr,
 	}
 
-	data, err := legacy.Cdc.MarshalJSON(params)
-	if err != nil {
-		return []QueryServiceRequestResponse{}, sdk.Wrap(err)
-	}
-	resultABCIQuery, err := s.ABCIQuery(context.Background(), fmt.Sprintf(servicePath, "requests"), data)
-	if err != nil {
-		return []QueryServiceRequestResponse{}, sdk.Wrap(err)
+	var res requests
+	if err := s.QueryWithResponse(fmt.Sprintf(servicePath, "requests"), param, &res); err != nil {
+		return nil, sdk.Wrap(err)
 	}
 
-	var resp []*Request
-	err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &resp)
-	if err != nil {
-		return []QueryServiceRequestResponse{}, sdk.Wrap(err)
-	}
-	return requests(resp).Convert().([]QueryServiceRequestResponse), nil
+	return res.Convert().([]QueryServiceRequestResponse), nil
 }
 
 // QueryRequestsByReqCtx returns all requests of the specified request context ID and batch counter
 func (s serviceClient) QueryRequestsByReqCtx(reqCtxID string, batchCounter uint64, pageReq *query.PageRequest) ([]QueryServiceRequestResponse, sdk.Error) {
-	params := struct {
+	param := struct {
 		RequestContextID string
 		BatchCounter     uint64
 		Pagination       *query.PageRequest
@@ -609,21 +559,12 @@ func (s serviceClient) QueryRequestsByReqCtx(reqCtxID string, batchCounter uint6
 		Pagination:       pageReq,
 	}
 
-	data, err := legacy.Cdc.MarshalJSON(params)
-	if err != nil {
-		return []QueryServiceRequestResponse{}, sdk.Wrap(err)
-	}
-	resultABCIQuery, err := s.ABCIQuery(context.Background(), fmt.Sprintf(servicePath, "requests_by_ctx"), data)
-	if err != nil {
-		return []QueryServiceRequestResponse{}, sdk.Wrap(err)
+	var res requests
+	if err := s.QueryWithResponse(fmt.Sprintf(servicePath, "requests_by_ctx"), param, &res); err != nil {
+		return nil, sdk.Wrap(err)
 	}
 
-	var resp []*Request
-	err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &resp)
-	if err != nil {
-		return []QueryServiceRequestResponse{}, sdk.Wrap(err)
-	}
-	return requests(resp).Convert().([]QueryServiceRequestResponse), nil
+	return res.Convert().([]QueryServiceRequestResponse), nil
 }
 
 // QueryResponse returns a response with the speicified request ID
@@ -633,38 +574,30 @@ func (s serviceClient) QueryServiceResponse(requestID string) (QueryServiceRespo
 		return QueryServiceResponseResponse{}, sdk.Wrap(err)
 	}
 
-	params := struct {
+	param := struct {
 		RequestID tmbytes.HexBytes
 	}{
 		RequestID: hexRequestId,
 	}
-	data, err := legacy.Cdc.MarshalJSON(params)
+
+	var res Response
+	err = s.QueryWithResponse(fmt.Sprintf(servicePath, "response"), param, &res)
+
+	if err == nil && !res.Empty() {
+		return res.Convert().(QueryServiceResponseResponse), nil
+	}
+
+	res, err = s.queryResponseByTxQuery(requestID)
 	if err != nil {
 		return QueryServiceResponseResponse{}, sdk.Wrap(err)
 	}
 
-	resultABCIQuery, err := s.ABCIQuery(context.Background(), fmt.Sprintf(servicePath, "response"), data)
-	if err != nil {
-		return QueryServiceResponseResponse{}, sdk.Wrap(err)
-	}
-
-	var resp Response
-	err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &resp)
-	if err != nil && !resp.Empty() {
-		return resp.Convert().(QueryServiceResponseResponse), nil
-	}
-
-	resp, err = s.queryResponseByTxQuery(requestID)
-	if err != nil {
-		return QueryServiceResponseResponse{}, sdk.Wrap(err)
-	}
-
-	return resp.Convert().(QueryServiceResponseResponse), nil
+	return res.Convert().(QueryServiceResponseResponse), nil
 }
 
 // QueryResponses returns all responses of the specified request context and batch counter
 func (s serviceClient) QueryServiceResponses(reqCtxID string, batchCounter uint64, pageReq *query.PageRequest) ([]QueryServiceResponseResponse, sdk.Error) {
-	params := struct {
+	param := struct {
 		RequestContextID string
 		BatchCounter     uint64
 		Pagination       *query.PageRequest
@@ -673,45 +606,27 @@ func (s serviceClient) QueryServiceResponses(reqCtxID string, batchCounter uint6
 		BatchCounter:     batchCounter,
 		Pagination:       pageReq,
 	}
-	data, err := legacy.Cdc.MarshalJSON(params)
-	if err != nil {
-		return []QueryServiceResponseResponse{}, sdk.Wrap(err)
+
+	var res responses
+	if err := s.QueryWithResponse(fmt.Sprintf(servicePath, "responses"), param, &res); err != nil {
+		return nil, sdk.Wrap(err)
 	}
 
-	resultABCIQuery, err := s.ABCIQuery(context.Background(), fmt.Sprintf(servicePath, "responses"), data)
-	if err != nil {
-		return []QueryServiceResponseResponse{}, sdk.Wrap(err)
-	}
-
-	var resp []*Response
-	err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &resp)
-	if err != nil {
-		return []QueryServiceResponseResponse{}, sdk.Wrap(err)
-	}
-	return responses(resp).Convert().([]QueryServiceResponseResponse), nil
+	return res.Convert().([]QueryServiceResponseResponse), nil
 }
 
 // QueryRequestContext return the specified request context
 func (s serviceClient) QueryRequestContext(reqCtxID string) (QueryRequestContextResp, sdk.Error) {
-	params := struct{ RequestContextID string }{
+	param := struct{ RequestContextID string }{
 		RequestContextID: reqCtxID,
 	}
-	data, err := legacy.Cdc.MarshalJSON(params)
-	if err != nil {
+
+	var res RequestContext
+	if err := s.QueryWithResponse(fmt.Sprintf(servicePath, "context"), param, &res); err != nil {
 		return QueryRequestContextResp{}, sdk.Wrap(err)
 	}
 
-	resultABCIQuery, err := s.ABCIQuery(context.Background(), fmt.Sprintf(servicePath, "context"), data)
-	if err != nil {
-		return QueryRequestContextResp{}, sdk.Wrap(err)
-	}
-
-	var reqCtx RequestContext
-	if err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &reqCtx); err != nil {
-		return QueryRequestContextResp{}, sdk.Wrap(err)
-	}
-
-	return reqCtx.Convert().(QueryRequestContextResp), nil
+	return res.Convert().(QueryRequestContextResp), nil
 }
 
 //QueryFees return the earned fees for a provider
@@ -720,25 +635,16 @@ func (s serviceClient) QueryFees(provider string) (sdk.Coins, sdk.Error) {
 		return nil, sdk.Wrap(err)
 	}
 
-	params := struct{ Provider string }{
+	param := struct{ Provider string }{
 		Provider: provider,
 	}
-	data, err := legacy.Cdc.MarshalJSON(params)
-	if err != nil {
+
+	var res sdktypes.Coins
+	if err := s.QueryWithResponse(fmt.Sprintf(servicePath, "fees"), param, &res); err != nil {
 		return sdk.Coins{}, sdk.Wrap(err)
 	}
 
-	resultABCIQuery, err := s.ABCIQuery(context.Background(), fmt.Sprintf(servicePath, "fees"), data)
-	if err != nil {
-		return sdk.Coins{}, sdk.Wrap(err)
-	}
-
-	var resp sdktypes.Coins
-	err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &resp)
-	if err != nil {
-		return sdk.Coins{}, sdk.Wrap(err)
-	}
-	return resp, nil
+	return res.Convert().(sdktypes.Coins), nil
 }
 
 func (s serviceClient) QueryParams() (QueryParamsResp, sdk.Error) {

@@ -1,7 +1,6 @@
 package modules
 
 import (
-	"context"
 	"fmt"
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/legacy"
@@ -47,24 +46,19 @@ func (a accountQuery) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) 
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
-	request := struct {
+	param := struct {
 		Address string `json:"address"`
 	}{
 		Address: address,
 	}
 
-	data, err := legacy.Cdc.MarshalJSON(request)
-	if err != nil {
-		return sdk.BaseAccount{}, sdk.Wrap(err)
-	}
-
-	resultABCIQuery, err := a.ABCIQuery(context.Background(), "/custom/auth/account", data)
-	if err != nil {
-		return sdk.BaseAccount{}, sdk.Wrap(err)
-	}
-
 	var acc auth.Account
-	if err = legacy.Cdc.UnmarshalJSON(resultABCIQuery.Response.Value, &acc); err != nil {
+	bz, err := a.Query("/custom/auth/account", param)
+	if err != nil {
+		return sdk.BaseAccount{}, sdk.Wrap(err)
+	}
+
+	if err = legacy.Cdc.UnmarshalJSON(bz, &acc); err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
 
@@ -87,20 +81,12 @@ func (a accountQuery) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) 
 	}{
 		Address: address,
 	}
-	balanceData, err := legacy.Cdc.MarshalJSON(balanceReq)
-	if err != nil {
-		return sdk.BaseAccount{}, sdk.Wrap(err)
-	}
-
-	balancerResultABCIQuery, err := a.ABCIQuery(context.Background(), "/custom/bank/all_balances", balanceData)
-	if err != nil {
-		return sdk.BaseAccount{}, sdk.Wrap(err)
-	}
 
 	var coins sdk.Coins
-	if err = legacy.Cdc.UnmarshalJSON(balancerResultABCIQuery.Response.Value, &coins); err != nil {
+	if err = a.QueryWithResponse("/custom/bank/all_balances", balanceReq, &coins); err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
+
 	account.Coins = coins
 	return account, nil
 }

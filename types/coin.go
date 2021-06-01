@@ -130,6 +130,10 @@ func (coin Coin) IsNegative() bool {
 // Coins is a set of Coin, one per currency
 type Coins []Coin
 
+func (coins Coins) Convert() interface{} {
+	return coins
+}
+
 // NewCoins constructs a new coin set.
 func NewCoins(coins ...Coin) Coins {
 	// remove zeroes

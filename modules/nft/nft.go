@@ -1,8 +1,8 @@
 package nft
 
 import (
-	"context"
-
+	"encoding/binary"
+	"fmt"
 	"github.com/bianjieai/irita-sdk-go/codec"
 	"github.com/bianjieai/irita-sdk-go/codec/types"
 	"github.com/bianjieai/irita-sdk-go/types/query"
@@ -129,58 +129,52 @@ func (nc nftClient) QuerySupply(denom, creator string) (uint64, sdk.Error) {
 		return 0, sdk.Wrapf("denom is required")
 	}
 
-	if err := sdk.ValidateAccAddress(creator); err != nil {
-		return 0, sdk.Wrap(err)
+	owner, e := sdk.AccAddressFromBech32(creator)
+	if e != nil {
+		return 0, sdk.Wrap(e)
 	}
 
-	conn, err := nc.GenConn()
-	defer func() { _ = conn.Close() }()
+	param := struct {
+		Denom string
+		Owner sdk.AccAddress
+	}{
+		Denom: denom,
+		Owner: owner,
+	}
+
+	bz, err := nc.Query(fmt.Sprintf(nftPath, "supply"), param)
 	if err != nil {
 		return 0, sdk.Wrap(err)
 	}
 
-	res, err := NewQueryClient(conn).Supply(
-		context.Background(),
-		&QuerySupplyRequest{
-			Owner:   creator,
-			DenomId: denom,
-		},
-	)
-	if err != nil {
-		return 0, sdk.Wrap(err)
-	}
-
-	return res.Amount, nil
+	supply := binary.LittleEndian.Uint64(bz)
+	return supply, nil
 }
 
-func (nc nftClient) QueryOwner(creator, denom string, pageReq *query.PageRequest) (QueryOwnerResp, sdk.Error) {
+func (nc nftClient) QueryOwner(creator, denom string, _ *query.PageRequest) (QueryOwnerResp, sdk.Error) {
 	if len(denom) == 0 {
 		return QueryOwnerResp{}, sdk.Wrapf("denom is required")
 	}
 
-	if err := sdk.ValidateAccAddress(creator); err != nil {
+	owner, e := sdk.AccAddressFromBech32(creator)
+	if e != nil {
+		return QueryOwnerResp{}, sdk.Wrap(e)
+	}
+
+	param := struct {
+		Denom string
+		Owner sdk.AccAddress
+	}{
+		Denom: denom,
+		Owner: owner,
+	}
+
+	var res QueryOwnerResp
+	if err := nc.QueryWithResponse(fmt.Sprintf(nftPath, "owner"), param, &res); err != nil {
 		return QueryOwnerResp{}, sdk.Wrap(err)
 	}
 
-	conn, err := nc.GenConn()
-	defer func() { _ = conn.Close() }()
-	if err != nil {
-		return QueryOwnerResp{}, sdk.Wrap(err)
-	}
-
-	res, err := NewQueryClient(conn).Owner(
-		context.Background(),
-		&QueryOwnerRequest{
-			Owner:      creator,
-			DenomId:    denom,
-			Pagination: pageReq,
-		},
-	)
-	if err != nil {
-		return QueryOwnerResp{}, sdk.Wrap(err)
-	}
-
-	return res.Owner.Convert().(QueryOwnerResp), nil
+	return res.Convert().(QueryOwnerResp), nil
 }
 
 func (nc nftClient) QueryCollection(denom string, pageReq *query.PageRequest) (QueryCollectionResp, sdk.Error) {
@@ -188,60 +182,46 @@ func (nc nftClient) QueryCollection(denom string, pageReq *query.PageRequest) (Q
 		return QueryCollectionResp{}, sdk.Wrapf("denom is required")
 	}
 
-	conn, err := nc.GenConn()
-	defer func() { _ = conn.Close() }()
-	if err != nil {
+	param := struct {
+		Denom string
+	}{
+		Denom: denom,
+	}
+
+	var res QueryCollectionResp
+	if err := nc.QueryWithResponse(fmt.Sprintf(nftPath, "collection"), param, &res); err != nil {
 		return QueryCollectionResp{}, sdk.Wrap(err)
 	}
 
-	res, err := NewQueryClient(conn).Collection(
-		context.Background(),
-		&QueryCollectionRequest{
-			DenomId:    denom,
-			Pagination: pageReq,
-		},
-	)
-	if err != nil {
-		return QueryCollectionResp{}, sdk.Wrap(err)
-	}
-
-	return res.Collection.Convert().(QueryCollectionResp), nil
+	return res.Convert().(QueryCollectionResp), nil
 }
 
-func (nc nftClient) QueryDenoms(pageReq *query.PageRequest) ([]QueryDenomResp, sdk.Error) {
-	conn, err := nc.GenConn()
-	defer func() { _ = conn.Close() }()
-	if err != nil {
+func (nc nftClient) QueryDenoms(_ *query.PageRequest) ([]QueryDenomResp, sdk.Error) {
+	var res QueryDenomResps
+	if err := nc.QueryWithResponse(fmt.Sprintf(nftPath, "denoms"), nil, &res); err != nil {
 		return nil, sdk.Wrap(err)
 	}
 
-	res, err := NewQueryClient(conn).Denoms(
-		context.Background(),
-		&QueryDenomsRequest{Pagination: pageReq},
-	)
-	if err != nil {
-		return nil, sdk.Wrap(err)
-	}
-
-	return denoms(res.Denoms).Convert().([]QueryDenomResp), nil
+	return res.Convert().(QueryDenomResps), nil
 }
 
 func (nc nftClient) QueryDenom(denom string) (QueryDenomResp, sdk.Error) {
-	conn, err := nc.GenConn()
-	defer func() { _ = conn.Close() }()
-	if err != nil {
+	if len(denom) == 0 {
+		return QueryDenomResp{}, sdk.Wrapf("denom is required")
+	}
+
+	param := struct {
+		ID string
+	}{
+		ID: denom,
+	}
+
+	var res QueryDenomResp
+	if err := nc.QueryWithResponse(fmt.Sprintf(nftPath, "denom"), param, &res); err != nil {
 		return QueryDenomResp{}, sdk.Wrap(err)
 	}
 
-	res, err := NewQueryClient(conn).Denom(
-		context.Background(),
-		&QueryDenomRequest{DenomId: denom},
-	)
-	if err != nil {
-		return QueryDenomResp{}, sdk.Wrap(err)
-	}
-
-	return res.Denom.Convert().(QueryDenomResp), nil
+	return res.Convert().(QueryDenomResp), nil
 }
 
 func (nc nftClient) QueryNFT(denom, tokenID string) (QueryNFTResp, sdk.Error) {
@@ -253,22 +233,18 @@ func (nc nftClient) QueryNFT(denom, tokenID string) (QueryNFTResp, sdk.Error) {
 		return QueryNFTResp{}, sdk.Wrapf("tokenID is required")
 	}
 
-	conn, err := nc.GenConn()
-	defer func() { _ = conn.Close() }()
-	if err != nil {
+	param := struct {
+		Denom   string
+		TokenID string
+	}{
+		Denom:   denom,
+		TokenID: tokenID,
+	}
+
+	var res BaseNFT
+	if err := nc.QueryWithResponse(fmt.Sprintf(nftPath, "nft"), param, &res); err != nil {
 		return QueryNFTResp{}, sdk.Wrap(err)
 	}
 
-	res, err := NewQueryClient(conn).NFT(
-		context.Background(),
-		&QueryNFTRequest{
-			DenomId: denom,
-			TokenId: tokenID,
-		},
-	)
-	if err != nil {
-		return QueryNFTResp{}, sdk.Wrap(err)
-	}
-
-	return res.NFT.Convert().(QueryNFTResp), nil
+	return res.Convert().(QueryNFTResp), nil
 }

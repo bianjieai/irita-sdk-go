@@ -27,3 +27,14 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgBurnNFT{},
 	)
 }
+
+func RegisterCodec(cdc *codec.LegacyAmino) {
+	cdc.RegisterConcrete(MsgIssueDenom{}, "irismod/nft/MsgIssueDenom", nil)
+	cdc.RegisterConcrete(MsgMintNFT{}, "irismod/nft/MsgMintNFT", nil)
+	cdc.RegisterConcrete(MsgTransferNFT{}, "irismod/nft/MsgTransferNFT", nil)
+	cdc.RegisterConcrete(MsgEditNFT{}, "irismod/nft/MsgEditNFT", nil)
+	cdc.RegisterConcrete(MsgBurnNFT{}, "irismod/nft/MsgBurnNFT", nil)
+
+	cdc.RegisterInterface((*nft)(nil), nil)
+	cdc.RegisterConcrete(BaseNFT{}, "irismod/nft/BaseNFT", nil)
+}
