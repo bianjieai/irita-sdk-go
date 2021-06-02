@@ -62,13 +62,17 @@ type BurnNFTRequest struct {
 
 // IDC defines a set of nft ids that belong to a specific
 type IDC struct {
-	Denom    string   `json:"denom" yaml:"denom"`
+	Denom    string   `json:"denom_id" yaml:"denom_id"`
 	TokenIDs []string `json:"token_ids" yaml:"token_ids"`
 }
 
 type QueryOwnerResp struct {
 	Address string `json:"address" yaml:"address"`
-	IDCs    []IDC  `json:"idcs" yaml:"idcs"`
+	IDCs    []IDC  `json:"id_collections" yaml:"id_collections"`
+}
+
+func (q QueryOwnerResp) Convert() interface{} {
+	return q
 }
 
 // BaseNFT non fungible token definition
@@ -77,7 +81,11 @@ type QueryNFTResp struct {
 	Name    string `json:"name"`
 	URI     string `json:"uri"`
 	Data    string `json:"data"`
-	Creator string `json:"creator"`
+	Creator string `json:"owner"`
+}
+
+func (q QueryNFTResp) Convert() interface{} {
+	return q
 }
 
 type QueryDenomResp struct {
@@ -87,7 +95,21 @@ type QueryDenomResp struct {
 	Creator string `json:"creator"`
 }
 
+func (q QueryDenomResp) Convert() interface{} {
+	return q
+}
+
 type QueryCollectionResp struct {
 	Denom QueryDenomResp `json:"denom" yaml:"denom"`
 	NFTs  []QueryNFTResp `json:"nfts" yaml:"nfts"`
+}
+
+func (q QueryCollectionResp) Convert() interface{} {
+	return q
+}
+
+type QueryDenomResps []QueryDenomResp
+
+func (q QueryDenomResps) Convert() interface{} {
+	return q
 }

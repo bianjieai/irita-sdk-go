@@ -8,6 +8,8 @@ import (
 
 const (
 	ModuleName = "nft"
+
+	nftPath = "/custom/nft/%s"
 )
 
 var (
@@ -231,16 +233,6 @@ func (o Owner) Convert() interface{} {
 	return QueryOwnerResp{
 		Address: o.Address,
 		IDCs:    idcs,
-	}
-}
-
-func (this BaseNFT) Convert() interface{} {
-	return QueryNFTResp{
-		ID:      this.Id,
-		Name:    this.Name,
-		URI:     this.URI,
-		Data:    this.Data,
-		Creator: this.Owner,
 	}
 }
 

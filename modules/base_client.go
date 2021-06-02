@@ -10,8 +10,6 @@ import (
 	"time"
 
 	"github.com/avast/retry-go"
-	"github.com/gogo/protobuf/proto"
-
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
@@ -237,7 +235,7 @@ func (base baseClient) QueryWithResponse(path string, data interface{}, result s
 		return err
 	}
 
-	if err := base.encodingConfig.Marshaler.UnmarshalJSON(res, result.(proto.Message)); err != nil {
+	if err = base.encodingConfig.Amino.UnmarshalJSON(res, result); err != nil {
 		return err
 	}
 
@@ -248,7 +246,7 @@ func (base baseClient) Query(path string, data interface{}) ([]byte, error) {
 	var bz []byte
 	var err error
 	if data != nil {
-		bz, err = base.encodingConfig.Marshaler.MarshalJSON(data.(proto.Message))
+		bz, err = base.encodingConfig.Amino.MarshalJSON(data)
 		if err != nil {
 			return nil, err
 		}
