@@ -33,9 +33,10 @@ func (s IntegrationTestSuite) TestRecord() {
 		Contents: contents,
 	}
 
-	recordID, err := s.Record.CreateRecord(req, baseTx)
+	recordID, txHash, err := s.Record.CreateRecord(req, baseTx)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), recordID)
+	require.NotEmpty(s.T(), txHash)
 
 	request := record.QueryRecordReq{
 		RecordID: recordID,

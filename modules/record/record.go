@@ -28,10 +28,10 @@ func (r recordClient) RegisterInterfaceTypes(registry types.InterfaceRegistry) {
 	RegisterInterfaces(registry)
 }
 
-func (r recordClient) CreateRecord(request CreateRecordRequest, baseTx sdk.BaseTx) (string, sdk.Error) {
+func (r recordClient) CreateRecord(request CreateRecordRequest, baseTx sdk.BaseTx) (string, string, sdk.Error) {
 	creator, err := r.QueryAddress(baseTx.From, baseTx.Password)
 	if err != nil {
-		return "", sdk.Wrap(err)
+		return "", "", sdk.Wrap(err)
 	}
 
 	msg := &MsgCreateRecord{
@@ -41,15 +41,15 @@ func (r recordClient) CreateRecord(request CreateRecordRequest, baseTx sdk.BaseT
 
 	res, err := r.BuildAndSend([]sdk.Msg{msg}, baseTx)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	recordID, er := res.Events.GetValue(eventTypeCreateRecord, attributeKeyRecordID)
 	if er != nil {
-		return "", sdk.Wrap(er)
+		return "", "", sdk.Wrap(er)
 	}
 
-	return recordID, nil
+	return recordID, res.Hash, nil
 }
 
 func (r recordClient) QueryRecord(request QueryRecordReq) (QueryRecordResp, sdk.Error) {
