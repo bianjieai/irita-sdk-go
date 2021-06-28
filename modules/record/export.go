@@ -8,7 +8,7 @@ import (
 type Client interface {
 	sdk.Module
 
-	CreateRecord(request CreateRecordRequest, baseTx sdk.BaseTx) (string, sdk.Error)
+	CreateRecord(request CreateRecordRequest, baseTx sdk.BaseTx) (string, string, sdk.Error)
 	QueryRecord(request QueryRecordReq) (QueryRecordResp, sdk.Error)
 }
 
