@@ -28,7 +28,7 @@ func (l tokenQuery) QueryToken(denom string) (sdk.Token, error) {
 	}
 
 	conn, err := l.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return sdk.Token{}, sdk.Wrap(err)
 	}

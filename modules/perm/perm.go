@@ -104,7 +104,7 @@ func (a permClient) UnblockAccount(address string, baseTx sdk.BaseTx) (sdk.Resul
 
 func (a permClient) QueryRoles(address string) ([]Role, sdk.Error) {
 	conn, err := a.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
@@ -127,7 +127,7 @@ func (a permClient) QueryRoles(address string) ([]Role, sdk.Error) {
 
 func (a permClient) QueryBlacklist(page, limit int) ([]string, sdk.Error) {
 	conn, err := a.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
