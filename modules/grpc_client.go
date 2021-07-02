@@ -1,12 +1,13 @@
 package modules
 
 import (
+	"sync"
+	"time"
+
 	"github.com/bianjieai/irita-sdk-go/types"
 	"github.com/prometheus/common/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
-	"sync"
-	"time"
 )
 
 var clientConnSingleton *grpc.ClientConn
