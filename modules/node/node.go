@@ -123,7 +123,7 @@ func (n nodeClient) RevokeNode(nodeId string, baseTx sdk.BaseTx) (sdk.ResultTx, 
 
 func (n nodeClient) QueryValidators(pageReq *query.PageRequest) ([]QueryValidatorResp, sdk.Error) {
 	conn, err := n.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
@@ -143,7 +143,7 @@ func (n nodeClient) QueryValidators(pageReq *query.PageRequest) ([]QueryValidato
 
 func (n nodeClient) QueryValidator(id string) (QueryValidatorResp, sdk.Error) {
 	conn, err := n.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return QueryValidatorResp{}, sdk.Wrap(err)
 	}
@@ -168,7 +168,7 @@ func (n nodeClient) QueryValidator(id string) (QueryValidatorResp, sdk.Error) {
 
 func (n nodeClient) QueryNodes(pageReq *query.PageRequest) ([]QueryNodeResp, sdk.Error) {
 	conn, err := n.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
@@ -188,7 +188,7 @@ func (n nodeClient) QueryNodes(pageReq *query.PageRequest) ([]QueryNodeResp, sdk
 
 func (n nodeClient) QueryNode(id string) (QueryNodeResp, sdk.Error) {
 	conn, err := n.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return QueryNodeResp{}, sdk.Wrap(err)
 	}
@@ -213,7 +213,7 @@ func (n nodeClient) QueryNode(id string) (QueryNodeResp, sdk.Error) {
 
 func (n nodeClient) QueryParams() (QueryParamsResp, sdk.Error) {
 	conn, err := n.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return QueryParamsResp{}, sdk.Wrap(err)
 	}

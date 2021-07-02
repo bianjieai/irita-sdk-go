@@ -359,8 +359,6 @@ func (base *baseClient) ValidateTxSize(txSize int, msgs []sdk.Msg) (bool, sdk.Er
 			return false, sdk.Wrap(err)
 		}
 
-		defer func() { _ = conn.Close() }()
-
 		res, err := service.NewQueryClient(conn).Params(
 			context.Background(),
 			&service.QueryParamsRequest{},

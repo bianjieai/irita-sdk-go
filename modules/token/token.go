@@ -126,7 +126,6 @@ func (t tokenClient) QueryTokens(owner string, pageReq *query.PageRequest) (sdk.
 	}
 
 	conn, err := t.GenConn()
-	defer func() { _ = conn.Close() }()
 
 	if err != nil {
 		return sdk.Tokens{}, sdk.Wrap(err)
@@ -158,7 +157,7 @@ func (t tokenClient) QueryTokens(owner string, pageReq *query.PageRequest) (sdk.
 
 func (t tokenClient) QueryFees(symbol string) (QueryFeesResp, error) {
 	conn, err := t.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return QueryFeesResp{}, sdk.Wrap(err)
 	}
@@ -177,7 +176,7 @@ func (t tokenClient) QueryFees(symbol string) (QueryFeesResp, error) {
 
 func (t tokenClient) QueryParams() (QueryParamsResp, error) {
 	conn, err := t.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return QueryParamsResp{}, sdk.Wrap(err)
 	}

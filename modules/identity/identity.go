@@ -107,7 +107,7 @@ func (i identityClient) UpdateIdentity(request UpdateIdentityRequest, baseTx sdk
 
 func (i identityClient) QueryIdentity(id string) (QueryIdentityResp, sdk.Error) {
 	conn, err := i.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return QueryIdentityResp{}, sdk.Wrap(err)
 	}
