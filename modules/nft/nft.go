@@ -134,7 +134,7 @@ func (nc nftClient) QuerySupply(denom, creator string) (uint64, sdk.Error) {
 	}
 
 	conn, err := nc.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return 0, sdk.Wrap(err)
 	}
@@ -163,7 +163,7 @@ func (nc nftClient) QueryOwner(creator, denom string, pageReq *query.PageRequest
 	}
 
 	conn, err := nc.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return QueryOwnerResp{}, sdk.Wrap(err)
 	}
@@ -189,7 +189,7 @@ func (nc nftClient) QueryCollection(denom string, pageReq *query.PageRequest) (Q
 	}
 
 	conn, err := nc.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return QueryCollectionResp{}, sdk.Wrap(err)
 	}
@@ -210,7 +210,7 @@ func (nc nftClient) QueryCollection(denom string, pageReq *query.PageRequest) (Q
 
 func (nc nftClient) QueryDenoms(pageReq *query.PageRequest) ([]QueryDenomResp, sdk.Error) {
 	conn, err := nc.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
@@ -228,7 +228,7 @@ func (nc nftClient) QueryDenoms(pageReq *query.PageRequest) ([]QueryDenomResp, s
 
 func (nc nftClient) QueryDenom(denom string) (QueryDenomResp, sdk.Error) {
 	conn, err := nc.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return QueryDenomResp{}, sdk.Wrap(err)
 	}
@@ -254,7 +254,7 @@ func (nc nftClient) QueryNFT(denom, tokenID string) (QueryNFTResp, sdk.Error) {
 	}
 
 	conn, err := nc.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return QueryNFTResp{}, sdk.Wrap(err)
 	}

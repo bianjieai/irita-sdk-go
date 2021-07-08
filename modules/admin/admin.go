@@ -104,7 +104,7 @@ func (a adminClient) UnblockAccount(address string, baseTx sdk.BaseTx) (sdk.Resu
 
 func (a adminClient) QueryRoles(address string) ([]Role, sdk.Error) {
 	conn, err := a.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
@@ -127,7 +127,7 @@ func (a adminClient) QueryRoles(address string) ([]Role, sdk.Error) {
 
 func (a adminClient) QueryBlacklist(page, limit int) ([]string, sdk.Error) {
 	conn, err := a.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}

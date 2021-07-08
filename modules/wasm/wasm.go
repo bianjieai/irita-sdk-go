@@ -141,7 +141,6 @@ func (wasm wasmClient) QueryContractInfo(address string) (*ContractInfo, error) 
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
-	defer conn.Close()
 
 	req := &QueryContractInfoRequest{
 		Address: address,
@@ -160,7 +159,6 @@ func (wasm wasmClient) ExportContractState(address string) (map[string][]byte, e
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
-	defer conn.Close()
 
 	req := &QueryAllContractStateRequest{
 		Address: address,
@@ -185,7 +183,6 @@ func (wasm wasmClient) QueryContract(address string, abi *ContractABI) ([]byte, 
 	if err != nil {
 		return nil, sdk.Wrap(err)
 	}
-	defer conn.Close()
 
 	msgBytes, err := abi.Build()
 	if err != nil {

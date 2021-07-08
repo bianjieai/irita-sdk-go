@@ -104,7 +104,7 @@ func (o oracleClient) EditFeedRequest(request EditFeedRequest, baseTx sdk.BaseTx
 
 func (o oracleClient) QueryFeed(feedName string) (QueryFeedResp, sdk.Error) {
 	conn, err := o.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return QueryFeedResp{}, sdk.Wrap(err)
 	}
@@ -124,7 +124,7 @@ func (o oracleClient) QueryFeed(feedName string) (QueryFeedResp, sdk.Error) {
 
 func (o oracleClient) QueryFeeds(state string) ([]QueryFeedResp, sdk.Error) {
 	conn, err := o.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return []QueryFeedResp{}, sdk.Wrap(err)
 	}
@@ -144,7 +144,7 @@ func (o oracleClient) QueryFeeds(state string) ([]QueryFeedResp, sdk.Error) {
 
 func (o oracleClient) QueryFeedValue(feedName string) ([]QueryFeedValueResp, sdk.Error) {
 	conn, err := o.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return []QueryFeedValueResp{}, sdk.Wrap(err)
 	}

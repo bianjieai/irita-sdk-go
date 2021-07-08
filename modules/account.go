@@ -45,7 +45,7 @@ func (a accountQuery) QueryAndRefreshAccount(address string) (sdk.BaseAccount, s
 
 func (a accountQuery) QueryAccount(address string) (sdk.BaseAccount, sdk.Error) {
 	conn, err := a.GenConn()
-	defer func() { _ = conn.Close() }()
+
 	if err != nil {
 		return sdk.BaseAccount{}, sdk.Wrap(err)
 	}
