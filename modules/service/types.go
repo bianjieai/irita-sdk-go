@@ -6,13 +6,12 @@ import (
 	"fmt"
 	"strings"
 
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	sdk "github.com/irisnet/service-sdk-go/types"
 )
 
 const (
 	ModuleName = "service"
 
-	eventTypeNewBatchRequest         = "new_batch_request"
 	eventTypeNewBatchRequestProvider = "new_batch_request_provider"
 	attributeKeyRequests             = "requests"
 	attributeKeyRequestID            = "request_id"
@@ -21,7 +20,6 @@ const (
 	attributeKeyProvider             = "provider"
 
 	requestIDLen = 58
-	contextIDLen = 40
 )
 
 var (

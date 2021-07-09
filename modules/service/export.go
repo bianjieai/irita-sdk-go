@@ -3,8 +3,7 @@ package service
 import (
 	"time"
 
-	sdk "github.com/bianjieai/irita-sdk-go/types"
-	"github.com/bianjieai/irita-sdk-go/types/query"
+	sdk "github.com/irisnet/service-sdk-go/types"
 )
 
 // Tx defines a set of transaction interfaces in the service module
@@ -31,12 +30,12 @@ type Tx interface {
 type Query interface {
 	QueryServiceDefinition(serviceName string) (QueryServiceDefinitionResponse, sdk.Error)
 	QueryServiceBinding(serviceName string, provider string) (QueryServiceBindingResponse, sdk.Error)
-	QueryServiceBindings(serviceName string, pageReq *query.PageRequest) ([]QueryServiceBindingResponse, sdk.Error)
+	QueryServiceBindings(serviceName string) ([]QueryServiceBindingResponse, sdk.Error)
 	QueryServiceRequest(requestID string) (QueryServiceRequestResponse, sdk.Error)
-	QueryServiceRequests(serviceName string, provider string, pageReq *query.PageRequest) ([]QueryServiceRequestResponse, sdk.Error)
-	QueryRequestsByReqCtx(requestContextID string, batchCounter uint64, pageReq *query.PageRequest) ([]QueryServiceRequestResponse, sdk.Error)
+	QueryServiceRequests(serviceName string, provider string) ([]QueryServiceRequestResponse, sdk.Error)
+	QueryRequestsByReqCtx(requestContextID string, batchCounter uint64) ([]QueryServiceRequestResponse, sdk.Error)
 	QueryServiceResponse(requestID string) (QueryServiceResponseResponse, sdk.Error)
-	QueryServiceResponses(requestContextID string, batchCounter uint64, pageReq *query.PageRequest) ([]QueryServiceResponseResponse, sdk.Error)
+	QueryServiceResponses(requestContextID string, batchCounter uint64) ([]QueryServiceResponseResponse, sdk.Error)
 	QueryRequestContext(requestContextID string) (QueryRequestContextResp, sdk.Error)
 	QueryFees(provider string) (sdk.Coins, sdk.Error)
 	QueryParams() (QueryParamsResp, sdk.Error)
@@ -50,7 +49,7 @@ type Client interface {
 }
 
 // InvokeCallback defines the callback function for service calls
-type InvokeCallback func(reqCtxID, reqID, responses string)
+type InvokeCallback func(reqCtxID, reqID, result, responses string)
 
 // RespondCallback defines the callback function of the service response
 type RespondCallback func(reqCtxID, reqID, input string) (output string, result string)
@@ -66,7 +65,6 @@ type QueryServiceRequestResponse struct {
 	Consumer                   string    `json:"consumer"`
 	Input                      string    `json:"input"`
 	ServiceFee                 sdk.Coins `json:"service_fee"`
-	SuperMode                  bool      `json:"super_mode"`
 	RequestHeight              int64     `json:"request_height"`
 	ExpirationHeight           int64     `json:"expiration_height"`
 	RequestContextID           string    `json:"request_context_id"`
@@ -141,7 +139,6 @@ type InvokeServiceRequest struct {
 	Input             string       `json:"input"`
 	ServiceFeeCap     sdk.DecCoins `json:"service_fee_cap"`
 	Timeout           int64        `json:"timeout"`
-	SuperMode         bool         `json:"super_mode"`
 	Repeated          bool         `json:"repeated"`
 	RepeatedFrequency uint64       `json:"repeated_frequency"`
 	RepeatedTotal     int64        `json:"repeated_total"`
@@ -173,7 +170,6 @@ type QueryRequestContextResp struct {
 	Input              string    `json:"input"`
 	ServiceFeeCap      sdk.Coins `json:"service_fee_cap"`
 	Timeout            int64     `json:"timeout"`
-	SuperMode          bool      `json:"super_mode"`
 	Repeated           bool      `json:"repeated"`
 	RepeatedFrequency  uint64    `json:"repeated_frequency"`
 	RepeatedTotal      int64     `json:"repeated_total"`
