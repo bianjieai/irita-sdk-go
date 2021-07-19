@@ -50,7 +50,7 @@ type Client interface {
 }
 
 // InvokeCallback defines the callback function for service calls
-type InvokeCallback func(reqCtxID, reqID, responses string)
+type InvokeCallback func(reqCtxID, reqID, result, responses string)
 
 // RespondCallback defines the callback function of the service response
 type RespondCallback func(reqCtxID, reqID, input string) (output string, result string)

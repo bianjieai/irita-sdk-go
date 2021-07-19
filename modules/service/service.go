@@ -269,7 +269,7 @@ func (s serviceClient) SubscribeServiceResponse(reqCtxID string,
 					continue
 				}
 				if reqCtxID2.String() == strings.ToUpper(reqCtxID) {
-					callback(reqCtxID, msg.RequestId, msg.Output)
+					callback(reqCtxID, msg.RequestId, msg.Result, msg.Output)
 				}
 			}
 		}
