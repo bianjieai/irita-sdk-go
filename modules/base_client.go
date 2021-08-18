@@ -59,7 +59,7 @@ func NewBaseClient(cfg sdk.ClientConfig, encodingConfig sdk.EncodingConfig, logg
 
 	base := baseClient{
 		TmClient:       NewRPCClient(cfg.NodeURI, encodingConfig.Amino, encodingConfig.TxConfig.TxDecoder(), logger, cfg.Timeout),
-		GRPCClient:     NewGRPCClient(cfg.GRPCAddr),
+		GRPCClient:     NewGRPCClient(cfg.GRPCAddr, cfg.GRPCOptions...),
 		logger:         logger,
 		cfg:            &cfg,
 		encodingConfig: encodingConfig,
