@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"google.golang.org/grpc"
 	"os"
 
 	"github.com/bianjieai/irita-sdk-go/types/store"
@@ -25,6 +26,9 @@ type ClientConfig struct {
 
 	// irita grpc address
 	GRPCAddr string
+
+	// grpc dial options
+	GRPCOptions []grpc.DialOption
 
 	// irita chain-id
 	ChainID string

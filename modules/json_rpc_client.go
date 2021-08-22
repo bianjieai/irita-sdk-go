@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 	tmjson "github.com/tendermint/tendermint/libs/json"
 	"github.com/tendermint/tendermint/libs/log"
+	"github.com/tendermint/tendermint/libs/service"
 	"github.com/tendermint/tendermint/rpc/client"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
@@ -18,36 +20,14 @@ import (
 	"strconv"
 )
 
+var errNotRunning = errors.New("client is not running. Use .Start() method to start")
+
+var _ service.Service = (*JsonRpcClient)(nil)
+
 type JsonRpcClient struct {
+	service.Service
 	address string
-}
-
-func (c JsonRpcClient) Start() error {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) OnStart() error {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) Stop() error {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) OnStop() {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) Reset() error {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) OnReset() error {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) IsRunning() bool {
-	panic("implement me")
+	*WSEvents
 }
 
 func (c JsonRpcClient) Quit() <-chan struct{} {
@@ -94,18 +74,6 @@ func (c JsonRpcClient) BroadcastTxAsync(ctx context.Context, tx tmtypes.Tx) (*ct
 
 func (c JsonRpcClient) BroadcastTxSync(ctx context.Context, tx tmtypes.Tx) (*ctypes.ResultBroadcastTx, error) {
 	return c.broadcastTX(ctx, "broadcast_tx_sync", tx)
-}
-
-func (c JsonRpcClient) Subscribe(ctx context.Context, subscriber, query string, outCapacity ...int) (out <-chan ctypes.ResultEvent, err error) {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) Unsubscribe(ctx context.Context, subscriber, query string) error {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) UnsubscribeAll(ctx context.Context, subscriber string) error {
-	panic("implement me")
 }
 
 func (c JsonRpcClient) Genesis(ctx context.Context) (*ctypes.ResultGenesis, error) {

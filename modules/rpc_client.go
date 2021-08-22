@@ -27,8 +27,13 @@ func NewRPCClient(
 	logger log.Logger,
 	timeout uint,
 ) sdk.TmClient {
+	wsEvents, err := newWSEvents(remote, "/websocket")
+	if err != nil {
+		panic(err)
+	}
 	client := JsonRpcClient{
 		address: remote,
+		WSEvents: wsEvents,
 	}
 	return rpcClient{
 		Client:    client,
