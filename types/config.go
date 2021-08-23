@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 	"google.golang.org/grpc"
+	"net/http"
 	"os"
 
 	"github.com/bianjieai/irita-sdk-go/types/store"
@@ -22,7 +23,16 @@ const (
 
 type ClientConfig struct {
 	// irita node rpc address
-	NodeURI string
+	RPCAddr string
+
+	// rpc headers
+	RPCHeader http.Header
+
+	// irita websocket address
+	WSAddr string
+
+	// websocket headers
+	WSHeader http.Header
 
 	// irita grpc address
 	GRPCAddr string
@@ -64,9 +74,10 @@ type ClientConfig struct {
 	Cached bool
 }
 
-func NewClientConfig(uri, grpcAddr, chainID string, options ...Option) (ClientConfig, error) {
+func NewClientConfig(rpcAddr, wsAddr, grpcAddr, chainID string, options ...Option) (ClientConfig, error) {
 	cfg := ClientConfig{
-		NodeURI:  uri,
+		RPCAddr:  rpcAddr,
+		WSAddr:   wsAddr,
 		ChainID:  chainID,
 		GRPCAddr: grpcAddr,
 	}
@@ -83,7 +94,7 @@ func NewClientConfig(uri, grpcAddr, chainID string, options ...Option) (ClientCo
 }
 
 func (cfg *ClientConfig) checkAndSetDefault() error {
-	if len(cfg.NodeURI) == 0 {
+	if len(cfg.RPCAddr) == 0 {
 		return fmt.Errorf("nodeURI is required")
 	}
 

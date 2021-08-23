@@ -8,17 +8,20 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"strings"
 	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
-	metrics "github.com/rcrowley/go-metrics"
+	"github.com/rcrowley/go-metrics"
+	tmjson "github.com/tendermint/tendermint/libs/json"
+	tmpubsub "github.com/tendermint/tendermint/libs/pubsub"
 
 	tmrand "github.com/tendermint/tendermint/libs/rand"
 	"github.com/tendermint/tendermint/libs/service"
 	tmsync "github.com/tendermint/tendermint/libs/sync"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
-	types "github.com/tendermint/tendermint/rpc/jsonrpc/types"
+	"github.com/tendermint/tendermint/rpc/jsonrpc/types"
 )
 
 const (
@@ -44,22 +47,24 @@ type WSEvents struct {
 	service.BaseService
 	remote   string
 	endpoint string
+	header   http.Header
 	ws       *WSClient
 
 	mtx           tmsync.RWMutex
 	subscriptions map[string]chan ctypes.ResultEvent // query -> chan
 }
 
-func newWSEvents(remote, endpoint string) (*WSEvents, error) {
+func newWSEvents(remote string, endpoint string, header http.Header) (*WSEvents, error) {
 	w := &WSEvents{
 		endpoint:      endpoint,
 		remote:        remote,
+		header:        header,
 		subscriptions: make(map[string]chan ctypes.ResultEvent),
 	}
 	w.BaseService = *service.NewBaseService(nil, "WSEvents", w)
 
 	var err error
-	w.ws, err = NewWS(w.remote, w.endpoint, OnReconnect(func() {
+	w.ws, err = NewWS(w.remote, w.endpoint, w.header, OnReconnect(func() {
 		// resubscribe immediately
 		w.redoSubscriptionsAfter(0 * time.Second)
 	}))
@@ -67,9 +72,25 @@ func newWSEvents(remote, endpoint string) (*WSEvents, error) {
 		return nil, err
 	}
 	w.ws.SetLogger(w.Logger)
-	w.ws.Start()
-	w.Start()
 	return w, nil
+}
+
+// OnStart implements service.Service by starting WSClient and event loop.
+func (w *WSEvents) OnStart() error {
+	if err := w.ws.Start(); err != nil {
+		return err
+	}
+
+	go w.eventListener()
+
+	return nil
+}
+
+// OnStop implements service.Service by stopping WSClient.
+func (w *WSEvents) OnStop() {
+	if err := w.ws.Stop(); err != nil {
+		w.Logger.Error("Can't stop ws client", "err", err)
+	}
 }
 
 // Subscribe implements EventsClient by using WSClient to subscribe given
@@ -163,6 +184,58 @@ func (w *WSEvents) redoSubscriptionsAfter(d time.Duration) {
 	}
 }
 
+func isErrAlreadySubscribed(err error) bool {
+	return strings.Contains(err.Error(), tmpubsub.ErrAlreadySubscribed.Error())
+}
+
+func (w *WSEvents) eventListener() {
+	for {
+		select {
+		case resp, ok := <-w.ws.ResponsesCh:
+			if !ok {
+				return
+			}
+
+			if resp.Error != nil {
+				w.Logger.Error("WS error", "err", resp.Error.Error())
+				// Error can be ErrAlreadySubscribed or max client (subscriptions per
+				// client) reached or Tendermint exited.
+				// We can ignore ErrAlreadySubscribed, but need to retry in other
+				// cases.
+				if !isErrAlreadySubscribed(resp.Error) {
+					// Resubscribe after 1 second to give Tendermint time to restart (if
+					// crashed).
+					w.redoSubscriptionsAfter(1 * time.Second)
+				}
+				continue
+			}
+
+			result := new(ctypes.ResultEvent)
+			err := tmjson.Unmarshal(resp.Result, result)
+			if err != nil {
+				w.Logger.Error("failed to unmarshal response", "err", err)
+				continue
+			}
+
+			w.mtx.RLock()
+			if out, ok := w.subscriptions[result.Query]; ok {
+				if cap(out) == 0 {
+					out <- *result
+				} else {
+					select {
+					case out <- *result:
+					default:
+						w.Logger.Error("wanted to publish ResultEvent, but out channel is full", "result", result, "query", result.Query)
+					}
+				}
+			}
+			w.mtx.RUnlock()
+		case <-w.Quit():
+			return
+		}
+	}
+}
+
 // WSClient is a JSON-RPC client, which uses WebSocket for communication with
 // the remote server.
 //
@@ -172,6 +245,7 @@ type WSClient struct { // nolint: maligned
 
 	Address  string // IP:PORT or /path/to/socket
 	Endpoint string // /websocket/url/endpoint
+	Header   http.Header
 	Dialer   func(string, string) (net.Conn, error)
 
 	// Single user facing channel to read RPCResponses from, closed only when the
@@ -221,7 +295,7 @@ type WSClient struct { // nolint: maligned
 // functions for a detailed description of how to configure ping period and
 // pong wait time. The endpoint argument must begin with a `/`.
 // An error is returned on invalid remote. The function panics when remote is nil.
-func NewWS(remoteAddr, endpoint string, options ...func(*WSClient)) (*WSClient, error) {
+func NewWS(remoteAddr, endpoint string, header http.Header, options ...func(*WSClient)) (*WSClient, error) {
 	parsedURL, err := newParsedURL(remoteAddr)
 	if err != nil {
 		return nil, err
@@ -237,9 +311,10 @@ func NewWS(remoteAddr, endpoint string, options ...func(*WSClient)) (*WSClient, 
 	}
 
 	c := &WSClient{
-		Address:              parsedURL.String(),
+		Address:              parsedURL.Host + parsedURL.Path,
 		Dialer:               dialFn,
 		Endpoint:             endpoint,
+		Header:               header,
 		PingPongLatencyTimer: metrics.NewTimer(),
 
 		maxReconnectAttempts: defaultMaxReconnectAttempts,
@@ -305,7 +380,7 @@ func (c *WSClient) String() string {
 // OnStart implements service.Service by dialing a server and creating read and
 // write routines.
 func (c *WSClient) OnStart() error {
-	err := c.dial()
+	err := c.dial(c.Header)
 	if err != nil {
 		return err
 	}
@@ -396,13 +471,12 @@ func (c *WSClient) nextRequestID() types.JSONRPCIntID {
 	return types.JSONRPCIntID(id)
 }
 
-func (c *WSClient) dial() error {
+func (c *WSClient) dial(header http.Header) error {
 	dialer := &websocket.Dialer{
 		NetDial: c.Dialer,
 		Proxy:   http.ProxyFromEnvironment,
 	}
-	rHeader := http.Header{}
-	conn, _, err := dialer.Dial(c.protocol+"://"+c.Address+c.Endpoint, rHeader) // nolint:bodyclose
+	conn, _, err := dialer.Dial(c.protocol+"://"+c.Address+c.Endpoint, header) // nolint:bodyclose
 	if err != nil {
 		return err
 	}
@@ -431,7 +505,7 @@ func (c *WSClient) reconnect() error {
 		c.Logger.Info("reconnecting", "attempt", attempt+1, "backoff_duration", backoffDuration)
 		time.Sleep(backoffDuration)
 
-		err := c.dial()
+		err := c.dial(c.Header)
 		if err != nil {
 			c.Logger.Error("failed to redial", "err", err)
 		} else {

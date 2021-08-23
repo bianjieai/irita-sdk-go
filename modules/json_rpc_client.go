@@ -25,8 +25,8 @@ var errNotRunning = errors.New("client is not running. Use .Start() method to st
 var _ service.Service = (*JsonRpcClient)(nil)
 
 type JsonRpcClient struct {
-	service.Service
 	address string
+	header http.Header
 	*WSEvents
 }
 
@@ -274,31 +274,46 @@ func (c *JsonRpcClient) mapToRequest(method string, params map[string]interface{
 	paramsMap["params"] = params
 	return json.Marshal(paramsMap)
 }
+func (c *JsonRpcClient) Do(req *http.Request) (*http.Response, error) {
+	return http.DefaultClient.Do(req)
+}
 
 func (c *JsonRpcClient) Call(ctx context.Context, method string, params map[string]interface{}, result interface{}) (interface{}, error) {
 	requestBytes, err := c.mapToRequest(method, params)
 	if err != nil {
-		return nil, fmt.Errorf("request failed: %w", err)
+		return nil, fmt.Errorf("request failed: %s", err.Error())
 	}
-	httpResponse, err := http.Post(c.address, "application/json", bytes.NewReader(requestBytes))
+
+	req, err := http.NewRequest(http.MethodPost, c.address, bytes.NewReader(requestBytes))
 	if err != nil {
-		return nil, fmt.Errorf("post failed: %w", err)
+		return nil, fmt.Errorf("request failed: %s", err.Error())
+	}
+
+	if c.header != nil {
+		for h := range c.header {
+			req.Header.Add(h, c.header.Get(h))
+		}
+	}
+
+	httpResponse, err := c.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("post failed: %s", err.Error())
 	}
 	defer httpResponse.Body.Close()
 
 	httpResponseBytes, err := ioutil.ReadAll(httpResponse.Body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %w", err)
+		return nil, fmt.Errorf("failed to read response body: %s", err.Error())
 	}
 	rpcResponse := &types.RPCResponse{}
 	if err = json.Unmarshal(httpResponseBytes, rpcResponse); err != nil {
-		return nil, fmt.Errorf("error unmarshalling: %w", err)
+		return nil, fmt.Errorf("error unmarshalling: %s", err.Error())
 	}
 	if rpcResponse.Error != nil {
 		return nil, fmt.Errorf("request failed, code: %d, message: %s, data: %s", rpcResponse.Error.Code, rpcResponse.Error.Message, rpcResponse.Error.Data)
 	}
 	if err = tmjson.Unmarshal(rpcResponse.Result, result); err != nil {
-		return nil, fmt.Errorf("error unmarshalling result: %w", err)
+		return nil, fmt.Errorf("error unmarshalling result: %s", err.Error())
 	}
 	return result, nil
 }
