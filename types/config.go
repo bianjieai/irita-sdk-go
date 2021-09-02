@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/bianjieai/irita-sdk-go/types/store"
+	"github.com/bianjieai/irita-sdk-go/v2/types/store"
 )
 
 const (

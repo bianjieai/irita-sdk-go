@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bianjieai/irita-sdk-go/modules/nft"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/v2/modules/nft"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 func (s IntegrationTestSuite) TestNFT() {

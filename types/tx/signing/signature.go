@@ -3,7 +3,7 @@ package signing
 import (
 	"fmt"
 
-	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
+	codectypes "github.com/bianjieai/irita-sdk-go/v2/codec/types"
 
 	"github.com/tendermint/tendermint/crypto"
 )

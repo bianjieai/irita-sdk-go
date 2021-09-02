@@ -3,9 +3,9 @@ package perm
 import (
 	"context"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/codec/types"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/codec/types"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 type permClient struct {

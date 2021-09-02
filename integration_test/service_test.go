@@ -5,10 +5,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/bianjieai/irita-sdk-go/types"
-	"github.com/bianjieai/irita-sdk-go/types/query"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
+	"github.com/bianjieai/irita-sdk-go/v2/types/query"
 
-	"github.com/bianjieai/irita-sdk-go/modules/service"
+	"github.com/bianjieai/irita-sdk-go/v2/modules/service"
 )
 
 func (s IntegrationTestSuite) TestService() {

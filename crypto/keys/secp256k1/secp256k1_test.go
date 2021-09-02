@@ -7,9 +7,9 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/secp256k1"
-	cryptotypes "github.com/bianjieai/irita-sdk-go/crypto/types"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/keys/secp256k1"
+	cryptotypes "github.com/bianjieai/irita-sdk-go/v2/crypto/types"
 
 	btcSecp256k1 "github.com/btcsuite/btcd/btcec"
 	"github.com/btcsuite/btcutil/base58"

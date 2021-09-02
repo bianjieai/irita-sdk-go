@@ -3,7 +3,7 @@ package utils
 import (
 	"crypto/rand"
 
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 // GenerateRandomBytes returns securely generated random bytes.

@@ -3,9 +3,9 @@ package tx
 import (
 	"fmt"
 
-	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
+	codectypes "github.com/bianjieai/irita-sdk-go/v2/codec/types"
 
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 func Unwrap(anyUnpacker codectypes.AnyUnpacker, tx sdk.Tx) (*sdk.UnwrappedTx, error) {

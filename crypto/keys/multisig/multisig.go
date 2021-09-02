@@ -7,10 +7,10 @@ import (
 
 	tmcrypto "github.com/tendermint/tendermint/crypto"
 
-	"github.com/bianjieai/irita-sdk-go/codec/types"
-	crypto "github.com/bianjieai/irita-sdk-go/crypto/types"
-	multisigtypes "github.com/bianjieai/irita-sdk-go/crypto/types/multisig"
-	"github.com/bianjieai/irita-sdk-go/types/tx/signing"
+	"github.com/bianjieai/irita-sdk-go/v2/codec/types"
+	crypto "github.com/bianjieai/irita-sdk-go/v2/crypto/types"
+	multisigtypes "github.com/bianjieai/irita-sdk-go/v2/crypto/types/multisig"
+	"github.com/bianjieai/irita-sdk-go/v2/types/tx/signing"
 )
 
 // NewLegacyAminoPubKey returns a new LegacyAminoPubKey.

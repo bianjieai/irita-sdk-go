@@ -5,8 +5,8 @@ package signing
 
 import (
 	fmt "fmt"
-	types "github.com/bianjieai/irita-sdk-go/codec/types"
-	types1 "github.com/bianjieai/irita-sdk-go/crypto/types"
+	types "github.com/bianjieai/irita-sdk-go/v2/codec/types"
+	types1 "github.com/bianjieai/irita-sdk-go/v2/crypto/types"
 	proto "github.com/gogo/protobuf/proto"
 	io "io"
 	math "math"

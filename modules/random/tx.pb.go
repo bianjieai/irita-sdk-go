@@ -6,8 +6,8 @@ package random
 import (
 	context "context"
 	fmt "fmt"
-	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/types"
-	types "github.com/bianjieai/irita-sdk-go/types"
+	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/v2/types"
+	types "github.com/bianjieai/irita-sdk-go/v2/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
@@ -35,7 +35,7 @@ type MsgRequestRandom struct {
 	BlockInterval uint64                                        `protobuf:"varint,1,opt,name=block_interval,json=blockInterval,proto3" json:"block_interval,omitempty" yaml:"block_interval"`
 	Consumer      string                                        `protobuf:"bytes,2,opt,name=consumer,proto3" json:"consumer,omitempty"`
 	Oracle        bool                                          `protobuf:"varint,3,opt,name=oracle,proto3" json:"oracle,omitempty"`
-	ServiceFeeCap github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,4,rep,name=service_fee_cap,json=serviceFeeCap,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"service_fee_cap" yaml:"service_fee_cap"`
+	ServiceFeeCap github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,4,rep,name=service_fee_cap,json=serviceFeeCap,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"service_fee_cap" yaml:"service_fee_cap"`
 }
 
 func (m *MsgRequestRandom) Reset()         { *m = MsgRequestRandom{} }

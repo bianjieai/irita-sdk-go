@@ -3,9 +3,9 @@ package integration_test
 import (
 	"github.com/stretchr/testify/require"
 
-	"github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/v2/types"
 
-	"github.com/bianjieai/irita-sdk-go/modules/params"
+	"github.com/bianjieai/irita-sdk-go/v2/modules/params"
 )
 
 func (s IntegrationTestSuite) TestParams() {

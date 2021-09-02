@@ -6,7 +6,7 @@ package nft
 import (
 	context "context"
 	fmt "fmt"
-	query "github.com/bianjieai/irita-sdk-go/types/query"
+	query "github.com/bianjieai/irita-sdk-go/v2/types/query"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"

@@ -1,8 +1,8 @@
 package legacy
 
 import (
-	"github.com/bianjieai/irita-sdk-go/codec"
-	cryptocodec "github.com/bianjieai/irita-sdk-go/crypto/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	cryptocodec "github.com/bianjieai/irita-sdk-go/v2/crypto/codec"
 )
 
 // Cdc defines a global generic sealed Amino codec to be used throughout sdk. It

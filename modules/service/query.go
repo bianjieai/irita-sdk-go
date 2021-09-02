@@ -8,7 +8,7 @@ import (
 	"errors"
 	"fmt"
 
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 // queryRequestContextByTxQuery will query for a single request context via a direct txs tags query.

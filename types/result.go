@@ -11,8 +11,8 @@ import (
 
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
-	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	codectypes "github.com/bianjieai/irita-sdk-go/v2/codec/types"
 )
 
 var cdc = codec.NewLegacyAmino()

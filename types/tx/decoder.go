@@ -1,9 +1,9 @@
 package tx
 
 import (
-	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/codec/unknownproto"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/codec/unknownproto"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 // DefaultTxDecoder returns a default protobuf TxDecoder using the provided Marshaler and PublicKeyCodec

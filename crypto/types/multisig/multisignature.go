@@ -6,8 +6,8 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/bianjieai/irita-sdk-go/crypto/types"
-	"github.com/bianjieai/irita-sdk-go/types/tx/signing"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/types"
+	"github.com/bianjieai/irita-sdk-go/v2/types/tx/signing"
 )
 
 // AminoMultisignature is used to represent amino multi-signatures for StdTx's.

@@ -3,7 +3,7 @@ package types
 import (
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/bianjieai/irita-sdk-go/types/tx/signing"
+	"github.com/bianjieai/irita-sdk-go/v2/types/tx/signing"
 )
 
 // SigVerifiableTx defines a transaction interface for all signature verification

@@ -10,10 +10,10 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	sdk "github.com/bianjieai/irita-sdk-go"
-	"github.com/bianjieai/irita-sdk-go/types"
-	"github.com/bianjieai/irita-sdk-go/types/store"
-	"github.com/bianjieai/irita-sdk-go/utils/log"
+	sdk "github.com/bianjieai/irita-sdk-go/v2"
+	"github.com/bianjieai/irita-sdk-go/v2/types"
+	"github.com/bianjieai/irita-sdk-go/v2/types/store"
+	"github.com/bianjieai/irita-sdk-go/v2/utils/log"
 )
 
 const (

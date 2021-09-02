@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
 )
 
 const (

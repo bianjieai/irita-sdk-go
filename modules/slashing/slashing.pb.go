@@ -5,7 +5,7 @@ package slashing
 
 import (
 	fmt "fmt"
-	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/types"
+	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/v2/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
@@ -80,10 +80,10 @@ var xxx_messageInfo_ValidatorSigningInfo proto.InternalMessageInfo
 // Params represents the parameters used for by the slashing module.
 type Params struct {
 	SignedBlocksWindow      int64                                       `protobuf:"varint,1,opt,name=signed_blocks_window,json=signedBlocksWindow,proto3" json:"signed_blocks_window,omitempty" yaml:"signed_blocks_window"`
-	MinSignedPerWindow      github_com_bianjieai_irita_sdk_go_types.Dec `protobuf:"bytes,2,opt,name=min_signed_per_window,json=minSignedPerWindow,proto3,customtype=github.com/bianjieai/irita-sdk-go/types.Dec" json:"min_signed_per_window" yaml:"min_signed_per_window"`
+	MinSignedPerWindow      github_com_bianjieai_irita_sdk_go_types.Dec `protobuf:"bytes,2,opt,name=min_signed_per_window,json=minSignedPerWindow,proto3,customtype=github.com/bianjieai/irita-sdk-go/v2/types.Dec" json:"min_signed_per_window" yaml:"min_signed_per_window"`
 	DowntimeJailDuration    time.Duration                               `protobuf:"bytes,3,opt,name=downtime_jail_duration,json=downtimeJailDuration,proto3,stdduration" json:"downtime_jail_duration" yaml:"downtime_jail_duration"`
-	SlashFractionDoubleSign github_com_bianjieai_irita_sdk_go_types.Dec `protobuf:"bytes,4,opt,name=slash_fraction_double_sign,json=slashFractionDoubleSign,proto3,customtype=github.com/bianjieai/irita-sdk-go/types.Dec" json:"slash_fraction_double_sign" yaml:"slash_fraction_double_sign"`
-	SlashFractionDowntime   github_com_bianjieai_irita_sdk_go_types.Dec `protobuf:"bytes,5,opt,name=slash_fraction_downtime,json=slashFractionDowntime,proto3,customtype=github.com/bianjieai/irita-sdk-go/types.Dec" json:"slash_fraction_downtime" yaml:"slash_fraction_downtime"`
+	SlashFractionDoubleSign github_com_bianjieai_irita_sdk_go_types.Dec `protobuf:"bytes,4,opt,name=slash_fraction_double_sign,json=slashFractionDoubleSign,proto3,customtype=github.com/bianjieai/irita-sdk-go/v2/types.Dec" json:"slash_fraction_double_sign" yaml:"slash_fraction_double_sign"`
+	SlashFractionDowntime   github_com_bianjieai_irita_sdk_go_types.Dec `protobuf:"bytes,5,opt,name=slash_fraction_downtime,json=slashFractionDowntime,proto3,customtype=github.com/bianjieai/irita-sdk-go/v2/types.Dec" json:"slash_fraction_downtime" yaml:"slash_fraction_downtime"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }

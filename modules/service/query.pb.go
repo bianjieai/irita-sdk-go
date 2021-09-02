@@ -6,9 +6,9 @@ package service
 import (
 	context "context"
 	fmt "fmt"
-	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/types"
-	types "github.com/bianjieai/irita-sdk-go/types"
-	query "github.com/bianjieai/irita-sdk-go/types/query"
+	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/v2/types"
+	types "github.com/bianjieai/irita-sdk-go/v2/types"
+	query "github.com/bianjieai/irita-sdk-go/v2/types/query"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
@@ -1084,7 +1084,7 @@ func (m *QueryEarnedFeesRequest) GetProvider() string {
 
 // QueryEarnedFeesResponse is response type for the Query/EarnedFees RPC method
 type QueryEarnedFeesResponse struct {
-	Fees github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,1,rep,name=fees,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"fees" yaml:"service_fee"`
+	Fees github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,1,rep,name=fees,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"fees" yaml:"service_fee"`
 }
 
 func (m *QueryEarnedFeesResponse) Reset()         { *m = QueryEarnedFeesResponse{} }

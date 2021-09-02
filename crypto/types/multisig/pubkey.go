@@ -3,7 +3,7 @@ package multisig
 import (
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/bianjieai/irita-sdk-go/types/tx/signing"
+	"github.com/bianjieai/irita-sdk-go/v2/types/tx/signing"
 )
 
 // PubKey defines a type which supports multi-signature verification via MultiSignatureData

@@ -15,8 +15,8 @@ import (
 	"github.com/mtibben/percent"
 	"github.com/pkg/errors"
 
-	cryptoamino "github.com/bianjieai/irita-sdk-go/crypto/codec"
-	"github.com/bianjieai/irita-sdk-go/crypto/hd"
+	cryptoamino "github.com/bianjieai/irita-sdk-go/v2/crypto/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/hd"
 )
 
 const (

@@ -3,8 +3,8 @@ package tx
 import (
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 type (

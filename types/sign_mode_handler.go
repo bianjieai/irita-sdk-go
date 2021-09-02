@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/bianjieai/irita-sdk-go/types/tx/signing"
+	"github.com/bianjieai/irita-sdk-go/v2/types/tx/signing"
 )
 
 // SignModeHandler defines a interface to be implemented by types which will handle

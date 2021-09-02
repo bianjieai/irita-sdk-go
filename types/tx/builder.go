@@ -3,15 +3,15 @@ package tx
 import (
 	"fmt"
 
-	cryptotypes "github.com/bianjieai/irita-sdk-go/crypto/types"
+	cryptotypes "github.com/bianjieai/irita-sdk-go/v2/crypto/types"
 
 	"github.com/gogo/protobuf/proto"
 
 	"github.com/tendermint/tendermint/crypto"
 
-	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
-	"github.com/bianjieai/irita-sdk-go/types/tx/signing"
+	codectypes "github.com/bianjieai/irita-sdk-go/v2/codec/types"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
+	"github.com/bianjieai/irita-sdk-go/v2/types/tx/signing"
 )
 
 // wrapper is a wrapper around the Tx proto.Message which retain the raw

@@ -9,8 +9,8 @@ import (
 	tmclient "github.com/tendermint/tendermint/rpc/client"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	cryptoAmino "github.com/bianjieai/irita-sdk-go/crypto/codec"
-	"github.com/bianjieai/irita-sdk-go/types/kv"
+	cryptoAmino "github.com/bianjieai/irita-sdk-go/v2/crypto/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/types/kv"
 )
 
 type (

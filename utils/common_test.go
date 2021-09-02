@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 func TestSplitArray(t *testing.T) {

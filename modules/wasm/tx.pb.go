@@ -7,8 +7,8 @@ import (
 	context "context"
 	encoding_json "encoding/json"
 	fmt "fmt"
-	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/types"
-	types "github.com/bianjieai/irita-sdk-go/types"
+	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/v2/types"
+	types "github.com/bianjieai/irita-sdk-go/v2/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
@@ -130,7 +130,7 @@ type MsgInstantiateContract struct {
 	// InitMsg json encoded message to be passed to the contract on instantiation
 	InitMsg encoding_json.RawMessage `protobuf:"bytes,5,opt,name=init_msg,json=initMsg,proto3,casttype=encoding/json.RawMessage" json:"init_msg,omitempty"`
 	// InitFunds coins that are transferred to the contract on instantiation
-	InitFunds github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,6,rep,name=init_funds,json=initFunds,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"init_funds"`
+	InitFunds github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,6,rep,name=init_funds,json=initFunds,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"init_funds"`
 }
 
 func (m *MsgInstantiateContract) Reset()         { *m = MsgInstantiateContract{} }
@@ -214,7 +214,7 @@ type MsgExecuteContract struct {
 	// Msg json encoded message to be passed to the contract
 	Msg encoding_json.RawMessage `protobuf:"bytes,3,opt,name=msg,proto3,casttype=encoding/json.RawMessage" json:"msg,omitempty"`
 	// SentFunds coins that are transferred to the contract on execution
-	SentFunds github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,5,rep,name=sent_funds,json=sentFunds,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"sent_funds"`
+	SentFunds github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,5,rep,name=sent_funds,json=sentFunds,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"sent_funds"`
 }
 
 func (m *MsgExecuteContract) Reset()         { *m = MsgExecuteContract{} }

@@ -3,9 +3,9 @@ package oracle
 import (
 	"time"
 
-	"github.com/bianjieai/irita-sdk-go/modules/service"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
-	types "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/v2/modules/service"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
+	types "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 var (

@@ -5,8 +5,8 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 // DefaultTxEncoder returns a default protobuf TxEncoder using the provided Marshaler

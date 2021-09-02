@@ -6,8 +6,8 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	codectypes "github.com/bianjieai/irita-sdk-go/v2/codec/types"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 // Account is an interface used to store coins at a given address within state.

@@ -4,12 +4,12 @@ import (
 	"errors"
 	"fmt"
 
-	sim "github.com/bianjieai/irita-sdk-go/client/grpc/simulate"
-	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/sm2"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
-	"github.com/bianjieai/irita-sdk-go/types/tx"
-	"github.com/bianjieai/irita-sdk-go/types/tx/signing"
+	sim "github.com/bianjieai/irita-sdk-go/v2/client/grpc/simulate"
+	codectypes "github.com/bianjieai/irita-sdk-go/v2/codec/types"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/keys/sm2"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
+	"github.com/bianjieai/irita-sdk-go/v2/types/tx"
+	"github.com/bianjieai/irita-sdk-go/v2/types/tx/signing"
 )
 
 // Factory defines a client transaction factory that facilitates generating and

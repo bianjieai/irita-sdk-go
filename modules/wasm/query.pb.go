@@ -8,7 +8,7 @@ import (
 	context "context"
 	encoding_json "encoding/json"
 	fmt "fmt"
-	query "github.com/bianjieai/irita-sdk-go/types/query"
+	query "github.com/bianjieai/irita-sdk-go/v2/types/query"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"

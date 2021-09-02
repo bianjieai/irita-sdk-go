@@ -1,7 +1,7 @@
 package types
 
 import (
-	signingtypes "github.com/bianjieai/irita-sdk-go/types/tx/signing"
+	signingtypes "github.com/bianjieai/irita-sdk-go/v2/types/tx/signing"
 )
 
 type (

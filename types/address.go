@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/bianjieai/irita-sdk-go/utils/bech32"
+	"github.com/bianjieai/irita-sdk-go/v2/utils/bech32"
 )
 
 const (

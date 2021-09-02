@@ -1,11 +1,11 @@
 package bank
 
 import (
-	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/codec/types"
-	cryptocodec "github.com/bianjieai/irita-sdk-go/crypto/codec"
-	"github.com/bianjieai/irita-sdk-go/modules/auth"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/codec/types"
+	cryptocodec "github.com/bianjieai/irita-sdk-go/v2/crypto/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/modules/auth"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 var (

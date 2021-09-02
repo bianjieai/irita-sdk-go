@@ -1,8 +1,8 @@
 package token
 
 import (
-	sdk "github.com/bianjieai/irita-sdk-go/types"
-	"github.com/bianjieai/irita-sdk-go/types/query"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
+	"github.com/bianjieai/irita-sdk-go/v2/types/query"
 )
 
 type Client interface {

@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/bianjieai/irita-sdk-go/crypto"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 func TestNewMnemonicKeyManager(t *testing.T) {

@@ -6,10 +6,10 @@ package oracle
 import (
 	context "context"
 	fmt "fmt"
-	service "github.com/bianjieai/irita-sdk-go/modules/service"
-	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/types"
-	types "github.com/bianjieai/irita-sdk-go/types"
-	query "github.com/bianjieai/irita-sdk-go/types/query"
+	service "github.com/bianjieai/irita-sdk-go/v2/modules/service"
+	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/v2/types"
+	types "github.com/bianjieai/irita-sdk-go/v2/types"
+	query "github.com/bianjieai/irita-sdk-go/v2/types/query"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
@@ -327,7 +327,7 @@ type FeedContext struct {
 	Providers         []string                                      `protobuf:"bytes,3,rep,name=providers,proto3" json:"providers,omitempty"`
 	Input             string                                        `protobuf:"bytes,4,opt,name=input,proto3" json:"input,omitempty"`
 	Timeout           int64                                         `protobuf:"varint,5,opt,name=timeout,proto3" json:"timeout,omitempty"`
-	ServiceFeeCap     github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,6,rep,name=service_fee_cap,json=serviceFeeCap,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"service_fee_cap" yaml:"service_fee_cap"`
+	ServiceFeeCap     github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,6,rep,name=service_fee_cap,json=serviceFeeCap,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"service_fee_cap" yaml:"service_fee_cap"`
 	RepeatedFrequency uint64                                        `protobuf:"varint,7,opt,name=repeated_frequency,json=repeatedFrequency,proto3" json:"repeated_frequency,omitempty" yaml:"repeated_frequency"`
 	ResponseThreshold uint32                                        `protobuf:"varint,8,opt,name=response_threshold,json=responseThreshold,proto3" json:"response_threshold,omitempty" yaml:"response_threshold"`
 	State             service.RequestContextState                   `protobuf:"varint,9,opt,name=state,proto3,enum=irismod.service.RequestContextState" json:"state,omitempty"`

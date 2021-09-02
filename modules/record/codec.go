@@ -1,10 +1,10 @@
 package record
 
 import (
-	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/codec/types"
-	cryptocodec "github.com/bianjieai/irita-sdk-go/crypto/codec"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/codec/types"
+	cryptocodec "github.com/bianjieai/irita-sdk-go/v2/crypto/codec"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 var (

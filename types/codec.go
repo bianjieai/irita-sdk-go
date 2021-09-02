@@ -1,8 +1,8 @@
 package types
 
 import (
-	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/codec/types"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/codec/types"
 )
 
 // EncodingConfig specifies the concrete encoding types to use for a given app.

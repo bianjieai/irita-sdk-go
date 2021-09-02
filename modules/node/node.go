@@ -3,10 +3,10 @@ package node
 import (
 	"context"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/codec/types"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
-	query "github.com/bianjieai/irita-sdk-go/types/query"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/codec/types"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
+	query "github.com/bianjieai/irita-sdk-go/v2/types/query"
 )
 
 type nodeClient struct {

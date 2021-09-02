@@ -5,8 +5,8 @@ package service
 
 import (
 	fmt "fmt"
-	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/types"
-	types "github.com/bianjieai/irita-sdk-go/types"
+	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/v2/types"
+	types "github.com/bianjieai/irita-sdk-go/v2/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
@@ -130,7 +130,7 @@ var xxx_messageInfo_ServiceDefinition proto.InternalMessageInfo
 type ServiceBinding struct {
 	ServiceName  string                                        `protobuf:"bytes,1,opt,name=service_name,json=serviceName,proto3" json:"service_name,omitempty" yaml:"service_name"`
 	Provider     string                                        `protobuf:"bytes,2,opt,name=provider,proto3" json:"provider,omitempty"`
-	Deposit      github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,3,rep,name=deposit,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"deposit"`
+	Deposit      github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,3,rep,name=deposit,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"deposit"`
 	Pricing      string                                        `protobuf:"bytes,4,opt,name=pricing,proto3" json:"pricing,omitempty"`
 	QoS          uint64                                        `protobuf:"varint,5,opt,name=qos,proto3" json:"qos,omitempty"`
 	Options      string                                        `protobuf:"bytes,6,opt,name=options,proto3" json:"options,omitempty"`
@@ -178,7 +178,7 @@ type RequestContext struct {
 	Providers              []string                                      `protobuf:"bytes,2,rep,name=providers,proto3" json:"providers,omitempty"`
 	Consumer               string                                        `protobuf:"bytes,3,opt,name=consumer,proto3" json:"consumer,omitempty"`
 	Input                  string                                        `protobuf:"bytes,4,opt,name=input,proto3" json:"input,omitempty"`
-	ServiceFeeCap          github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,5,rep,name=service_fee_cap,json=serviceFeeCap,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"service_fee_cap" yaml:"service_fee_cap"`
+	ServiceFeeCap          github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,5,rep,name=service_fee_cap,json=serviceFeeCap,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"service_fee_cap" yaml:"service_fee_cap"`
 	ModuleName             string                                        `protobuf:"bytes,6,opt,name=module_name,json=moduleName,proto3" json:"module_name,omitempty" yaml:"module_name"`
 	Timeout                int64                                         `protobuf:"varint,7,opt,name=timeout,proto3" json:"timeout,omitempty"`
 	Repeated               bool                                          `protobuf:"varint,8,opt,name=repeated,proto3" json:"repeated,omitempty"`
@@ -233,7 +233,7 @@ type Request struct {
 	Provider                   string                                        `protobuf:"bytes,3,opt,name=provider,proto3" json:"provider,omitempty"`
 	Consumer                   string                                        `protobuf:"bytes,4,opt,name=consumer,proto3" json:"consumer,omitempty"`
 	Input                      string                                        `protobuf:"bytes,5,opt,name=input,proto3" json:"input,omitempty"`
-	ServiceFee                 github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,6,rep,name=service_fee,json=serviceFee,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"service_fee" yaml:"service_fee"`
+	ServiceFee                 github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,6,rep,name=service_fee,json=serviceFee,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"service_fee" yaml:"service_fee"`
 	RequestHeight              int64                                         `protobuf:"varint,7,opt,name=request_height,json=requestHeight,proto3" json:"request_height,omitempty" yaml:"request_height"`
 	ExpirationHeight           int64                                         `protobuf:"varint,8,opt,name=expiration_height,json=expirationHeight,proto3" json:"expiration_height,omitempty" yaml:"expiration_height"`
 	RequestContextId           string                                        `protobuf:"bytes,9,opt,name=request_context_id,json=requestContextId,proto3" json:"request_context_id,omitempty" yaml:"request_context_id"`
@@ -278,7 +278,7 @@ type CompactRequest struct {
 	RequestContextId           string                                        `protobuf:"bytes,1,opt,name=request_context_id,json=requestContextId,proto3" json:"request_context_id,omitempty" yaml:"request_context_id"`
 	RequestContextBatchCounter uint64                                        `protobuf:"varint,2,opt,name=request_context_batch_counter,json=requestContextBatchCounter,proto3" json:"request_context_batch_counter,omitempty" yaml:"request_context_batch_counter"`
 	Provider                   string                                        `protobuf:"bytes,3,opt,name=provider,proto3" json:"provider,omitempty"`
-	ServiceFee                 github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,4,rep,name=service_fee,json=serviceFee,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"service_fee" yaml:"service_fee"`
+	ServiceFee                 github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,4,rep,name=service_fee,json=serviceFee,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"service_fee" yaml:"service_fee"`
 	RequestHeight              int64                                         `protobuf:"varint,5,opt,name=request_height,json=requestHeight,proto3" json:"request_height,omitempty" yaml:"request_height"`
 	ExpirationHeight           int64                                         `protobuf:"varint,6,opt,name=expiration_height,json=expirationHeight,proto3" json:"expiration_height,omitempty" yaml:"expiration_height"`
 }
@@ -361,7 +361,7 @@ var xxx_messageInfo_Response proto.InternalMessageInfo
 
 // Pricing defines a standard for service pricing.
 type Pricing struct {
-	Price              github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,6,rep,name=price,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"price"`
+	Price              github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,6,rep,name=price,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"price"`
 	PromotionsByTime   []PromotionByTime                             `protobuf:"bytes,2,rep,name=promotions_by_time,json=promotionsByTime,proto3" json:"promotions_by_time" yaml:"promotions_by_time"`
 	PromotionsByVolume []PromotionByVolume                           `protobuf:"bytes,3,rep,name=promotions_by_volume,json=promotionsByVolume,proto3" json:"promotions_by_volume" yaml:"promotions_by_volume"`
 }
@@ -403,7 +403,7 @@ var xxx_messageInfo_Pricing proto.InternalMessageInfo
 type PromotionByTime struct {
 	StartTime time.Time                                   `protobuf:"bytes,1,opt,name=start_time,json=startTime,proto3,stdtime" json:"start_time" yaml:"start_time"`
 	EndTime   time.Time                                   `protobuf:"bytes,2,opt,name=end_time,json=endTime,proto3,stdtime" json:"end_time" yaml:"end_time"`
-	Discount  github_com_bianjieai_irita_sdk_go_types.Dec `protobuf:"bytes,3,opt,name=discount,proto3,customtype=github.com/bianjieai/irita-sdk-go/types.Dec" json:"discount"`
+	Discount  github_com_bianjieai_irita_sdk_go_types.Dec `protobuf:"bytes,3,opt,name=discount,proto3,customtype=github.com/bianjieai/irita-sdk-go/v2/types.Dec" json:"discount"`
 }
 
 func (m *PromotionByTime) Reset()         { *m = PromotionByTime{} }
@@ -442,7 +442,7 @@ var xxx_messageInfo_PromotionByTime proto.InternalMessageInfo
 // PromotionByVolume defines a standard for service promotion by volume.
 type PromotionByVolume struct {
 	Volume   uint64                                      `protobuf:"varint,1,opt,name=volume,proto3" json:"volume,omitempty"`
-	Discount github_com_bianjieai_irita_sdk_go_types.Dec `protobuf:"bytes,2,opt,name=discount,proto3,customtype=github.com/bianjieai/irita-sdk-go/types.Dec" json:"discount"`
+	Discount github_com_bianjieai_irita_sdk_go_types.Dec `protobuf:"bytes,2,opt,name=discount,proto3,customtype=github.com/bianjieai/irita-sdk-go/v2/types.Dec" json:"discount"`
 }
 
 func (m *PromotionByVolume) Reset()         { *m = PromotionByVolume{} }
@@ -482,9 +482,9 @@ var xxx_messageInfo_PromotionByVolume proto.InternalMessageInfo
 type Params struct {
 	MaxRequestTimeout         int64                                         `protobuf:"varint,1,opt,name=max_request_timeout,json=maxRequestTimeout,proto3" json:"max_request_timeout,omitempty" yaml:"max_request_timeout"`
 	MinDepositMultiple        int64                                         `protobuf:"varint,2,opt,name=min_deposit_multiple,json=minDepositMultiple,proto3" json:"min_deposit_multiple,omitempty" yaml:"min_deposit_multiple"`
-	MinDeposit                github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,3,rep,name=min_deposit,json=minDeposit,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"min_deposit"`
-	ServiceFeeTax             github_com_bianjieai_irita_sdk_go_types.Dec   `protobuf:"bytes,4,opt,name=service_fee_tax,json=serviceFeeTax,proto3,customtype=github.com/bianjieai/irita-sdk-go/types.Dec" json:"service_fee_tax" yaml:"service_fee_tax"`
-	SlashFraction             github_com_bianjieai_irita_sdk_go_types.Dec   `protobuf:"bytes,5,opt,name=slash_fraction,json=slashFraction,proto3,customtype=github.com/bianjieai/irita-sdk-go/types.Dec" json:"slash_fraction" yaml:"slash_fraction"`
+	MinDeposit                github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,3,rep,name=min_deposit,json=minDeposit,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"min_deposit"`
+	ServiceFeeTax             github_com_bianjieai_irita_sdk_go_types.Dec   `protobuf:"bytes,4,opt,name=service_fee_tax,json=serviceFeeTax,proto3,customtype=github.com/bianjieai/irita-sdk-go/v2/types.Dec" json:"service_fee_tax" yaml:"service_fee_tax"`
+	SlashFraction             github_com_bianjieai_irita_sdk_go_types.Dec   `protobuf:"bytes,5,opt,name=slash_fraction,json=slashFraction,proto3,customtype=github.com/bianjieai/irita-sdk-go/v2/types.Dec" json:"slash_fraction" yaml:"slash_fraction"`
 	ComplaintRetrospect       time.Duration                                 `protobuf:"bytes,6,opt,name=complaint_retrospect,json=complaintRetrospect,proto3,stdduration" json:"complaint_retrospect" yaml:"complaint_retrospect"`
 	ArbitrationTimeLimit      time.Duration                                 `protobuf:"bytes,7,opt,name=arbitration_time_limit,json=arbitrationTimeLimit,proto3,stdduration" json:"arbitration_time_limit" yaml:"arbitration_time_limit"`
 	TxSizeLimit               uint64                                        `protobuf:"varint,8,opt,name=tx_size_limit,json=txSizeLimit,proto3" json:"tx_size_limit,omitempty" yaml:"tx_size_limit"`

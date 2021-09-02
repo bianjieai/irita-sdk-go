@@ -5,7 +5,7 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/bianjieai/irita-sdk-go/crypto/hd"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/hd"
 )
 
 var (

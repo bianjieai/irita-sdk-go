@@ -11,9 +11,9 @@ import (
 
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
-	clienttx "github.com/bianjieai/irita-sdk-go/client/tx"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
-	typetx "github.com/bianjieai/irita-sdk-go/types/tx"
+	clienttx "github.com/bianjieai/irita-sdk-go/v2/client/tx"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
+	typetx "github.com/bianjieai/irita-sdk-go/v2/types/tx"
 )
 
 // QueryTx returns the tx info

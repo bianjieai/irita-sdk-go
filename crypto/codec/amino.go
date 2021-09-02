@@ -6,12 +6,12 @@ import (
 	tmsm2 "github.com/tendermint/tendermint/crypto/sm2"
 	tmsr25519 "github.com/tendermint/tendermint/crypto/sr25519"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/ed25519"
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/multisig"
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/secp256k1"
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/sm2"
-	cryptotypes "github.com/bianjieai/irita-sdk-go/crypto/types"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/keys/ed25519"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/keys/multisig"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/keys/secp256k1"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/keys/sm2"
+	cryptotypes "github.com/bianjieai/irita-sdk-go/v2/crypto/types"
 )
 
 var amino *codec.LegacyAmino

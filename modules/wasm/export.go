@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 // Client define a group of interface for wasm module

@@ -1,7 +1,7 @@
 package signing
 
 import (
-	"github.com/bianjieai/irita-sdk-go/crypto/types"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/types"
 )
 
 // SignatureData represents either a *SingleSignatureData or *MultiSignatureData.

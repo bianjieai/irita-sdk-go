@@ -4,10 +4,10 @@ import (
 	"context"
 	"strings"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/codec/types"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
-	utils "github.com/bianjieai/irita-sdk-go/utils"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/codec/types"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
+	utils "github.com/bianjieai/irita-sdk-go/v2/utils"
 )
 
 type bankClient struct {

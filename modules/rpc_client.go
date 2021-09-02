@@ -10,9 +10,9 @@ import (
 	rpchttp "github.com/tendermint/tendermint/rpc/client/http"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
-	"github.com/bianjieai/irita-sdk-go/utils/uuid"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
+	"github.com/bianjieai/irita-sdk-go/v2/utils/uuid"
 )
 
 type rpcClient struct {

@@ -6,9 +6,9 @@ package bank
 import (
 	context "context"
 	fmt "fmt"
-	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/types"
-	types "github.com/bianjieai/irita-sdk-go/types"
-	query "github.com/bianjieai/irita-sdk-go/types/query"
+	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/v2/types"
+	types "github.com/bianjieai/irita-sdk-go/v2/types"
+	query "github.com/bianjieai/irita-sdk-go/v2/types/query"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
@@ -164,7 +164,7 @@ var xxx_messageInfo_QueryAllBalancesRequest proto.InternalMessageInfo
 // method.
 type QueryAllBalancesResponse struct {
 	// balances is the balances of all the coins.
-	Balances github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,1,rep,name=balances,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"balances"`
+	Balances github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,1,rep,name=balances,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"balances"`
 	// pagination defines the pagination in the response.
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
@@ -258,7 +258,7 @@ var xxx_messageInfo_QueryTotalSupplyRequest proto.InternalMessageInfo
 // method
 type QueryTotalSupplyResponse struct {
 	// supply is the supply of the coins
-	Supply github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,1,rep,name=supply,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"supply"`
+	Supply github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,1,rep,name=supply,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"supply"`
 }
 
 func (m *QueryTotalSupplyResponse) Reset()         { *m = QueryTotalSupplyResponse{} }

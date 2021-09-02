@@ -5,10 +5,10 @@ import (
 
 	"github.com/tendermint/tendermint/crypto/sm2"
 
-	"github.com/bianjieai/irita-sdk-go/types"
-	"github.com/bianjieai/irita-sdk-go/utils/uuid"
+	"github.com/bianjieai/irita-sdk-go/v2/types"
+	"github.com/bianjieai/irita-sdk-go/v2/utils/uuid"
 
-	"github.com/bianjieai/irita-sdk-go/modules/identity"
+	"github.com/bianjieai/irita-sdk-go/v2/modules/identity"
 )
 
 func (s IntegrationTestSuite) TestIdentity() {

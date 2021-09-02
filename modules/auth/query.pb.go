@@ -6,7 +6,7 @@ package auth
 import (
 	context "context"
 	fmt "fmt"
-	types "github.com/bianjieai/irita-sdk-go/codec/types"
+	types "github.com/bianjieai/irita-sdk-go/v2/codec/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"

@@ -6,8 +6,8 @@ package oracle
 import (
 	context "context"
 	fmt "fmt"
-	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/types"
-	types "github.com/bianjieai/irita-sdk-go/types"
+	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/v2/types"
+	types "github.com/bianjieai/irita-sdk-go/v2/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
@@ -40,7 +40,7 @@ type MsgCreateFeed struct {
 	Providers         []string                                      `protobuf:"bytes,6,rep,name=providers,proto3" json:"providers,omitempty"`
 	Input             string                                        `protobuf:"bytes,7,opt,name=input,proto3" json:"input,omitempty"`
 	Timeout           int64                                         `protobuf:"varint,8,opt,name=timeout,proto3" json:"timeout,omitempty"`
-	ServiceFeeCap     github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,9,rep,name=service_fee_cap,json=serviceFeeCap,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"service_fee_cap" yaml:"service_fee_cap"`
+	ServiceFeeCap     github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,9,rep,name=service_fee_cap,json=serviceFeeCap,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"service_fee_cap" yaml:"service_fee_cap"`
 	RepeatedFrequency uint64                                        `protobuf:"varint,10,opt,name=repeated_frequency,json=repeatedFrequency,proto3" json:"repeated_frequency,omitempty" yaml:"repeated_frequency"`
 	AggregateFunc     string                                        `protobuf:"bytes,11,opt,name=aggregate_func,json=aggregateFunc,proto3" json:"aggregate_func,omitempty" yaml:"aggregate_func"`
 	ValueJsonPath     string                                        `protobuf:"bytes,12,opt,name=value_json_path,json=valueJsonPath,proto3" json:"value_json_path,omitempty" yaml:"value_json_path"`
@@ -395,7 +395,7 @@ type MsgEditFeed struct {
 	LatestHistory     uint64                                        `protobuf:"varint,3,opt,name=latest_history,json=latestHistory,proto3" json:"latest_history,omitempty" yaml:"latest_history"`
 	Providers         []string                                      `protobuf:"bytes,4,rep,name=providers,proto3" json:"providers,omitempty"`
 	Timeout           int64                                         `protobuf:"varint,5,opt,name=timeout,proto3" json:"timeout,omitempty"`
-	ServiceFeeCap     github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,6,rep,name=service_fee_cap,json=serviceFeeCap,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"service_fee_cap" yaml:"service_fee_cap"`
+	ServiceFeeCap     github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,6,rep,name=service_fee_cap,json=serviceFeeCap,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"service_fee_cap" yaml:"service_fee_cap"`
 	RepeatedFrequency uint64                                        `protobuf:"varint,7,opt,name=repeated_frequency,json=repeatedFrequency,proto3" json:"repeated_frequency,omitempty" yaml:"repeated_frequency"`
 	ResponseThreshold uint32                                        `protobuf:"varint,8,opt,name=response_threshold,json=responseThreshold,proto3" json:"response_threshold,omitempty" yaml:"response_threshold"`
 	Creator           string                                        `protobuf:"bytes,9,opt,name=creator,proto3" json:"creator,omitempty"`

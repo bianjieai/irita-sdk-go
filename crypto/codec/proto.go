@@ -3,12 +3,12 @@ package codec
 import (
 	tmcrypto "github.com/tendermint/tendermint/crypto"
 
-	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/ed25519"
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/multisig"
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/secp256k1"
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/sm2"
-	cryptotypes "github.com/bianjieai/irita-sdk-go/crypto/types"
+	codectypes "github.com/bianjieai/irita-sdk-go/v2/codec/types"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/keys/ed25519"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/keys/multisig"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/keys/secp256k1"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/keys/sm2"
+	cryptotypes "github.com/bianjieai/irita-sdk-go/v2/crypto/types"
 )
 
 // RegisterInterfaces registers the sdk.Tx interface.

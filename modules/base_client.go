@@ -16,14 +16,14 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 
-	clienttx "github.com/bianjieai/irita-sdk-go/client/tx"
-	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/modules/service"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
-	"github.com/bianjieai/irita-sdk-go/types/tx"
-	"github.com/bianjieai/irita-sdk-go/utils"
-	"github.com/bianjieai/irita-sdk-go/utils/cache"
-	sdklog "github.com/bianjieai/irita-sdk-go/utils/log"
+	clienttx "github.com/bianjieai/irita-sdk-go/v2/client/tx"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/modules/service"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
+	"github.com/bianjieai/irita-sdk-go/v2/types/tx"
+	"github.com/bianjieai/irita-sdk-go/v2/utils"
+	"github.com/bianjieai/irita-sdk-go/v2/utils/cache"
+	sdklog "github.com/bianjieai/irita-sdk-go/v2/utils/log"
 )
 
 const (

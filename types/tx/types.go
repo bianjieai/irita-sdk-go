@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	codectypes "github.com/bianjieai/irita-sdk-go/codec/types"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	codectypes "github.com/bianjieai/irita-sdk-go/v2/codec/types"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 // MaxGasWanted defines the max gas allowed.

@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bianjieai/irita-sdk-go/modules/token"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/v2/modules/token"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 func (s IntegrationTestSuite) TestToken() {

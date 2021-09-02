@@ -12,7 +12,7 @@ import (
 	"github.com/tendermint/tendermint/crypto/armor"
 	"github.com/tendermint/tendermint/crypto/xsalsa20symmetric"
 
-	cryptoAmino "github.com/bianjieai/irita-sdk-go/crypto/codec"
+	cryptoAmino "github.com/bianjieai/irita-sdk-go/v2/crypto/codec"
 )
 
 const (

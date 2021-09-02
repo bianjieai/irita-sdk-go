@@ -1,6 +1,6 @@
-module github.com/bianjieai/irita-sdk-go
+module github.com/bianjieai/irita-sdk-go/v2
 
-go 1.14
+go 1.16
 
 require (
 	github.com/99designs/keyring v1.1.6
@@ -10,7 +10,6 @@ require (
 	github.com/btcsuite/btcd v0.21.0-beta
 	github.com/btcsuite/btcutil v1.0.2
 	github.com/cosmos/go-bip39 v1.0.0
-	github.com/cosmos/iavl v0.15.3 // indirect
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
 	github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13 // indirect
 	github.com/dvsekhvalnov/jose2go v0.0.0-20201001154944-b09cfaf05951

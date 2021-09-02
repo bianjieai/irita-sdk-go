@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bianjieai/irita-sdk-go/modules/wasm"
-	"github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/v2/modules/wasm"
+	"github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 func (s IntegrationTestSuite) TestWasm() {

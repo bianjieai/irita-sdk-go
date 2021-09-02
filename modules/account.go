@@ -7,11 +7,11 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/modules/auth"
-	"github.com/bianjieai/irita-sdk-go/modules/bank"
-	sdk "github.com/bianjieai/irita-sdk-go/types"
-	"github.com/bianjieai/irita-sdk-go/utils/cache"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/modules/auth"
+	"github.com/bianjieai/irita-sdk-go/v2/modules/bank"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
+	"github.com/bianjieai/irita-sdk-go/v2/utils/cache"
 )
 
 // Must be used with locker, otherwise there are thread safety issues

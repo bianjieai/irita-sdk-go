@@ -5,7 +5,7 @@ package multisig
 
 import (
 	fmt "fmt"
-	types "github.com/bianjieai/irita-sdk-go/codec/types"
+	types "github.com/bianjieai/irita-sdk-go/v2/codec/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	io "io"

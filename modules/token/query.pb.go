@@ -6,10 +6,10 @@ package token
 import (
 	context "context"
 	fmt "fmt"
-	types "github.com/bianjieai/irita-sdk-go/codec/types"
-	_ "github.com/bianjieai/irita-sdk-go/types"
-	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/types"
-	query "github.com/bianjieai/irita-sdk-go/types/query"
+	types "github.com/bianjieai/irita-sdk-go/v2/codec/types"
+	_ "github.com/bianjieai/irita-sdk-go/v2/types"
+	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/v2/types"
+	query "github.com/bianjieai/irita-sdk-go/v2/types/query"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
@@ -279,8 +279,8 @@ func (m *QueryFeesRequest) GetSymbol() string {
 // QueryFeesResponse is response type for the Query/Fees RPC method
 type QueryFeesResponse struct {
 	Exist    bool                                         `protobuf:"varint,1,opt,name=exist,proto3" json:"exist,omitempty"`
-	IssueFee github_com_bianjieai_irita_sdk_go_types.Coin `protobuf:"bytes,2,opt,name=issue_fee,json=issueFee,proto3,casttype=github.com/bianjieai/irita-sdk-go/types.Coin" json:"issue_fee" yaml:"issue_fee"`
-	MintFee  github_com_bianjieai_irita_sdk_go_types.Coin `protobuf:"bytes,3,opt,name=mint_fee,json=mintFee,proto3,casttype=github.com/bianjieai/irita-sdk-go/types.Coin" json:"mint_fee" yaml:"mint_fee"`
+	IssueFee github_com_bianjieai_irita_sdk_go_types.Coin `protobuf:"bytes,2,opt,name=issue_fee,json=issueFee,proto3,casttype=github.com/bianjieai/irita-sdk-go/v2/types.Coin" json:"issue_fee" yaml:"issue_fee"`
+	MintFee  github_com_bianjieai_irita_sdk_go_types.Coin `protobuf:"bytes,3,opt,name=mint_fee,json=mintFee,proto3,casttype=github.com/bianjieai/irita-sdk-go/v2/types.Coin" json:"mint_fee" yaml:"mint_fee"`
 }
 
 func (m *QueryFeesResponse) Reset()         { *m = QueryFeesResponse{} }

@@ -3,7 +3,7 @@ package params
 import (
 	"errors"
 
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 const (

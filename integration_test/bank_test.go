@@ -8,8 +8,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bianjieai/irita-sdk-go/modules/bank"
-	"github.com/bianjieai/irita-sdk-go/types"
+	"github.com/bianjieai/irita-sdk-go/v2/modules/bank"
+	"github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 func (s IntegrationTestSuite) TestBank() {

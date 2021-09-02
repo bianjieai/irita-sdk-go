@@ -3,11 +3,11 @@ package nft
 import (
 	"context"
 
-	"github.com/bianjieai/irita-sdk-go/codec"
-	"github.com/bianjieai/irita-sdk-go/codec/types"
-	"github.com/bianjieai/irita-sdk-go/types/query"
+	"github.com/bianjieai/irita-sdk-go/v2/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/codec/types"
+	"github.com/bianjieai/irita-sdk-go/v2/types/query"
 
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 type nftClient struct {

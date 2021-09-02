@@ -5,13 +5,13 @@ import (
 
 	tmcrypto "github.com/tendermint/tendermint/crypto"
 
-	"github.com/bianjieai/irita-sdk-go/crypto"
-	cryptoamino "github.com/bianjieai/irita-sdk-go/crypto/codec"
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/secp256k1"
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/sm2"
-	codectypes "github.com/bianjieai/irita-sdk-go/crypto/types"
-	"github.com/bianjieai/irita-sdk-go/types"
-	"github.com/bianjieai/irita-sdk-go/types/store"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto"
+	cryptoamino "github.com/bianjieai/irita-sdk-go/v2/crypto/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/keys/secp256k1"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/keys/sm2"
+	codectypes "github.com/bianjieai/irita-sdk-go/v2/crypto/types"
+	"github.com/bianjieai/irita-sdk-go/v2/types"
+	"github.com/bianjieai/irita-sdk-go/v2/types/store"
 )
 
 type keyManager struct {

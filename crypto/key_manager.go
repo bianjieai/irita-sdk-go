@@ -10,8 +10,8 @@ import (
 
 	"github.com/cosmos/go-bip39"
 
-	cryptoAmino "github.com/bianjieai/irita-sdk-go/crypto/codec"
-	"github.com/bianjieai/irita-sdk-go/crypto/hd"
+	cryptoAmino "github.com/bianjieai/irita-sdk-go/v2/crypto/codec"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/hd"
 )
 
 const (

@@ -6,7 +6,7 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/bianjieai/irita-sdk-go/crypto/keys/internal/benchmarking"
+	"github.com/bianjieai/irita-sdk-go/v2/crypto/keys/internal/benchmarking"
 )
 
 func BenchmarkKeyGeneration(b *testing.B) {

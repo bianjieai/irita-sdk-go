@@ -3,7 +3,7 @@ package record
 import (
 	"fmt"
 
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 const (

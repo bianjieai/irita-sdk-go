@@ -5,11 +5,11 @@ package tx
 
 import (
 	fmt "fmt"
-	types "github.com/bianjieai/irita-sdk-go/codec/types"
-	types1 "github.com/bianjieai/irita-sdk-go/crypto/types"
-	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/types"
-	types2 "github.com/bianjieai/irita-sdk-go/types"
-	signing "github.com/bianjieai/irita-sdk-go/types/tx/signing"
+	types "github.com/bianjieai/irita-sdk-go/v2/codec/types"
+	types1 "github.com/bianjieai/irita-sdk-go/v2/crypto/types"
+	github_com_bianjieai_irita_sdk_go_types "github.com/bianjieai/irita-sdk-go/v2/types"
+	types2 "github.com/bianjieai/irita-sdk-go/v2/types"
+	signing "github.com/bianjieai/irita-sdk-go/v2/types/tx/signing"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	io "io"
@@ -667,7 +667,7 @@ func (m *ModeInfo_Multi) GetModeInfos() []*ModeInfo {
 // which must be above some miminum to be accepted into the mempool.
 type Fee struct {
 	// amount is the amount of coins to be paid as a fee
-	Amount github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,1,rep,name=amount,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/types.Coins" json:"amount"`
+	Amount github_com_bianjieai_irita_sdk_go_types.Coins `protobuf:"bytes,1,rep,name=amount,proto3,castrepeated=github.com/bianjieai/irita-sdk-go/v2/types.Coins" json:"amount"`
 	// gas_limit is the maximum gas that can be used in transaction processing
 	// before an out of gas error occurs
 	GasLimit uint64 `protobuf:"varint,2,opt,name=gas_limit,json=gasLimit,proto3" json:"gas_limit,omitempty"`

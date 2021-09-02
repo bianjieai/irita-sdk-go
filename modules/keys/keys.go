@@ -1,7 +1,7 @@
 package keys
 
 import (
-	sdk "github.com/bianjieai/irita-sdk-go/types"
+	sdk "github.com/bianjieai/irita-sdk-go/v2/types"
 )
 
 type keysClient struct {
