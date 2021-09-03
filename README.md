@@ -29,7 +29,7 @@ options := []types.Option{
     types.KeyDAOOption(store.NewMemory(nil)),
     types.TimeoutOption(10),
 }
-cfg, err := types.NewClientConfig(nodeURI, chainID, options...)
+cfg, err := types.NewClientConfig(nodeURI, gRPCAddr, chainID, options...)
 if err != nil {
     panic(err)
 }
@@ -41,6 +41,7 @@ The `ClientConfig` component mainly contains the parameters used in the SDK, the
 | Iterm      | Type          | Description                                                                                           |
 | ---------- | ------------- | ----------------------------------------------------------------------------------------------------- |
 | NodeURI    | string        | The RPC address of the irita node connected to the SDK, for example: localhost: 26657                 |
+| GRPCAddr   | string        | The GRPC address of the irita node connected to the SDK, for example: localhost: 9090                                                                 |
 | ChainID    | string        | ChainID of irita, for example: `irita`                                                                |
 | Gas        | uint64        | The maximum gas to be paid for the transaction, for example: `20000`                                  |
 | Fee        | DecCoins      | Transaction fees to be paid for transactions                                                          |
@@ -107,45 +108,40 @@ Located under package `types/store`
 
 ### Import  Account By Mnemonic
 ```go
-    //private key generation algorithm(`sm2`,`secp256k1`)
-    algo := "sm2" 
-    // init cschain sdk client
-    keyDao := store.NewMemory(nil)
-    km, err := crypto.NewMnemonicKeyManager(mnemonic, algo)
-    
-    _, priv := km.Generate()
-    ki := store.KeyInfo{
-        Name:         name,
-        PubKey:       codec.MarshalPubkey(km.ExportPubKey()),
-        PrivKeyArmor: string(codec.MarshalPrivKey(priv)),
-        Algo:         algo,
-    }
-    err := keyDao.Write(name, password, ki)
-    
-    options := []types.Option{
-        types.KeyDAOOption(keyDao),
-        types.TimeoutOption(10),
-    }
+//private key generation algorithm(`sm2`,`secp256k1`)
+algo := "sm2" 
+// init cschain sdk client
+keyDao := store.NewMemory(nil)
+km, err := crypto.NewMnemonicKeyManager(mnemonic, algo)
 
-    cfg, err := types.NewClientConfig(nodeURI, chainID, options...)
-    
-    client := sdk.NewIRITAClient(cfg)
+_, priv := km.Generate()
+ki := store.KeyInfo{
+    Name:         name,
+    PubKey:       codec.MarshalPubkey(km.ExportPubKey()),
+    PrivKeyArmor: string(codec.MarshalPrivKey(priv)),
+    Algo:         algo,
+}
+err := keyDao.Write(name, password, ki)
+
+options := []types.Option{
+    types.KeyDAOOption(keyDao),
+    types.TimeoutOption(10),
+}
+
+cfg, err := types.NewClientConfig(nodeURI, gRPCAddr, chainID, options...)
+
+client := sdk.NewIRITAClient(cfg)
 ```
 
 ### Bench32PubKey Convert to Sm2Pubkey
 ```go
-        var sm2pubKey sm2.PubKey
-        // support bench32 pubkey type (accpub,valpub,conspub)
-		pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeAccPub, AccPubKey)
-		if err != nil {
-			......
-		}
-		pubkeyBytes, err := json.Marshal(pubKey)
-		if err != nil {
-			......
-		}
-		if err := json.Unmarshal(pubkeyBytes, &sm2pubKey); err != nil {
-			......
-		}
-		sm2PubKey := sm2.Decompress(sm2pubKey.Key)
+var sm2pubKey sm2.PubKey
+// support bench32 pubkey type (accpub,valpub,conspub)
+pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeAccPub, AccPubKey)
+
+pubkeyBytes, err := json.Marshal(pubKey)
+
+err := json.Unmarshal(pubkeyBytes, &sm2pubKey)
+
+sm2PubKey := sm2.Decompress(sm2pubKey.Key)
 ```
