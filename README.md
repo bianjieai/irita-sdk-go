@@ -40,8 +40,8 @@ The `ClientConfig` component mainly contains the parameters used in the SDK, the
 
 | Iterm      | Type          | Description                                                                                           |
 | ---------- | ------------- | ----------------------------------------------------------------------------------------------------- |
-| NodeURI    | string        | The RPC address of the irita node connected to the SDK, for example: localhost: 26657                 |
-| GRPCAddr   | string        | The GRPC address of the irita node connected to the SDK, for example: localhost: 9090                                                                 |
+| NodeURI    | string        | The RPC address of the irita node connected to the SDK, for example( tcp://localhost:26657 )                 |
+| GRPCAddr   | string        | The GRPC address of the irita node connected to the SDK, for example( localhost:9090 )                                                                 |
 | ChainID    | string        | ChainID of irita, for example: `irita`                                                                |
 | Gas        | uint64        | The maximum gas to be paid for the transaction, for example: `20000`                                  |
 | Fee        | DecCoins      | Transaction fees to be paid for transactions                                                          |
