@@ -104,3 +104,28 @@ There are three different ways to implement the keyDAO interface in the SDK:
 - Based on memory(`MemoryDAO`)
 
 Located under package `types/store`
+
+### Import  Account Address
+```go
+    // init cschain sdk client
+    keyDao := store.NewMemory(nil)
+    km, err := crypto.NewMnemonicKeyManager(mnemonic, "sm2")
+    ......
+    _, priv := km.Generate()
+    ki := store.KeyInfo{
+        Name:         name,
+        PubKey:       codec.MarshalPubkey(km.ExportPubKey()),
+        PrivKeyArmor: string(codec.MarshalPrivKey(priv)),
+        Algo:         "sm2",
+    }
+    err := keyDao.Write(name, password, ki)
+    ......
+    options := []types.Option{
+        types.KeyDAOOption(keyDao),
+        types.TimeoutOption(10),
+    }
+
+    cfg, err := types.NewClientConfig(nodeURI, chainID, options...)
+    ......
+    client := sdk.NewIRITAClient(cfg)
+```
