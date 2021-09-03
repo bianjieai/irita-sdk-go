@@ -104,3 +104,48 @@ There are three different ways to implement the keyDAO interface in the SDK:
 - Based on memory(`MemoryDAO`)
 
 Located under package `types/store`
+
+### Import  Account By Mnemonic
+```go
+    //private key generation algorithm(`sm2`,`secp256k1`)
+    algo := "sm2" 
+    // init cschain sdk client
+    keyDao := store.NewMemory(nil)
+    km, err := crypto.NewMnemonicKeyManager(mnemonic, algo)
+    
+    _, priv := km.Generate()
+    ki := store.KeyInfo{
+        Name:         name,
+        PubKey:       codec.MarshalPubkey(km.ExportPubKey()),
+        PrivKeyArmor: string(codec.MarshalPrivKey(priv)),
+        Algo:         algo,
+    }
+    err := keyDao.Write(name, password, ki)
+    
+    options := []types.Option{
+        types.KeyDAOOption(keyDao),
+        types.TimeoutOption(10),
+    }
+
+    cfg, err := types.NewClientConfig(nodeURI, chainID, options...)
+    
+    client := sdk.NewIRITAClient(cfg)
+```
+
+### Bench32PubKey Convert to Sm2Pubkey
+```go
+        var sm2pubKey sm2.PubKey
+        // support bench32 pubkey type (accpub,valpub,conspub)
+		pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeAccPub, AccPubKey)
+		if err != nil {
+			......
+		}
+		pubkeyBytes, err := json.Marshal(pubKey)
+		if err != nil {
+			......
+		}
+		if err := json.Unmarshal(pubkeyBytes, &sm2pubKey); err != nil {
+			......
+		}
+		sm2PubKey := sm2.Decompress(sm2pubKey.Key)
+```
