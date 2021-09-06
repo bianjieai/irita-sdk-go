@@ -5,6 +5,7 @@ import (
 	sdk "github.com/bianjieai/irita-sdk-go"
 	"github.com/bianjieai/irita-sdk-go/crypto"
 	"github.com/bianjieai/irita-sdk-go/crypto/codec"
+	"github.com/bianjieai/irita-sdk-go/modules"
 	"github.com/bianjieai/irita-sdk-go/types"
 	"github.com/bianjieai/irita-sdk-go/types/store"
 	"github.com/stretchr/testify/require"
@@ -80,4 +81,12 @@ func (s IntegrationTestSuite) TestRecoverAccount() {
 	require.NoError(s.T(), err)
 	require.Equal(s.T(), address, "iaa1nylsmagjt8jck7uy4pg9lhgac0002gsjquvs2z")
 
+}
+
+func (s IntegrationTestSuite) TestInitKeyManager() {
+	keyDao := store.NewMemory(nil)
+	keyManger := modules.NewKeyManager(keyDao, "sm2")
+	address, err := keyManger.Recover("user", "password", "enlist front supreme key favorite stem wrestle client trip orange burst abandon someone beyond umbrella crop unknown bind ivory february grace elephant detect board")
+	require.NoError(s.T(), err)
+	require.Equal(s.T(), address, "iaa1nylsmagjt8jck7uy4pg9lhgac0002gsjquvs2z")
 }

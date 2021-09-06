@@ -106,6 +106,21 @@ func (base *baseClient) Marshaler() codec.Marshaler {
 	return base.encodingConfig.Marshaler
 }
 
+func (base *baseClient) BuildAndSign(msg []sdk.Msg, baseTx sdk.BaseTx) ([]byte, sdk.Error) {
+	builder, err := base.prepare(baseTx)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	txByte, err := builder.BuildAndSign(baseTx.From, msg)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	base.Logger().Debug("sign transaction success")
+	return txByte, nil
+}
+
 func (base *baseClient) BuildAndSend(msg []sdk.Msg, baseTx sdk.BaseTx) (sdk.ResultTx, sdk.Error) {
 	var res sdk.ResultTx
 	var address string

@@ -34,6 +34,10 @@ func (s IntegrationTestSuite) TestBank() {
 			"TestSendBatch",
 			sendBatch,
 		},
+		{
+			"buildAndSigned",
+			buildAndSigned,
+		},
 	}
 
 	for _, t := range cases {
@@ -44,7 +48,7 @@ func (s IntegrationTestSuite) TestBank() {
 }
 
 func queryAccount(s IntegrationTestSuite) {
-	acc, err := s.Bank.QueryAccount("iaa1r49m366kaexmvrlppqqeyr8ykqq248g0d4qra4")
+	acc, err := s.Bank.QueryAccount("iaa1f7jnpkt2yxd8h72w6hf03juy3uk6m2sur845kq")
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), acc)
 }
@@ -194,4 +198,24 @@ func sendBatch(s IntegrationTestSuite) {
 	}
 	_, err := s.Bank.MultiSend(bank.MultiSendRequest{Receipts: receipts}, baseTx)
 	require.NoError(s.T(), err)
+}
+
+func buildAndSigned(s IntegrationTestSuite) {
+	baseTx := types.BaseTx{
+		From:     s.Account().Name,
+		Gas:      500000,
+		Memo:     "test",
+		Mode:     types.Commit,
+		Password: s.Account().Password,
+	}
+	amount, err := types.ParseCoin("1000uirita")
+	require.NoError(s.T(), err)
+	sendMsg := bank.MsgSend{
+		FromAddress: "",
+		ToAddress:   "",
+		Amount:      types.Coins{amount},
+	}
+	res, err := s.BaseClient.BuildAndSign([]types.Msg{&sendMsg}, baseTx)
+	require.NoError(s.T(), err)
+	fmt.Println(string(res))
 }

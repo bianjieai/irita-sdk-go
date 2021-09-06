@@ -19,6 +19,13 @@ type keyManager struct {
 	algo   string
 }
 
+func NewKeyManager(keyDAO store.KeyDAO, algo string) types.KeyManager {
+	return keyManager{
+		keyDAO: keyDAO,
+		algo:   algo,
+	}
+}
+
 func (k keyManager) Sign(name, password string, data []byte) ([]byte, tmcrypto.PubKey, error) {
 	info, err := k.keyDAO.Read(name, password)
 	if err != nil {
