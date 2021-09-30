@@ -2,6 +2,7 @@ package sdk
 
 import (
 	"fmt"
+	"github.com/bianjieai/irita-sdk-go/modules/slashing"
 
 	"github.com/bianjieai/irita-sdk-go/modules/oracle"
 
@@ -39,6 +40,7 @@ var registers = []codec.RegisterInterfaces{
 	node.RegisterInterfaces,
 	params.RegisterInterfaces,
 	wasm.RegisterInterfaces,
+	slashing.RegisterInterfaces,
 }
 
 // IRITAClient define a group of api to access c network
