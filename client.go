@@ -2,7 +2,6 @@ package sdk
 
 import (
 	"fmt"
-	"github.com/bianjieai/irita-sdk-go/modules/slashing"
 
 	"github.com/bianjieai/irita-sdk-go/modules/oracle"
 
@@ -21,6 +20,7 @@ import (
 	"github.com/bianjieai/irita-sdk-go/modules/params"
 	"github.com/bianjieai/irita-sdk-go/modules/record"
 	"github.com/bianjieai/irita-sdk-go/modules/service"
+	"github.com/bianjieai/irita-sdk-go/modules/slashing"
 	"github.com/bianjieai/irita-sdk-go/modules/token"
 	"github.com/bianjieai/irita-sdk-go/modules/wasm"
 	"github.com/bianjieai/irita-sdk-go/types"
@@ -62,6 +62,7 @@ type IRITAClient struct {
 	Params   params.Client
 	WASM     wasm.Client
 	Oracle   oracle.Client
+	Slashing slashing.Client
 }
 
 // AppCodec return a Marshaler of the protobuf
@@ -92,6 +93,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 	oracleClient := oracle.NewClient(baseClient, encodingConfig.Marshaler)
 	paramsClient := params.NewClient(baseClient, encodingConfig.Marshaler)
 	wasmClient := wasm.NewClient(baseClient)
+	slashingClient := slashing.NewClient(baseClient)
 
 	client := &IRITAClient{
 		logger:         baseClient.Logger(),
@@ -108,6 +110,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 		Oracle:         oracleClient,
 		Params:         paramsClient,
 		WASM:           wasmClient,
+		Slashing:       slashingClient,
 		moduleManager:  make(map[string]types.Module),
 		encodingConfig: encodingConfig,
 	}
@@ -123,6 +126,7 @@ func NewIRITAClient(cfg types.ClientConfig) IRITAClient {
 		nodeClient,
 		paramsClient,
 		wasmClient,
+		slashingClient,
 	)
 	return *client
 }
