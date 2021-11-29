@@ -23,6 +23,7 @@ type CreateIdentityRequest struct {
 	PubkeyInfo  *PubkeyInfo `json:"pubkey_info"`
 	Certificate string      `json:"certificate"`
 	Credentials *string     `json:"credentials"`
+	Data        string      `json:"data"`
 }
 
 type UpdateIdentityRequest struct {
@@ -30,6 +31,7 @@ type UpdateIdentityRequest struct {
 	PubkeyInfo  *PubkeyInfo `json:"pubkey_info"`
 	Certificate string      `json:"certificate"`
 	Credentials *string     `json:"credentials"`
+	Data        string      `json:"data"`
 }
 
 type QueryIdentityResp struct {
@@ -38,4 +40,5 @@ type QueryIdentityResp struct {
 	Certificates []string     `json:"certificates"`
 	Credentials  string       `json:"credentials"`
 	Owner        string       `json:"owner"`
+	Data         string       `json:"data"`
 }
