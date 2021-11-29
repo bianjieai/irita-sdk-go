@@ -122,6 +122,7 @@ func (m Identity) Convert() interface{} {
 		Certificates: m.Certificates,
 		Credentials:  m.Credentials,
 		Owner:        m.Owner,
+		Data:         m.Data,
 	}
 }
 
