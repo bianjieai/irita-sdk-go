@@ -2,10 +2,10 @@ package types
 
 const (
 	// prefixChain defines the prefix of this chain
-	prefixChain = "i"
+	prefixChain = "d"
 
 	// PrefixAcc is the prefix for account
-	prefixAccount = "a"
+	prefixAccount = "t"
 
 	// prefixValidator is the prefix for validator keys
 	prefixValidator = "v"
@@ -17,7 +17,7 @@ const (
 	prefixPublic = "p"
 
 	// prefixAddress is the prefix for address
-	prefixAddress = "a"
+	prefixAddress = "c"
 )
 
 var (

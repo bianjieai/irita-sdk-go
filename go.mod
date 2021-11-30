@@ -22,7 +22,7 @@ require (
 	github.com/mtibben/percent v0.2.1
 	github.com/petermattis/goid v0.0.0-20180202154549-b0b1615b78e5 // indirect
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/common v0.15.0 // indirect
+	github.com/prometheus/common v0.15.0
 	github.com/regen-network/cosmos-proto v0.3.1
 	github.com/sirupsen/logrus v1.6.0
 	github.com/spf13/cast v1.3.1
