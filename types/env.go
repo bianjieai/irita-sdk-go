@@ -2,10 +2,12 @@ package types
 
 const (
 	// prefixChain defines the prefix of this chain
-	prefixChain = "d"
+	prefixChain    = "i"
+	prefixChainDTC = "d"
 
 	// PrefixAcc is the prefix for account
-	prefixAccount = "t"
+	prefixAccount    = "a"
+	prefixAccountDTC = "t"
 
 	// prefixValidator is the prefix for validator keys
 	prefixValidator = "v"
@@ -17,7 +19,8 @@ const (
 	prefixPublic = "p"
 
 	// prefixAddress is the prefix for address
-	prefixAddress = "c"
+	prefixAddress    = "a"
+	prefixAddressDTC = "c"
 )
 
 var (
@@ -31,10 +34,25 @@ var (
 			"consensus_pub":  prefixChain + prefixConsensus + prefixPublic,
 		},
 	}
+
+	prefixCfgDTC = &AddrPrefixCfg{
+		bech32AddressPrefix: map[string]string{
+			"account_addr":   prefixChainDTC + prefixAccountDTC + prefixAddressDTC,
+			"validator_addr": prefixChainDTC + prefixValidator + prefixAddressDTC,
+			"consensus_addr": prefixChainDTC + prefixConsensus + prefixAddressDTC,
+			"account_pub":    prefixChainDTC + prefixAccountDTC + prefixPublic,
+			"validator_pub":  prefixChainDTC + prefixValidator + prefixPublic,
+			"consensus_pub":  prefixChainDTC + prefixConsensus + prefixPublic,
+		},
+	}
 )
 
 type AddrPrefixCfg struct {
 	bech32AddressPrefix map[string]string
+}
+
+func GetAddrPrefixCfgDTC() *AddrPrefixCfg {
+	return prefixCfgDTC
 }
 
 // GetAddrPrefixCfg returns the config instance for the corresponding Network type

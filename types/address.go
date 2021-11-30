@@ -15,6 +15,91 @@ const (
 	AddrLen = 20
 )
 
+type AccAddressDTC []byte
+
+// String implements the Stringer interface.
+func (dtc AccAddressDTC) String() string {
+	if dtc.Empty() {
+		return ""
+	}
+
+	bech32PrefixAccAddr := GetAddrPrefixCfgDTC().GetBech32AccountAddrPrefix()
+	bech32Addr, err := bech32.ConvertAndEncode(bech32PrefixAccAddr, dtc.Bytes())
+	if err != nil {
+		panic(err)
+	}
+
+	return bech32Addr
+}
+
+func (dtc AccAddressDTC) Equals(va2 ValAddress) bool {
+	if dtc.Empty() && va2.Empty() {
+		return true
+	}
+
+	return bytes.Equal(dtc.Bytes(), va2.Bytes())
+}
+
+func (dtc AccAddressDTC) Empty() bool {
+	if dtc == nil {
+		return true
+	}
+
+	aa2 := AccAddressDTC{}
+	return bytes.Equal(dtc.Bytes(), aa2.Bytes())
+}
+
+// Marshal returns the raw address bytes. It is needed for protobuf
+// compatibility.
+func (dtc AccAddressDTC) Marshal() ([]byte, error) {
+	return dtc, nil
+}
+
+// Unmarshal sets the address to the given data. It is needed for protobuf
+// compatibility.
+func (dtc *AccAddressDTC) Unmarshal(data []byte) error {
+	*dtc = data
+	return nil
+}
+
+// MarshalJSON marshals to JSON using Bech32.
+func (dtc AccAddressDTC) MarshalJSON() ([]byte, error) {
+	return json.Marshal(dtc.String())
+}
+
+// UnmarshalJSON unmarshals from JSON assuming Bech32 encoding.
+func (dtc *AccAddressDTC) UnmarshalJSON(data []byte) error {
+	var s string
+	err := json.Unmarshal(data, &s)
+	if err != nil {
+		return err
+	}
+
+	aa2, err := AccAddressFromBech32FromDTC(s)
+	if err != nil {
+		return err
+	}
+
+	*dtc = aa2
+	return nil
+}
+
+// Bytes returns the raw address bytes.
+func (dtc AccAddressDTC) Bytes() []byte {
+	return dtc
+}
+
+// AccAddressFromBech32 creates an AccAddress from a Bech32 string.
+func AccAddressFromBech32FromDTC(address string) (AccAddressDTC, Error) {
+	bech32PrefixAccAddr := GetAddrPrefixCfgDTC().GetBech32AccountAddrPrefix()
+	bz, err := bech32.GetFromBech32(address, bech32PrefixAccAddr)
+	if err != nil {
+		return nil, Wrap(err)
+	}
+
+	return AccAddressDTC(bz), nil
+}
+
 // AccAddress a wrapper around bytes meant to represent an account address.
 // When marshaled to a string or JSON, it uses Bech32.
 type AccAddress []byte
