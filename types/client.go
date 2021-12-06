@@ -9,6 +9,7 @@ import (
 
 type TxManager interface {
 	TmQuery
+	BuildTxHash(msg []Msg, baseTx BaseTx) (string, Error)
 	BuildAndSend(msg []Msg, baseTx BaseTx) (ResultTx, Error)
 	SendBatch(msgs Msgs, baseTx BaseTx) ([]ResultTx, Error)
 }
