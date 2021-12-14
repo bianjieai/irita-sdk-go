@@ -21,15 +21,25 @@ type rpcClient struct {
 }
 
 func NewRPCClient(
-	remote string,
+	cfg sdk.ClientConfig,
 	cdc *codec.LegacyAmino,
 	txDecoder sdk.TxDecoder,
 	logger log.Logger,
 	timeout uint,
 ) sdk.TmClient {
-	client := JsonRpcClient{
-		address: remote,
+	wsEvents, err := newWSEvents(cfg.WSAddr, "/websocket", cfg.WSHeader)
+	if err != nil {
+		panic(err)
 	}
+	client := JsonRpcClient{
+		address:  cfg.RPCAddr,
+		header:   cfg.RPCHeader,
+		WSEvents: wsEvents,
+	}
+	if err = client.Start(); err != nil {
+		panic(err)
+	}
+
 	return rpcClient{
 		Client:    client,
 		Logger:    logger,

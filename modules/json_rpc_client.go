@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 	tmjson "github.com/tendermint/tendermint/libs/json"
 	"github.com/tendermint/tendermint/libs/log"
+	"github.com/tendermint/tendermint/libs/service"
 	"github.com/tendermint/tendermint/rpc/client"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
@@ -18,36 +20,14 @@ import (
 	"strconv"
 )
 
+var errNotRunning = errors.New("client is not running. Use .Start() method to start")
+
+var _ service.Service = (*JsonRpcClient)(nil)
+
 type JsonRpcClient struct {
 	address string
-}
-
-func (c JsonRpcClient) Start() error {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) OnStart() error {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) Stop() error {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) OnStop() {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) Reset() error {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) OnReset() error {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) IsRunning() bool {
-	panic("implement me")
+	header http.Header
+	*WSEvents
 }
 
 func (c JsonRpcClient) Quit() <-chan struct{} {
@@ -94,18 +74,6 @@ func (c JsonRpcClient) BroadcastTxAsync(ctx context.Context, tx tmtypes.Tx) (*ct
 
 func (c JsonRpcClient) BroadcastTxSync(ctx context.Context, tx tmtypes.Tx) (*ctypes.ResultBroadcastTx, error) {
 	return c.broadcastTX(ctx, "broadcast_tx_sync", tx)
-}
-
-func (c JsonRpcClient) Subscribe(ctx context.Context, subscriber, query string, outCapacity ...int) (out <-chan ctypes.ResultEvent, err error) {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) Unsubscribe(ctx context.Context, subscriber, query string) error {
-	panic("implement me")
-}
-
-func (c JsonRpcClient) UnsubscribeAll(ctx context.Context, subscriber string) error {
-	panic("implement me")
 }
 
 func (c JsonRpcClient) Genesis(ctx context.Context) (*ctypes.ResultGenesis, error) {
@@ -306,31 +274,46 @@ func (c *JsonRpcClient) mapToRequest(method string, params map[string]interface{
 	paramsMap["params"] = params
 	return json.Marshal(paramsMap)
 }
+func (c *JsonRpcClient) Do(req *http.Request) (*http.Response, error) {
+	return http.DefaultClient.Do(req)
+}
 
 func (c *JsonRpcClient) Call(ctx context.Context, method string, params map[string]interface{}, result interface{}) (interface{}, error) {
 	requestBytes, err := c.mapToRequest(method, params)
 	if err != nil {
-		return nil, fmt.Errorf("request failed: %w", err)
+		return nil, fmt.Errorf("request failed: %s", err.Error())
 	}
-	httpResponse, err := http.Post(c.address, "application/json", bytes.NewReader(requestBytes))
+
+	req, err := http.NewRequest(http.MethodPost, c.address, bytes.NewReader(requestBytes))
 	if err != nil {
-		return nil, fmt.Errorf("post failed: %w", err)
+		return nil, fmt.Errorf("request failed: %s", err.Error())
+	}
+
+	if c.header != nil {
+		for h := range c.header {
+			req.Header.Add(h, c.header.Get(h))
+		}
+	}
+
+	httpResponse, err := c.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("post failed: %s", err.Error())
 	}
 	defer httpResponse.Body.Close()
 
 	httpResponseBytes, err := ioutil.ReadAll(httpResponse.Body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %w", err)
+		return nil, fmt.Errorf("failed to read response body: %s", err.Error())
 	}
 	rpcResponse := &types.RPCResponse{}
 	if err = json.Unmarshal(httpResponseBytes, rpcResponse); err != nil {
-		return nil, fmt.Errorf("error unmarshalling: %w", err)
+		return nil, fmt.Errorf("error unmarshalling: %s", err.Error())
 	}
 	if rpcResponse.Error != nil {
 		return nil, fmt.Errorf("request failed, code: %d, message: %s, data: %s", rpcResponse.Error.Code, rpcResponse.Error.Message, rpcResponse.Error.Data)
 	}
 	if err = tmjson.Unmarshal(rpcResponse.Result, result); err != nil {
-		return nil, fmt.Errorf("error unmarshalling result: %w", err)
+		return nil, fmt.Errorf("error unmarshalling result: %s", err.Error())
 	}
 	return result, nil
 }

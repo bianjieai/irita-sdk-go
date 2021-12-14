@@ -55,10 +55,10 @@ func NewBaseClient(cfg sdk.ClientConfig, encodingConfig sdk.EncodingConfig, logg
 		})
 	}
 
-	tmClient := NewRPCClient(cfg.NodeURI, encodingConfig.Amino, encodingConfig.TxConfig.TxDecoder(), logger, cfg.Timeout)
+	tmClient := NewRPCClient(cfg, encodingConfig.Amino, encodingConfig.TxConfig.TxDecoder(), logger, cfg.Timeout)
 	base := baseClient{
 		TmClient:       tmClient,
-		GRPCClient:     NewGRPCClient(cfg.GRPCAddr),
+		GRPCClient:     NewGRPCClient(cfg.GRPCAddr, cfg.GRPCOptions...),
 		logger:         logger,
 		cfg:            &cfg,
 		encodingConfig: encodingConfig,
@@ -152,6 +152,21 @@ func (base *baseClient) BuildAndSend(msg []sdk.Msg, baseTx sdk.BaseTx) (sdk.Resu
 		return res, sdk.Wrap(err)
 	}
 	return res, nil
+}
+
+func (base *baseClient) BuildAndSign(msg []sdk.Msg, baseTx sdk.BaseTx) ([]byte, sdk.Error) {
+	builder, err := base.prepare(baseTx)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	txByte, err := builder.BuildAndSign(baseTx.From, msg)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	base.Logger().Debug("sign transaction success")
+	return txByte, nil
 }
 
 func (base *baseClient) SendBatch(msgs sdk.Msgs, baseTx sdk.BaseTx) (rs []sdk.ResultTx, err sdk.Error) {
@@ -310,9 +325,16 @@ func (base *baseClient) prepare(baseTx sdk.BaseTx) (*clienttx.Factory, error) {
 	if err != nil {
 		return nil, err
 	}
-	factory.WithAccountNumber(account.AccountNumber).
-		WithSequence(account.Sequence).
-		WithPassword(baseTx.Password)
+
+	if baseTx.AccountNumber != 0 && baseTx.Sequence != 0 {
+		factory.WithAccountNumber(baseTx.AccountNumber).
+			WithSequence(baseTx.Sequence).
+			WithPassword(baseTx.Password)
+	} else {
+		factory.WithAccountNumber(account.AccountNumber).
+			WithSequence(account.Sequence).
+			WithPassword(baseTx.Password)
+	}
 
 	if !baseTx.Fee.Empty() && baseTx.Fee.IsValid() {
 		fees, err := base.ToMinCoin(baseTx.Fee...)
