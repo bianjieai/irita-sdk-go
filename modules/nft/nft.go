@@ -154,10 +154,6 @@ func (nc nftClient) QuerySupply(denom, creator string) (uint64, sdk.Error) {
 }
 
 func (nc nftClient) QueryOwner(creator, denom string, pageReq *query.PageRequest) (QueryOwnerResp, sdk.Error) {
-	if len(denom) == 0 {
-		return QueryOwnerResp{}, sdk.Wrapf("denom is required")
-	}
-
 	if err := sdk.ValidateAccAddress(creator); err != nil {
 		return QueryOwnerResp{}, sdk.Wrap(err)
 	}
