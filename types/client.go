@@ -10,6 +10,7 @@ import (
 type TxManager interface {
 	TmQuery
 	BuildAndSend(msg []Msg, baseTx BaseTx) (ResultTx, Error)
+	BuildAndSign(msg []Msg, baseTx BaseTx) ([]byte, Error)
 	SendBatch(msgs Msgs, baseTx BaseTx) ([]ResultTx, Error)
 }
 

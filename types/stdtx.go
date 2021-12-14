@@ -220,6 +220,7 @@ func (tx StdTx) GetMemo() string { return tx.Memo }
 // CONTRACT: If the signature is missing (ie the Msg is
 // invalid), then the corresponding signature is
 // .Empty().
+// if AccountNumber and Sequence input, then will set to build tx
 func (tx StdTx) GetSignatures() []StdSignature { return tx.Signatures }
 
 type BaseTx struct {
@@ -231,6 +232,8 @@ type BaseTx struct {
 	Mode               BroadcastMode `json:"broadcast_mode"`
 	SimulateAndExecute bool          `json:"simulate_and_execute"`
 	GasAdjustment      float64       `json:"gas_adjustment"`
+	AccountNumber      uint64        `json:"account_number"`
+	Sequence           uint64        `json:"sequence"`
 }
 
 // ResultTx encapsulates the return result of the transaction. When the transaction fails,
