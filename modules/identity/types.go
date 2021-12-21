@@ -16,6 +16,9 @@ const (
 	IDLength     = 16  // size of the ID in bytes
 	MaxURILength = 140 // maximum size of the URI
 
+	IdLengthMax     = 128
+	IdLengthMin     = 3
+
 	DoNotModifyDesc = "[do-not-modify]" // description used to indicate not to modify a field
 
 	ModuleName = "identity"
@@ -96,8 +99,8 @@ func ValidateIdentityFields(
 		return errors.New("owner missing")
 	}
 
-	if len(id) != IDLength*2 {
-		return fmt.Errorf("size of the ID must be %d in bytes", IDLength)
+	if len(id) > IdLengthMax*2 || len(id) < IdLengthMin*2 {
+		return fmt.Errorf("size of the ID must be %d ~ %d in bytes", IdLengthMin, IdLengthMax)
 	}
 
 	if len(credentials) > MaxURILength {
