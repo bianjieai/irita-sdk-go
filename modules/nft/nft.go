@@ -7,6 +7,7 @@ import (
 	"github.com/bianjieai/irita-sdk-go/codec/types"
 	"github.com/bianjieai/irita-sdk-go/types/query"
 
+	nfttypes "github.com/bianjieai/irita-sdk-go/modules/nft/types"
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
@@ -177,24 +178,31 @@ func (nc nftClient) QueryCollection(denom string, pageReq *query.PageRequest) (Q
 	if len(denom) == 0 {
 		return QueryCollectionResp{}, sdk.Wrapf("denom is required")
 	}
-
-	param := struct {
-		Denom string
-	}{
-		Denom: denom,
+	params := &nfttypes.QueryCollectionParams{
+		Denom:            denom,
+		QueryPagesParams: nfttypes.QueryPagesParams{},
+	}
+	if pageReq != nil {
+		params.QueryPagesParams.Offset = pageReq.Offset
+		params.QueryPagesParams.Limit = pageReq.Limit
 	}
 
 	var res QueryCollectionResp
-	if err := nc.QueryWithResponse(fmt.Sprintf(nftPath, "collection"), param, &res); err != nil {
+	if err := nc.QueryWithResponse(fmt.Sprintf(nftPath, "collection"), params, &res); err != nil {
 		return QueryCollectionResp{}, sdk.Wrap(err)
 	}
 
 	return res.Convert().(QueryCollectionResp), nil
 }
 
-func (nc nftClient) QueryDenoms(_ *query.PageRequest) ([]QueryDenomResp, sdk.Error) {
+func (nc nftClient) QueryDenoms(pageReq *query.PageRequest) ([]QueryDenomResp, sdk.Error) {
 	var res QueryDenomResps
-	if err := nc.QueryWithResponse(fmt.Sprintf(nftPath, "denoms"), nil, &res); err != nil {
+	params := &nfttypes.QueryPagesParams{}
+	if pageReq != nil {
+		params.Offset = pageReq.Offset
+		params.Limit = pageReq.Limit
+	}
+	if err := nc.QueryWithResponse(fmt.Sprintf(nftPath, "denoms"), params, &res); err != nil {
 		return nil, sdk.Wrap(err)
 	}
 
