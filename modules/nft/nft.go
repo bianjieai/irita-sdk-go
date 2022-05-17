@@ -11,6 +11,8 @@ import (
 	sdk "github.com/bianjieai/irita-sdk-go/types"
 )
 
+const DefaultLimit = 100
+
 type nftClient struct {
 	sdk.BaseClient
 	codec.Marshaler
@@ -185,6 +187,9 @@ func (nc nftClient) QueryCollection(denom string, pageReq *query.PageRequest) (Q
 	if pageReq != nil {
 		params.QueryPagesParams.Offset = pageReq.Offset
 		params.QueryPagesParams.Limit = pageReq.Limit
+	} else {
+		params.QueryPagesParams.Offset = 0
+		params.QueryPagesParams.Limit = DefaultLimit
 	}
 
 	var res QueryCollectionResp
@@ -201,6 +206,9 @@ func (nc nftClient) QueryDenoms(pageReq *query.PageRequest) ([]QueryDenomResp, s
 	if pageReq != nil {
 		params.Offset = pageReq.Offset
 		params.Limit = pageReq.Limit
+	} else {
+		params.Offset = 0
+		params.Limit = DefaultLimit
 	}
 	if err := nc.QueryWithResponse(fmt.Sprintf(nftPath, "denoms"), params, &res); err != nil {
 		return nil, sdk.Wrap(err)
