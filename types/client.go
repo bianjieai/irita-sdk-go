@@ -9,9 +9,11 @@ import (
 
 type TxManager interface {
 	TmQuery
+	BuildTx(msgs []Msg, baseTx BaseTx) ([]byte, Error)
 	BuildAndSend(msg []Msg, baseTx BaseTx) (ResultTx, Error)
 	BuildAndSign(msg []Msg, baseTx BaseTx) ([]byte, Error)
 	SendBatch(msgs Msgs, baseTx BaseTx) ([]ResultTx, Error)
+	RemoveCache(address string) bool
 }
 
 type Queries interface {

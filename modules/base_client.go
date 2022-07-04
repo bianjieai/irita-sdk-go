@@ -438,3 +438,12 @@ func (l *locker) indexFor(key string) uint32 {
 	}
 	return hash
 }
+
+func (base baseClient) RemoveCache(address string) bool {
+	return base.removeCache(address)
+}
+
+func (base *baseClient) BuildTx(msgs []sdk.Msg, baseTx sdk.BaseTx) ([]byte, sdk.Error) {
+	txByte, _, e := base.buildTx(msgs, baseTx)
+	return txByte, e
+}

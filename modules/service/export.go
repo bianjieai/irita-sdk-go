@@ -27,6 +27,10 @@ type Tx interface {
 	SubscribeServiceResponse(reqCtxID string, callback InvokeCallback) (sdk.Subscription, sdk.Error)
 }
 
+type MsgBuilder interface {
+	InvokeServiceMsg(request InvokeServiceRequest, baseTx sdk.BaseTx) (*MsgCallService, sdk.Error)
+}
+
 // Query defines a set of query interfaces in the service module
 type Query interface {
 	QueryServiceDefinition(serviceName string) (QueryServiceDefinitionResponse, sdk.Error)
@@ -47,6 +51,7 @@ type Client interface {
 	sdk.Module
 	Tx
 	Query
+	MsgBuilder
 }
 
 // InvokeCallback defines the callback function for service calls

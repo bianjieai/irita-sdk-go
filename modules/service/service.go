@@ -746,3 +746,36 @@ func (s serviceClient) GenServiceResponseMsgs(events sdk.StringEvents, serviceNa
 	}
 	return msgs
 }
+
+func (s serviceClient) InvokeServiceMsg(request InvokeServiceRequest, baseTx sdk.BaseTx) (*MsgCallService, sdk.Error) {
+	consumer, err := s.QueryAddress(baseTx.From, baseTx.Password)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	var providers []string
+	for _, provider := range request.Providers {
+		if err := sdk.ValidateAccAddress(provider); err != nil {
+			return nil, sdk.Wrap(err)
+		}
+		providers = append(providers, provider)
+	}
+
+	amt, err := s.ToMinCoin(request.ServiceFeeCap...)
+	if err != nil {
+		return nil, sdk.Wrap(err)
+	}
+
+	msg := &MsgCallService{
+		ServiceName:       request.ServiceName,
+		Providers:         providers,
+		Consumer:          consumer.String(),
+		Input:             request.Input,
+		ServiceFeeCap:     amt,
+		Timeout:           request.Timeout,
+		Repeated:          request.Repeated,
+		RepeatedFrequency: request.RepeatedFrequency,
+		RepeatedTotal:     request.RepeatedTotal,
+	}
+	return msg, nil
+}
