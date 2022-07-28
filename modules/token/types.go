@@ -16,6 +16,7 @@ var (
 	_ sdk.Msg = &MsgIssueToken{}
 	_ sdk.Msg = &MsgEditToken{}
 	_ sdk.Msg = &MsgMintToken{}
+	_ sdk.Msg = &MsgBurnToken{}
 	_ sdk.Msg = &MsgTransferTokenOwner{}
 )
 
@@ -175,6 +176,49 @@ func (msg MsgMintToken) ValidateBasic() error {
 
 	if len(msg.Symbol) == 0 {
 		return errors.New("symbol must be not empty")
+	}
+	return nil
+}
+
+func (msg MsgBurnToken) Route() string { return ModuleName }
+
+// Type implements Msg
+func (msg MsgBurnToken) Type() string { return "burn_token" }
+
+// GetSignBytes implements Msg
+func (msg MsgBurnToken) GetSignBytes() []byte {
+	b, err := ModuleCdc.MarshalJSON(&msg)
+	if err != nil {
+		panic(err)
+	}
+	return sdk.MustSortJSON(b)
+}
+
+// GetSigners implements Msg
+func (msg MsgBurnToken) GetSigners() []sdk.AccAddress {
+	from, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{from}
+}
+
+// ValidateBasic implements Msg
+func (msg MsgBurnToken) ValidateBasic() error {
+	if len(msg.Sender) == 0 {
+		return errors.New("sender must be not empty")
+	}
+
+	if err := sdk.ValidateAccAddress(msg.Sender); err != nil {
+		return sdk.Wrap(err)
+	}
+
+	if len(msg.Symbol) == 0 {
+		return errors.New("symbol must be not empty")
+	}
+
+	if msg.Amount == 0 {
+		return errors.New("invalid token amount ")
 	}
 	return nil
 }

@@ -29,6 +29,10 @@ service Query {
     rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
         option (google.api.http).get = "/irismod/token/params";
     }
+    // TotalBurn queries all the burnt coins
+    rpc TotalBurn(QueryTotalBurnRequest) returns (QueryTotalBurnResponse) {
+        option (google.api.http).get = "/irismod/token/total_burn";
+    }
 }
 
 // QueryTokenRequest is request type for the Query/Token RPC method
@@ -76,4 +80,13 @@ message QueryParamsResponse {
     token.Params params = 1 [(gogoproto.nullable) = false];
 
     cosmos.base.query.v1beta1.PageResponse res = 2;
+}
+
+// QueryTokenRequest is request type for the Query/TotalBurn RPC method
+message QueryTotalBurnRequest {}
+
+// QueryTotalBurnResponse is response type for the Query/TotalBurn RPC method
+message QueryTotalBurnResponse {
+    repeated cosmos.base.v1beta1.Coin burned_coins = 1
+    [ (gogoproto.nullable) = false ];
 }

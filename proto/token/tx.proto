@@ -17,6 +17,9 @@ service Msg {
     // MintToken defines a method for minting some tokens.
     rpc MintToken(MsgMintToken) returns (MsgMintTokenResponse);
 
+    // BurnToken defines a method for burning some tokens
+    rpc BurnToken(MsgBurnToken) returns (MsgBurnTokenResponse);
+
     // TransferTokenOwner defines a method for minting some tokens.
     rpc TransferTokenOwner(MsgTransferTokenOwner) returns (MsgTransferTokenOwnerResponse);
 }
@@ -68,3 +71,13 @@ message MsgMintToken {
 
 // MsgMintTokenResponse defines the Msg/MintToken response type.
 message MsgMintTokenResponse {}
+
+// MsgBurnToken defines an SDK message for burning some tokens
+message MsgBurnToken {
+    string symbol = 1;
+    uint64 amount = 2;
+    string sender = 3;
+}
+
+// MsgBurnTokenResponse defines the Msg/BurnToken response type
+message MsgBurnTokenResponse {}

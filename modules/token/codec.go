@@ -23,6 +23,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgIssueToken{},
 		&MsgEditToken{},
 		&MsgMintToken{},
+		&MsgBurnToken{},
 		&MsgTransferTokenOwner{},
 	)
 	registry.RegisterInterface("irismod.token.TokenI", (*TokenInterface)(nil), &Token{})
