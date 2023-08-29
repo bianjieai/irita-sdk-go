@@ -32,7 +32,7 @@ require (
 	github.com/tendermint/tendermint v0.34.3
 	github.com/tendermint/tm-db v0.6.4
 	github.com/tjfoc/gmsm v1.4.0
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
+	golang.org/x/crypto v0.1.0
 	golang.org/x/net v0.7.0 // indirect
 	google.golang.org/genproto v0.0.0-20210114201628-6edceaf6022f
 	google.golang.org/grpc v1.35.0
