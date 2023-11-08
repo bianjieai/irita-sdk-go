@@ -63,6 +63,7 @@ func (i identityClient) CreateIdentity(request CreateIdentityRequest, baseTx sdk
 		Certificate: request.Certificate,
 		Credentials: credentials,
 		Owner:       sender.String(),
+		Data:        request.Data,
 	}
 	return i.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
@@ -101,6 +102,7 @@ func (i identityClient) UpdateIdentity(request UpdateIdentityRequest, baseTx sdk
 		Certificate: request.Certificate,
 		Credentials: credentials,
 		Owner:       sender.String(),
+		Data:        request.Data,
 	}
 	return i.BuildAndSend([]sdk.Msg{msg}, baseTx)
 }
